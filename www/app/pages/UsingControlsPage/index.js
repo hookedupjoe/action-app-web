@@ -44,16 +44,18 @@ License: MIT
 
     //--- Define this applications layouts
     //controls:  (use name from thisPageSpecs.pageControls)
-    //   "north": {name: "pageTitle",control: "titleBar"}
-    //      and use: ctl.pageTitle to get control
+    //   "north": {partname: "pageTitle",control: "titleBar"}
+    //      and use: ThisPage.part.pageTitle to get control
 
     //-> templates:  (use name from thisPageSpecs.pageTemplates)
     //  "north": thisPageSpecs.pageNamespace + ":" + "page-north",
+
+    
     thisPageSpecs.layoutOptions = {
         controls: {
-            "north": {name: "pageTitle", control: "titleBar"},
-            "east": {name: "previewPanel", control: "previewPanel"},  
-            "west": {name: "buttonPanel", control: "buttonPanel"}
+            "north": {partname: "pageTitle", control: "titleBar"},
+            "east": {partname: "previewPanel", control: "previewPanel"},  
+            "west": {partname: "buttonPanel", control: "buttonPanel"}
         },
         templates: {
             "center": thisPageSpecs.pageNamespace + ":" + "page-body"

@@ -2381,7 +2381,7 @@ License: MIT
                     tmpLTName = tmpLT;
                 } else {
                     tmpLTName = tmpLT.control;
-                    tmpInstanceName = tmpLT.name;
+                    tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.controlIndex[tmpLTName];
                 tmpCtl.controlConfig.parentRegionName = aName;
