@@ -2410,6 +2410,12 @@ License: MIT
     me.focus = me.open;
 
     //--- Will prefix with this.pageNamespace as needed
+    me.loadLayoutSpot = function (theRegionName, theContent, theOptionalTemplateName) {
+        var tmpName = theRegionName || 'center';
+        tmpName = this.pageName + ":" + tmpName;
+        return this.loadSpot(tmpName, theContent, theOptionalTemplateName);
+    }
+    //--- Will prefix with this.pageNamespace as needed
     me.loadPageSpot = function (theName, theContent, theOptionalTemplateName) {
         var tmpName = theName || '';
         tmpName = this.ns(tmpName);
