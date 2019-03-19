@@ -1,0 +1,280 @@
+<div>
+
+  <!-- Tab 1 -->
+  <div pagespot="body-area" appuse="cards" group="_page_:tabs" item="welcome">
+    <div class="ui segment basic">
+      <h2 class="ui header">
+        <i class="home icon"></i>
+        <div class="content">
+          Prompt Demos
+        </div>
+      </h2>
+      <div class="ui cards">
+
+        <!-- Card ============ =============  -->
+        <div class="card">
+          <div class="content">
+            <div class="header">Hello World</div>
+            <div class="description">
+              A simple hello world that uses some of the prompt options.
+              <br />
+              <div class="ui button blue" pageaction="runHelloTest">Hello Test</div>
+            </div>
+          </div>
+          <div pageaction="gotoTab" tab="helloworld" class="ui bottom attached icon button basic blue ">
+            <i class="up arrow icon"></i>
+            Open that tab
+          </div>
+        </div>
+
+
+
+        <!-- Card ============ =============  -->
+        <div class="card">
+          <div class="content">
+            <div class="header">Prompt Options</div>
+            <div class="description">
+              More about the prompt available with the prompt functions.
+            </div>
+          </div>
+          <div pageaction="gotoTab" tab="promptoptions" class="ui bottom attached icon button basic blue ">
+            <i class="up arrow icon"></i>
+            Open that tab
+          </div>
+        </div>
+
+
+<!-- Card ============ =============  -->
+<div class="card">
+  <div class="content">
+    <div class="header">Prompt Forms</div>
+    <div class="description">
+      Prompt using form detail for a quick popup form.
+    </div>
+  </div>
+  <div pageaction="gotoTab" tab="forms" class="ui bottom attached icon button basic blue ">
+    <i class="up arrow icon"></i>
+    Open that tab
+  </div>
+</div>
+
+
+
+
+
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+  <!-- Tab -->
+  <!-- =================== =================== =================== -->
+  <div appuse="cards" group="_page_:tabs" item="helloworld" class="hidden">
+    <div rem__pagespot="hello-world:doc-content" class="ui segment basic">
+
+      <div class="ui segment basic">
+        <h2 class="ui header">
+          <i class="home icon"></i>
+          <div class="content">
+            Hello World Demos
+          </div>
+        </h2>
+        <div>
+            <p>Simple demos to show how they work</p>
+          
+          
+          <h3>Alert Demo</h3>
+          <code><pre>
+            alert("Alert is new.  Now has a title and types (confirm,info,warn,error)", "Now with a title and type!", 'i') 
+            </pre></code>
+            <hr />
+            <h3>Input Demo</h3>
+            <code><pre>
+  ThisApp.input("What is your name?", "Your Name", "Say Hello", "Bob")
+    .then(function (theValue) {
+        if (!(theValue)) { return };
+        alert("Hello " + theValue, "Nice to meet you")
+    })
+            </pre></code>
+            <hr />
+            <h3>Confirm Demo</h3>
+            <code><pre>
+ThisApp.confirm("Are you sure?", "Checking to see")
+  .then(function (theIsYes) {
+      alert("You clicked " + (theIsYes ? "Yes" : "No"), "Your Confirmation");
+  })
+            </pre></code>
+    
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+  <!-- =================== =================== =================== -->
+  <!-- Tab End -->
+
+
+  <!-- Tab -->
+  <!-- =================== =================== =================== -->
+  <div appuse="cards" group="_page_:tabs" item="promptoptions" class="hidden">
+    <div pagespot="promptoptions:doc-content" class="ui segment basic">
+      <h3>Prompt Options</h3>
+
+      <pre>
+ThisApp.alert('text','optional title', 'type').then(...);
+</pre>
+      <br />
+      The types are as follows, which control the icon used:<ol>
+        <li>c - confirm</li>
+        <li>i - info</li>
+        <li>w - warning</li>
+        <li>e - error</li>
+      </ol>
+      <hr />
+      
+<pre>
+ThisApp.confirm('text','optional title').then(function(theIsYes){});
+</pre>
+      <hr />
+<pre>
+ThisApp.input('text','optional title', 'optional button text', 'optional default value').then(function(theTextValue){});
+</pre>
+      <hr />
+<pre>
+ThisApp.prompt({
+"all":"kinds of options here, see video and reference for various usages"
+}).then(...);
+</pre>
+      <hr />
+      <h3>Advanced Prompting ..</h3>
+      Here we will init and show a form using the prompting system.  Includes validation.
+      <pre>
+show prompts usage here.
+      </pre>
+    </div>
+  </div>
+  <!-- =================== =================== =================== -->
+  <!-- Tab End -->
+
+
+
+  
+
+  <!-- Tab -->
+  <!-- =================== =================== =================== -->
+  <div appuse="cards" group="_page_:tabs" item="forms" class="hidden">
+    <div class="ui segment basic">
+      <h3>Prompt Forms</h3>
+      
+      <pre>
+ThisApp.prompt({
+  "normal":"options",
+  "plus":"...."
+  "form":{form s,pecs}
+}).then(...);        
+      </pre>
+      <hr />
+      <h3>Form Prompting ..</h3>
+      Here we will init and show a form using the prompting system.  Includes validation.
+      <pre>
+function promptUsingFormDemo(){
+  if( ThisPage.accountFormInit !== true){
+
+      var tmpAccountFormSpecs = {
+              "title": "Form Title",
+              "formname": thisPageSpecs.pageNamespace + ":account",
+              "requiredFieldList": ["name", "access", "account|url", "key"],
+              "defaultCaption": "Save Account Changes",
+              "defaultTitle": "Edit Account",
+              "newCaption": "Save New Account",
+              "newTitle": "New Account",
+              "items": [{
+                  "name": "name",
+                  "label": "Unique Account Name",
+                  "type": "text"
+              },
+              {
+                  "name": "access",
+                  "label": "Access Level",
+                  "type": "dropdown",
+                  "list": ["API Key|api", "Full Admin Access|admin"]
+              },
+              {
+                  "name": "account",
+                  "label": "Account",
+                  "type": "text",
+                  "note": "Need either an Account or a URL but not both"
+              },
+              {
+                  "name": "url",
+                  "label": "URL",
+                  "type": "text"
+              },
+              {
+                  "name": "key",
+                  "label": "API Key",
+                  "type": "text"
+              }]
+              ,
+              validation: function (theFormObject) {
+                  //--- Do form level validation here
+                  var tmpFormDetails = theFormObject || false;
+                  if (!tmpFormDetails) {
+                      console.warn("No form details passed, can not run form validation")
+                      return true;
+                  }
+                  if (theFormObject.data.url && theFormObject.data.account) {
+                      var tmpFF = theFormObject.fields.account;
+                      tmpFF.focus();
+                      var tmpFieldWrap = tmpFF.closest('.field');
+                      if (tmpFieldWrap) {
+                          tmpFieldWrap.addClass('error')
+                      }
+                      alert("You can not have both a URL and an account, one or the other only");
+                      //--- Return false to not close the dialog
+                      return false;
+                  }
+                  return true;
+              }
+          }
+
+          ThisPage.accountForm = ThisApp.forms.newForm(tmpAccountFormSpecs);
+          ThisPage.accountForm.loadTemplate();
+
+          ThisPage.accountFormInit = true
+  }
+
+  ThisPage.accountForm.prompt({
+      isNew: true,
+      doc: {name:"somename","account":"test-account"},
+      promptOptions: {
+        callback: function(thePromptStatus){
+            if (thePromptStatus === false) {
+                return true;
+            }
+            var tmpFormObj = ThisPage.accountForm.getFormDetails();
+            var tmpIsValid = ThisPage.accountForm.isValid(tmpFormObj)
+            if( tmpIsValid ){
+                console.log("We have a valid form object ",tmpFormObj)    
+                alert("See console for object details.  Note the data and fields nodes.")
+            }
+            //--- return false to stay open, true to close
+            return tmpIsValid;
+        }
+      }
+  })
+};
+      </pre>
+    </div>
+  </div>
+  <!-- =================== =================== =================== -->
+  <!-- Tab End -->
+
+
+
+</div>

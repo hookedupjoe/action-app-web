@@ -1,0 +1,75 @@
+{
+	"content": [
+		{
+			"ctl": "title",
+			"size": "large",
+			"name": "title",
+			"text": "Test Control"
+		},
+		{
+			"ctl": "button",
+			"size": "large",
+			"pageaction": "runTest",
+			"labeled": true,
+			"basic": true,
+			"right": true,
+			"attr" : {
+				"param1":"value1",
+				"param2":"value2"
+			},
+			"icon": "arrow right",
+			"name": "btn-test-01",
+			"text": "RunTest"
+		},
+		{
+			"ctl": "button",
+			"color":"blue",
+			"size": "large",
+			"pageaction": "runTest2",
+			"basic": true,
+			"name": "btn-test-02",
+			"text": "RunTest2"
+		},
+		{
+			"ctl": "divider",
+			"color": "blue",
+			"size": "medium", 
+			"text": "Welcome",
+			"clearing": true
+		},{
+			"ctl": "fieldrow",
+			"name": "name-row",
+			"items": [
+				{
+					"name": "first",
+					"label": "First Name",
+					"note": "Using a nick name is fine",
+					"req": true
+				},
+				{
+					"name": "last",
+					"label": "Last Name",
+					"req": true
+				}
+			]
+		},
+		{
+			"ctl": "fieldrow",
+			"label": "Badge",
+			"name": "badge-row",
+			"req": true,
+			"items": [
+				{
+					"placeholder": "First Name",
+					"name": "badgefirst",
+					"req": true
+				},
+				{
+					"placeholder": "Last Name",
+					"name": "badgelast",
+					"req": true
+				}
+			]
+		}
+	]
+}

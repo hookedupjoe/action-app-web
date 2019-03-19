@@ -1,0 +1,29 @@
+{
+  "title": "Controls List",
+  "index": {
+    "default": {
+      "title": "Default Loaded"
+    },    
+    "showfor": {
+      "title": "Show For Demo"
+    },
+    "validation": {
+      "title": "Validation Function"
+    },
+    "hello": {
+      "title": "Hello World"
+    },
+    "inline": {
+      "title": "Inline Demo"
+    },
+    "nested": {
+      "title": "Nested Demo"
+    },
+    "nestedtabs": {
+      "title": "Nested Tabs"
+    },
+    "tabbed": {
+      "title": "Tabbed"
+    }
+  }
+}

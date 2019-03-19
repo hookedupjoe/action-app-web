@@ -1,0 +1,60 @@
+<div class="ui segment basic">
+    <div class="item header">
+        <h3>
+            {{title}}
+        </h3>
+    </div>
+
+    <div class="message ui basic fluid">
+        {{text}}
+    </div>
+
+    <div class="ui middle aligned divided list">
+
+            {{#if link}}
+            <div class="item">
+                <div class="left floated content">
+                    <a target="_blank" href="{{link}}" class="ui button blue">
+                        Open Site
+                        &#160;
+                        <i class="ui icon right arrow"></i>
+                    </a>
+                </div>
+                <div class="header">
+                    Related Website
+                </div>
+            </div>
+            {{/if}}
+            {{#if video}}
+        <div class="item">
+            <div class="left floated content">
+                <a pageaction="showBoxVideo" video="{{video}}" class="ui button purple">
+                    Show Video
+                </a>
+            </div>
+            <div class="header">
+                Video Overview
+            </div>
+        </div>
+        {{/if}}
+        {{#if videos}}
+        {{#each videos}}
+
+        <div class="item">
+            <div class="left floated content">
+                <a pageaction="showBoxVideo" video="{{video}}" class="ui button purple">
+                    Show Video
+                </a>
+            </div>
+            <div class="header">
+                {{title}}
+            </div>
+        </div>
+
+        {{/each}}
+        {{/if}}
+
+
+    </div>
+
+</div>
