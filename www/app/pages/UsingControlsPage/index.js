@@ -35,12 +35,13 @@ License: MIT
         //-- Page to lookup : name to call it when pulling
         //---  No need to "namespace" your controls, they are page specific
         controlsMap: {
-            "title.json": "titleBar",
-            "nestedtabs.json": "previewPanel",
-            "showfor.json": "frmShowfor",
-            "buttonPanel.json": "buttonPanel"
+            "title.json": "titleBarCtl",
+            "nestedtabs.json": "previewPanelCtl",
+            "showfor.json": "demoFormCtl",
+            "buttonPanel.json": "buttonPanelCtl"
         }
     }
+    
 
     //--- Define this applications layouts
     //controls:  (use name from thisPageSpecs.pageControls)
@@ -53,9 +54,9 @@ License: MIT
     
     thisPageSpecs.layoutOptions = {
         controls: {
-            "north": {partname: "pageTitle", control: "titleBar"},
-            "east": {partname: "previewPanel", control: "previewPanel"},  
-            "west": {partname: "buttonPanel", control: "buttonPanel"}
+            "north": {partname: "pageTitle", control: "titleBarCtl"},
+            "east": {partname: "previewPanel", control: "previewPanelCtl"},  
+            "west": {partname: "buttonPanel", control: "buttonPanelCtl"}
         },
         templates: {
             "center": thisPageSpecs.pageNamespace + ":" + "page-body"
@@ -107,11 +108,12 @@ License: MIT
         //--- Create Custom Web Controls to use in control JSON at "ctl"
         //     - Namespace it - one global web controls, similar to one templating engine
         var ControlHelloWorld = {
-            getHTML: function (theControlName, theObject, theControlObj) {
+            getHTML: function (theControlName, theObject, theControlObj, isSigner) {
                 var tmpObject = theObject || {};
+                var tmpName = tmpObject.yourname || 'World';
                 
                 var tmpHTML = [];
-                tmpHTML.push('<h1>Hello World!</h1><hr />')
+                tmpHTML.push('<h1>Hello ' + tmpName + '!</h1><hr /><div pagespot="hello-area">Hello Area Here</div>')
                
                 tmpHTML = tmpHTML.join('');
                 return tmpHTML;
@@ -121,14 +123,13 @@ License: MIT
         }
         //--- Add Custom Web Control BEFORE doign the initOnFirstLoad so your controls are
         //    ... available to be loaded when controls are loaded
-        ThisApp.controls.addWebControl(ThisPage.ns("hello"), ControlHelloWorld);
 
+        //--- Add new page specific HTML generator        
+        ThisPage.addPageWebControl("hello", ControlHelloWorld);
         
         ThisPage.initOnFirstLoad().then(
             function () {
 
-                $('.shape').shape();
-                
                 //--- Extend loaded controls as well ...
                 var myStuff = {
                     helloCounter: 0,
@@ -193,17 +194,18 @@ License: MIT
 
 
     //--- Add an action to this page ...
-    actions.runTest = function runTest(theParams, theTarget){
+    actions.runTest = runTest;
+    function runTest(theParams, theTarget){
         //--- Get params if passed as an object or from attr's on theTarget
         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['testname']);
         //--- Use the variables
         var tmpTestName = tmpParams.testname || tmpParams.default || '';
         if( tmpTestName == "Test 1"){
-            ThisPage.loadPageSpot('test-buttons-spot', 'We are having fun now.')
+            ThisPage.loadPageSpot('hello-area', 'We are having fun now.')
         } else if( tmpTestName == "Test 2"){
             ThisPage.part.pageTitle.sayHello();
         } else if( tmpTestName == "Test 3"){
-            ThisPage.controlIndex.frmShowfor.prompt().then(function (theReply, theControl) {
+            ThisPage.controlIndex.demoFormCtl.prompt().then(function (theReply, theControl) {
                 if( theReply == false){
                     return false;
                 }

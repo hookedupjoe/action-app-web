@@ -2213,6 +2213,10 @@ License: MIT
     var me = SitePage.prototype;
     //var that = this;
 
+    me.addPageWebControl = function(theControlName, theControl){
+        ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
+    }
+    
     me.initControls = function (theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
         //--- if no templates to process, no prob, return now

@@ -1,7 +1,8 @@
 {
 	"content": [
 		{
-			"pagectl": "hello"
+			"pagectl": "hello",
+			"yourname": "Bob"
 		},
 		{
 			"ctl": "pagespot",
