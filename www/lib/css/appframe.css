@@ -53,6 +53,11 @@ cursor: not-allowed !important;
 .ui.tabular.menu .active.item {
   margin-bottom: 0px;
 }
+
+.ui.cards {
+  margin: 0 0;
+}
+
 .ui.menu.high .active.item {
   padding-top: 3px;
 }
@@ -122,6 +127,16 @@ cursor: not-allowed !important;
 .ui.segment.slim {
   padding:4px;  
 }
+
+.ui.cards.slim >.card{
+  padding:4px;
+  margin:4px;
+}
+
+.ui.piled.segment, .ui.piled.segments {
+  margin: 5px 0;
+}
+
 
 .ui.segment[group] {
   padding-top:8px;

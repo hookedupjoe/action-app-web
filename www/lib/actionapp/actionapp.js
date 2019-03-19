@@ -5025,6 +5025,61 @@ License: MIT
         isField: false
     }
 
+    
+    me.ControlSegments = {
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpHTML = [];
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpControlClass = theControlName;
+            var tmpClasses = ''
+            tmpClasses += getValueIfTrue(theObject, ['fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled','vertical','loading','inverted','bottom','top','attached','padded','slim','compact','secondary','tertiary','circular','clearing','right','left','center','aligned','basic']);
+            tmpClasses += getValueIfThere(theObject, ['color']);
+            tmpHTML = [];
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
+    me.ControlSegment = {
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpHTML = [];
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpControlClass = 'segment';
+            var tmpClasses = ''
+            tmpClasses += getValueIfTrue(theObject, ['fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled','vertical','loading','inverted','bottom','top','attached','padded','slim','compact','secondary','tertiary','circular','clearing','right','left','center','aligned','basic']);
+            tmpClasses += getValueIfThere(theObject, ['color']);
+            tmpHTML = [];
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
     me.ControlFieldRow = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
         getHTML: function (theControlName, theObject, theControlObj) {
@@ -5507,7 +5562,8 @@ License: MIT
     me.catalog.add('message', me.ControlMessage);
     me.catalog.add('button', me.ControlButton);
     me.catalog.add('pagespot',me.ControlPageSpot);
-
+    me.catalog.add('segment',me.ControlSegments);
+    me.catalog.add('segments',me.ControlSegments);
 
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 

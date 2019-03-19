@@ -1,0 +1,64 @@
+{
+	"content": [
+		{
+			"ctl": "pagespot",
+			"name": "test-buttons-spot"
+		},
+		{
+			"pagectl": "hello",
+			"yourname": "Bob"
+		},
+		{
+			"ctl":"segments",
+			"slim": true,
+			"items": [{
+				"ctl": "segment",
+				"color":"green",
+				"name": "west-cards",
+				"slim": true,
+				"stacked": true,
+				"fluid": true,
+				"items": [
+					{
+						"ctl": "message",
+						"name": "welcome",
+						"title": "Welcome",
+						"text": "What you need to know to get started",
+						"tabname": "welcome"
+					},
+					{
+						"ctl": "message",
+						"name": "javascript",
+						"title": "Javascript",
+						"text": "There is alot you can know about java script, like it is all one word.",
+						"tabname": "javascript"
+					}
+				]
+			},
+			{
+				"ctl": "segment",
+				"name": "west-cardsss",
+				"color":"blue",
+				"slim": true,
+				"stacked": true,
+				"fluid": true,
+				"items": [
+					{
+						"ctl": "message",
+						"name": "welcome",
+						"title": "Welcome",
+						"text": "What you need to know to get started",
+						"tabname": "welcome"
+					},
+					{
+						"ctl": "message",
+						"name": "javascript",
+						"title": "Javascript",
+						"text": "There is alot you can know about java script, like it is all one word.",
+						"tabname": "javascript"
+					}
+				]
+			}]
+		}
+	]
+}

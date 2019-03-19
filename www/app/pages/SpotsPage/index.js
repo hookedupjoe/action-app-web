@@ -20,45 +20,52 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
+
     //--- Define page templates that should load when the page is activated
     thisPageSpecs.pageTemplates = {
         baseURL: pageBaseURL + 'tpl',
         //-- Page to lookup : name to call it when pulling
         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
         templateMap: {
-            "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-            "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            "page-footer.html": thisPageSpecs.pageNamespace + ":page-footer"        }
+            "page-body.html": thisPageSpecs.pageNamespace + ":page-body"
+        }
     }
 
-    thisPageSpecs.pageControls  = {
+    thisPageSpecs.pageControls = {
         baseURL: pageBaseURL + 'controls',
         //-- Page to lookup : name to call it when pulling
         //---  No need to "namespace" your controls, they are page specific
-        //(i.e. "nestedtabs.json": "previewPanel",)
-        controlsMap: {}
+        controlsMap: {
+            "title.json": "titleBarCtl",
+            "nestedtabs.json": "previewPanelCtl",
+            "showfor.json": "demoFormCtl",
+            "buttonPanel.json": "buttonPanelCtl"
+        }
     }
+
 
     //--- Define this applications layouts
     //controls:  (use name from thisPageSpecs.pageControls)
-    //   "north": {name: "pageTitle",control: "titleBar"}
-    //      and use: ctl.pageTitle to get control
+    //   "north": {partname: "pageTitle",control: "titleBar"}
+    //      and use: ThisPage.part.pageTitle to get control
 
     //-> templates:  (use name from thisPageSpecs.pageTemplates)
     //  "north": thisPageSpecs.pageNamespace + ":" + "page-north",
+
+
     thisPageSpecs.layoutOptions = {
-        controls: {},
+        controls: {
+            "north": { partname: "pageTitle", control: "titleBarCtl" },
+            "east": { partname: "previewPanel", control: "previewPanelCtl" },
+            "west": { partname: "buttonPanel", control: "buttonPanelCtl" }
+        },
         templates: {
-            "east": thisPageSpecs.pageNamespace + ":" + "page-east",
-            "north": thisPageSpecs.pageNamespace + ":" + "page-header",
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body",
-            "south": thisPageSpecs.pageNamespace + ":" + "page-footer"
+            "center": thisPageSpecs.pageNamespace + ":" + "page-body"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,
-        south: true,
-        west: false,
+        south: false,
+        west: true,
         east: true
     }
 
@@ -69,7 +76,7 @@ License: MIT
         , east__size: "500"
     }
 
-    
+
     //--- Start with a ase SitePage component
     var ThisPage = new SiteMod.SitePage(thisPageSpecs);
 
@@ -82,8 +89,8 @@ License: MIT
     */
     var actions = ThisPage.pageActions;
     ThisPage._onPreInit = function (theApp) {
-        ThisPage._om = theApp.om;       
-        
+        ThisPage._om = theApp.om;
+
     }
     ThisPage._onInit = function () {
 
@@ -98,14 +105,123 @@ License: MIT
     */
     ThisPage._onFirstActivate = function (theApp) {
 
+
+        //--- Create Custom Web Controls to use in control JSON at "ctl"
+        //     - Namespace it - one global web controls, similar to one templating engine
+        var ControlHelloWorld = {
+            getHTML: function (theControlName, theObject, theControlObj, isSigner) {
+                var tmpObject = theObject || {};
+                var tmpName = tmpObject.yourname || 'World';
+
+                var tmpHTML = [];
+                tmpHTML.push('<h1>Hello ' + tmpName + '!</h1><hr /><div pagespot="hello-area">Hello Area Here</div>')
+
+                tmpHTML = tmpHTML.join('');
+                return tmpHTML;
+
+            },
+            isField: false
+        }
+        //--- Add Custom Web Control BEFORE doign the initOnFirstLoad so your controls are
+        //    ... available to be loaded when controls are loaded
+
+        //--- Add new page specific HTML generator        
+        ThisPage.addPageWebControl("hello", ControlHelloWorld);
+
+
+
+        ///---- PAGE WEB CONTROLS
+
+        var ControlTabPreviewCards = {
+            getHTML: function (theControlName, theObject, theControlObj, isSigner) {
+                var tmpObject = theObject || {};
+                var tmpPageSpot = tmpObject.pagespot || '';
+
+                var tmpHTML = [];
+                if (tmpPageSpot) {
+                    tmpPageSpot = ' pagespot="' + tmpPageSpot + '" '
+                }
+
+                tmpHTML.push('<div ' + tmpPageSpot + ' class="ui cards">')
+                
+                var tmpItems = tmpObject.items || tmpObject.cards || [];
+                if ((tmpItems && tmpItems.length)) {
+                    for (var iPos = 0; iPos < tmpItems.length; iPos++) {
+                        var tmpItem = tmpItems[iPos];
+                        var tmpCtl = tmpItem.ctl || 'field'
+                        tmpHTML.push(ThisApp.controls.getHTMLForControl(tmpCtl, tmpItem, theControlObj))
+                    }
+                }
+
+                tmpHTML.push('</div>')
+
+                tmpHTML = tmpHTML.join('\n');
+                return tmpHTML;
+
+            },
+            isField: false
+        }
+        ThisPage.addPageWebControl("previewcards", ControlTabPreviewCards);
+
+
+        var ControlTabPreviewCard = {
+            getHTML: function (theControlName, theObject, theControlObj, isSigner) {
+                var tmpObject = theObject || {};
+                var tmpTitle = tmpObject.title || '';
+                var tmpText = tmpObject.text || '';
+                var tmpTabName = tmpObject.tabname || '';
+
+                var tmpHTML = [];
+
+                tmpHTML.push('	<!-- Card ============ =============  -->')
+                tmpHTML.push('	<div class="ui card">')
+                tmpHTML.push('	  <div class="content">')
+                if (tmpTitle) {
+                    tmpHTML.push('		<div class="header">' + tmpTitle + '</div>')
+                }
+               
+                if (tmpText) {
+                    tmpHTML.push('		<div class="description">')
+                    tmpHTML.push(tmpText)
+                    tmpHTML.push('		</div>')
+                }
+                tmpHTML.push('	  </div>')
+                if (tmpTabName) {
+                    tmpHTML.push('	  <div pageaction="gotoTab" tab="' + tmpTabName + '" class="ui bottom attached icon button basic blue ">')
+                    tmpHTML.push('		<i class="up arrow icon"></i>')
+                    tmpHTML.push('		Open that tab')
+                    tmpHTML.push('	  </div>')
+                }
+                tmpHTML.push('	</div>')
+
+
+
+                tmpHTML = tmpHTML.join('\n');
+                return tmpHTML;
+
+            },
+            isField: false
+        }
+        ThisPage.addPageWebControl("previewcard", ControlTabPreviewCard);
+
+
+
+
+
+        ///====== ====== EMD WEB CTL
+
+
+
+
+
         //--- This tells the page to layout the page, load templates and controls, et
         ThisPage.initOnFirstLoad().then(
             function () {
                 //--- Now your done - READY to do stuff the first time on your page
 
-                
 
-              
+
+
                 //--- Do special stuff on page load here
                 //--- Then optionally call the stuff that will happen every time 
                 //      the page is activated if not already called by above code
@@ -121,31 +237,31 @@ License: MIT
     //--- End lifecycle hooks
 
     //=== Page Setup
-   
+
 
     //--- Layout related lifecycle hooks
     ThisPage._onResizeLayout = function (thePane, theElement, theState, theOptions, theName) {
 
 
         if (thePane == 'center') {
-         
+
 
         } else if (thePane == 'east') {
-          
+
         }
     }
 
     //=== Page Stuff
 
     actions.showHelloWorld = showHelloWorld;
-    function showHelloWorld(){
+    function showHelloWorld() {
         ThisPage.loadPageSpot('body-area', 'Hello World')
     };
     actions.showHello = showHello;
-    function showHello(theParams, theTarget){
+    function showHello(theParams, theTarget) {
         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['myname']);
         var tmpName = tmpParams.myname || '';
-        if( !tmpName ){
+        if (!tmpName) {
             ThisPage.loadPageSpot('body-area', 'Hello World')
         } else {
             ThisPage.loadPageSpot('body-area', 'Hello ' + tmpName)
@@ -153,9 +269,9 @@ License: MIT
     };
 
     actions.showHelloUsingAction = showHelloUsingAction;
-    function showHelloUsingAction(){
-        showHello({'myname': "Action Jackson"})
+    function showHelloUsingAction() {
+        showHello({ 'myname': "Action Jackson" })
     };
-    
-    
+
+
 })(ActionAppCore, $);

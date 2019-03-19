@@ -113,6 +113,7 @@ License: MIT
                 var tmpName = tmpObject.yourname || 'World';
                 
                 var tmpHTML = [];
+                
                 tmpHTML.push('<h1>Hello ' + tmpName + '!</h1><hr /><div pagespot="hello-area">Hello Area Here</div>')
                
                 tmpHTML = tmpHTML.join('');
