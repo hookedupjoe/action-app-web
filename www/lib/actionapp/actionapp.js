@@ -4888,12 +4888,9 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpClasses = ''
-            tmpClasses += getValueIfTrue(theObject, 'compact');
-            tmpClasses += getValueIfTrue(theObject, 'floating');
 
-            tmpClasses += getValueIfThere(theObject, 'color');
-            tmpClasses += getValueIfThere(theObject, 'attached');
-            tmpClasses += getValueIfThere(theObject, 'size');
+            tmpClasses += getValueIfTrue(theObject, ['compact','floating']);
+            tmpClasses += getValueIfThere(theObject, ['color','attached','size']);
 
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui message ' + tmpClasses + ' " style="' + tmpHidden + '">')
             if (tmpObject.icon) {
@@ -4926,16 +4923,8 @@ License: MIT
             }
 
             var tmpClasses = ''
-            tmpClasses += getValueIfTrue(theObject, 'basic');
-            tmpClasses += getValueIfTrue(theObject, 'compact');
-            tmpClasses += getValueIfTrue(theObject, 'fluid');
-            tmpClasses += getValueIfTrue(theObject, 'right');
-            tmpClasses += getValueIfTrue(theObject, 'labeled');
-            tmpClasses += getValueIfTrue(theObject, 'circular');
-
-            tmpClasses += getValueIfThere(theObject, 'color');
-            tmpClasses += getValueIfThere(theObject, 'size');
-            tmpClasses += getValueIfThere(theObject, 'floated');
+            tmpClasses += getValueIfTrue(theObject, ['basic','compact','fluid','right','labeled','circular']);
+            tmpClasses += getValueIfThere(theObject, ['color','size','floated']);
 
             if (tmpObject.toright === true) {
                 tmpClasses += ' right floated'
@@ -4969,14 +4958,7 @@ License: MIT
             if (tmpObject.icon && tmpObject.right) {
                 tmpHTML.push('&nbsp;&nbsp;<i class="' + tmpObject.icon + ' icon"></i>');
             }
-
             tmpHTML.push('</button>')
-
-            // tmpHTML = [];
-            //             tmpHTML.push('<button class="ui right labeled icon button">')
-            // tmpHTML.push('  <i class="right arrow icon"></i>')
-            // tmpHTML.push('  Next')
-            // tmpHTML.push('</button>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
 
@@ -4994,12 +4976,7 @@ License: MIT
             }
 
             var tmpHTML = [];
-            var tmpLevel = '';
-            //-- Using size now - remove level from code
-            //ToDo: 
-            // if (theObject.level) {
-            //     tmpLevel = theObject.level
-            // }
+           
             var tmpHidden = '';
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
@@ -5013,19 +4990,8 @@ License: MIT
             var tmpText = tmpObject.text || tmpObject.html || tmpObject.title || '';
 
             var tmpClasses = ''
-            tmpClasses += getValueIfTrue(theObject, 'inverted');
-            tmpClasses += getValueIfTrue(theObject, 'fitted');
-            tmpClasses += getValueIfTrue(theObject, 'hidden');
-            tmpClasses += getValueIfTrue(theObject, 'section');
-            tmpClasses += getValueIfTrue(theObject, 'clearing');
-
-
-
-
-
-            tmpClasses += getValueIfThere(theObject, 'color');
-            tmpClasses += getValueIfThere(theObject, 'attached');
-            tmpClasses += getValueIfThere(theObject, 'size');
+            tmpClasses += getValueIfTrue(theObject, ['inverted','fitted','hidden','section','clearing']);
+            tmpClasses += getValueIfThere(theObject, ['color','attached','size']);
 
             var tmpStarter = 'h' + tmpLevel;
             var tmpHoriz = '';
@@ -5053,7 +5019,6 @@ License: MIT
             tmpHTML.push('</' + tmpStarter + tmpLevel + '>')
 
             tmpHTML = tmpHTML.join('');
-            // tmpHTML = '<div class="ui divider clearing"></div>'
             return tmpHTML;
 
         },
@@ -5491,13 +5456,22 @@ License: MIT
     }
 
     me.getValueIfTrue = getValueIfTrue;
-    function getValueIfTrue(theObject, theParamName, theClassName) {
-        if (theObject[theParamName] === true) {
-            var tmpClassName = theClassName || theParamName;
-            return ' ' + tmpClassName + ''
+    function getValueIfTrue(theObject, theParamName) {
+        var tmpParams = theParamName;
+        var tmpRet = '';
+        if( isStr(tmpParams) ){
+            tmpParams = [tmpParams];
         }
-        return ''
+        for (var iPos = 0; iPos < tmpParams.length; iPos++) {
+            var tmpParamName = tmpParams[iPos];
+            if (theObject[tmpParamName] === true) {
+                var tmpClassName = tmpParamName;
+                tmpRet +=  (' ' + tmpClassName + '')
+            }
+        }
+        return tmpRet
     }
+
     me.getValueIfThere = getValueIfThere
     function getValueIfThere(theObject, theParamName) {
         if (isStr(theObject[theParamName])) {
