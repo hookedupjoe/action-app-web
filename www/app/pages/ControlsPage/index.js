@@ -111,6 +111,9 @@ License: MIT
                 ThisPage.detailsEditor.setFontSize(16);
                 ThisPage.detailsEditor.session.setMode("ace/mode/json");
                 ThisPage.detailsEditor.session.setTabSize(2);
+                
+                ThisPage.detailsEditor.session.selection.on('changeSelection', detailsEditorSelectionChange);
+
                 ThisPage.detailsEditor.setValue(ThisApp.json({
                     "Controls": [
                         "Loaded Dynamically",
@@ -134,6 +137,28 @@ License: MIT
     }
     //--- End lifecycle hooks
 
+    function detailsEditorSelectionChange(theEvent){
+        //console.log( 'detailsEditorSelectionChange', theEvent);
+        var tmpSelected = ThisPage.detailsEditor.getSelectedText();
+        if( tmpSelected ){
+            var tmpLen = tmpSelected.length;
+            
+            if( tmpLen > 3 && tmpLen < 200){
+                console.log( 'tmpLen', tmpLen);
+                var tmpItems = tmpSelected.split(':');
+                if (tmpItems.length == 2 ){
+                    tmpSelected = tmpSelected.replace(',', '');
+                    try {
+                        tmpSelected = ThisApp.json('{' + tmpSelected + '}');
+                        console.log( 'tmpSelected', tmpSelected);
+                    } catch (ex) {
+                        //---- not a valid selection
+                    }
+                }
+            }
+        }
+
+    }
     //=== Page Setup
     var index = {}
         , layoutResponsive = true

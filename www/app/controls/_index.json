@@ -7,6 +7,9 @@
     "showfor": {
       "title": "Show For Demo"
     },
+    "tabsonly": {
+      "title": "Just the Tabs"
+    },
     "cardsdemo": {
       "title": "Cards Demo"
     },    
