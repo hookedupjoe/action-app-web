@@ -4646,20 +4646,16 @@ License: MIT
         var tmpHTML = [];
         var tmpSpecs = theSpecs || {};
         var tmpItems = tmpSpecs.content || [];
-        var tmpControlName = theControlName || '';
+        var tmpControlName = theControlName || 'default';
         if (!(tmpItems && tmpItems.length)) {
             return '';
         }
-        var tmpClasses = ' segment basic slim ';
-         
-        if( tmpControlName ){
-            tmpControlName = ' name="' + tmpControlName + '"';
-        }
+
         tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj));
 
         tmpHTML = tmpHTML.join('');
         if (tmpHTML) {
-            tmpHTML = '<div class="ui form ' + tmpClasses + ' controls control "' + tmpControlName + ' >' + tmpHTML + '</div>';
+            tmpHTML = '<div class="ui segment basic form" controls control name="' + tmpControlName + '">' + tmpHTML + '</div>';
         }
         return tmpHTML;
     }
@@ -4823,8 +4819,8 @@ License: MIT
             tmpAttr += ' ' + theObject.attr + ' ';
         }
         
+        tmpAttr = tmpAttr + ' controls item ';
         if( tmpName ){
-            tmpAttr = tmpAttr + ' ctlitem ';
             tmpName = ' name="' + tmpName + '" ';
         }
         tmpRet += tmpAttr + tmpName;
@@ -5958,4 +5954,5 @@ License: MIT
 
 
 })(ActionAppCore, $);
+
 
