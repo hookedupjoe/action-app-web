@@ -1,30 +1,69 @@
-<div class="ui  form" controls="" control="" name="east">
-  <div controls="" tabs="" class="ui top attached tabular menu" style=""><a appuse="tablinks" group="east-pagetabs"
-      item="preview-control-tab" action="_app:showSubPage" class="item blue">Preview</a><a appuse="tablinks"
-      group="east-pagetabs" item="preview-details-tab" action="_app:showSubPage" class="item blue">Details</a><a
-      appuse="tablinks" group="east-pagetabs" item="preview-props-tab" action="_app:showSubPage"
-      class="item blue active">Properties</a>
-  </div>
-  <div class="ui slim blue segment  bottom attached">
-    <div controls="" tab="" appuse="cards" group="east-pagetabs" item="preview-control-tab"
-    class="hidden transition">
-    <div controls="" item="" name="preview-control" class="" spot="ctldesign:preview-control">
+<div pagespot="body-area">
+
+  <div class="ui segment basic">
+    
+    <a pageaction="sayHello" myname="Elliot" class="ui label">
+      <img class="ui right spaced avatar image" src="/images/avatar/small/elliot.jpg">
+      Elliot
+    </a>
+    <a  pageaction="sayHello" myname="Stevie" class="ui label">
+      <img src="/images/avatar/small/stevie.jpg">
+      Stevie
+    </a>
+
+    <h2 class="ui icon header">
+      <i class="settings icon"></i>
+      <div class="content">
+        Controls for site layout
+        <div class="sub header">Use .json to define the page layout instead of templates</div>
+      </div>
+    </h2>
+
+    <div class="ui list">
+      <div class="item">
+        <i class="map marker icon"></i>
+        <div class="content">
+          <a pageaction="sayHello" class="header">Extend Page Controls</a>
+          <div class="description">The control loade din the header been extended to do fun stuff. Click the link above
+            to say hello.</div>
+        </div>
+      </div>
+      <div class="item">
+        <i class="map marker icon"></i>
+        <div class="content">
+          <a pageaction="jumpToHobbies" class="header">Advanced Panels</a>
+          <div class="description">A full featured panel shown on the right can be interacted with easly. Click the
+            above link to jump to the hobbies field (it even opens the tab).</div>
+        </div>
+      </div>
+      <div class="item">
+        <i class="map marker icon"></i>
+        <div class="content">
+          <a pageaction="promptDemoForm" class="header">Popups made easy.</a>
+          <div class="description">Can easily use controls as popups with validation and advanced interaction defined in
+            the JSON. Try it using the link above.</div>
+        </div>
+      </div>
+      <div class="item">
+        <i class="map marker icon"></i>
+        <div class="content">
+          <div class="header">Custom Web Control</div>
+          <div class="description">The "hello" web control has been added for this page only, used on page controls.
+            Very simple example to see how to excend the base set of controls used in JSON markup.</div>
+        </div>
+      </div>
+
+
+      <div class="item">
+        <i class="map marker icon"></i>
+        <div class="content">
+          <a pageaction="gotoControlsPage" class="header">More with controls</a>
+          <div class="description">To go the Controls page to interact with and create controls on the fly.</div>
+        </div>
+      </div>
+
 
     </div>
-  </div>
-  <div controls="" tab="" appuse="cards" group="east-pagetabs" item="preview-details-tab"
-    >
-    <div controls="" item="" name="preview-details" class="" spot="ctldesign:preview-details">
-
-    </div>
-  </div>
-  <div controls="" tab="" appuse="cards" group="east-pagetabs" item="preview-props-tab"
-    >
-    <div controls="" item="" name="preview-props" class="" spot="ctldesign:preview-props">
-
-    </div>
-  </div>
-
   </div>
 
 </div>
