@@ -51,7 +51,7 @@ License: MIT
     //--- Customize default layout configuration
     //--- See http://layout.jquery-dev.com/documentation.cfm for details
     thisPageSpecs.layoutConfig = {
-        east__size: "50%"
+        east__size: "48%"
     }
 
 
