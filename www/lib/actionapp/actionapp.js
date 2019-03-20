@@ -4816,21 +4816,19 @@ License: MIT
         var tmpAttr = '';
         if (isObj(theObject.attr)) {
             for (var aName in theObject.attr) {
-                var tmpAttrVal = theObject.attr[aName]
+                var tmpAttrVal = theObject.attr[aName];
                 tmpAttr += ' ' + aName + '="' + tmpAttrVal + '"';
             }
         } else if (isStr(theObject.attr)) {
             tmpAttr += ' ' + theObject.attr + ' ';
         }
-        if (tmpAttr){
-            tmpAttr + ' controls item '
-        }
+        
 
         if( tmpName ){
-            tmpName = ' name="' + tmpName + '" '
+            tmpAttr = tmpAttr + ' controls item ';
+            tmpName = ' name="' + tmpName + '" ';
         }
         tmpRet += tmpAttr + tmpName;
-
 
         return tmpRet
 

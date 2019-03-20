@@ -7,6 +7,7 @@
 			"content": [
 				{
 					"ctl": "card",
+					"name": "card-matthew",
 					"attr": {
 						"pageaction": "runTest",
 						"testname": "matthew"
