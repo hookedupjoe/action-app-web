@@ -4650,7 +4650,8 @@ License: MIT
         if (!(tmpItems && tmpItems.length)) {
             return '';
         }
-
+        var tmpClasses = ' segment slim ';
+         
         if( tmpControlName ){
             tmpControlName = ' name="' + tmpControlName + '"';
         }
@@ -4658,7 +4659,7 @@ License: MIT
 
         tmpHTML = tmpHTML.join('');
         if (tmpHTML) {
-            tmpHTML = '<div class="ui form" controls control "' + tmpControlName + ' >' + tmpHTML + '</div>';
+            tmpHTML = '<div class="ui form ' + tmpClasses + ' controls control "' + tmpControlName + ' >' + tmpHTML + '</div>';
         }
         return tmpHTML;
     }

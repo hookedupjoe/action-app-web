@@ -4,6 +4,7 @@
 			"ctl":"cards",
 			"name": "west-cards",
 			"classes": "slim link",
+			"nopadding": true,
 			"content": [{
 				"ctl": "card",
 				"attr":{"pageaction": "runTest", "testname": "matthew"},
