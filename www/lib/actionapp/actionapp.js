@@ -4700,7 +4700,8 @@ License: MIT
                 if (tmpItem.color) {
                     tmpColor = tmpItem.color;
                 }
-
+                
+                tmpTabsHTML.push('<div class=" ui bottom attached slim ' + tmpColor + ' segment " >');
                 for (var iTab = 0; iTab < tmpItem.tabs.length; iTab++) {
                     var tmpTab = tmpItem.tabs[iTab];
                     var tmpHidden = '';
@@ -4710,19 +4711,19 @@ License: MIT
                     } else {
                         tmpActive = ' active ';
                     }
-                    tmpTabsHTML.push('<div controls tab appuse="cards" group="' + tmpTabName + '" item="' + tmpTab.name + '" class=" ui bottom attached slim ' + tmpColor + ' segment ' + tmpHidden + '">');
+                    tmpTabsHTML.push('<div controls tab appuse="cards" group="' + tmpTabName + '" item="' + tmpTab.name + '" class="' + tmpHidden + '">');
                     tmpTabsHTML.push(getContentHTML(theControlName, tmpTab.content, theControlObj))
                     tmpTabsHTML.push('</div>');
 
                     tmpTabs.push('<a appuse="tablinks" group="' + tmpTabName + '" item="' + tmpTab.name + '" action="_app:showSubPage" class="item ' + tmpColor + tmpActive + '">' + tmpTab.label + '</a>')
 
                 }
+                tmpTabsHTML.push('</div>');
 
 
                 tmpTabs = tmpTabs.join('');
                 if (tmpTabs) {
                     tmpTabs = '<div controls tabs class="ui top attached tabular menu" style="">' + tmpTabs + '</div>';
-
                 }
                 tmpHTML.push(tmpTabs);
                 tmpHTML.push(tmpTabsHTML.join(''));
@@ -4738,13 +4739,16 @@ License: MIT
     }
 
     //--- Internal use - creates index of all fields and items with a name;
-    me._loadContentIndex = function (theItems, theOptionalIndex) {
+    me._loadContentIndex = function (theItems, theOptionalIndex, theOptionalOutline) {
         var tmpIndex = theOptionalIndex || {
             fieldsList: [],
             itemsList: [],
             fields: {},
-            items: {}
+            items: {},
+            outline: []
         }
+        var tmpOL = theOptionalOutline || tmpIndex.outline;
+
         var tmpItems = theItems || [];
         if (!(tmpItems && tmpItems.length)) {
             return tmpIndex;
@@ -4753,6 +4757,13 @@ License: MIT
         for (var iPos = 0; iPos < tmpItems.length; iPos++) {
             var tmpItem = tmpItems[iPos];
             var tmpCtl = tmpItem.ctl || 'field';
+// console.log( 'tmpItem', tmpItem);
+            var tmpThisObj = {
+                ctl: tmpCtl, 
+                name: tmpItem.name || ''
+            }
+
+            tmpOL.push(tmpThisObj)
 
             var tmpType = me.getControlType(tmpCtl);
 
@@ -4784,13 +4795,16 @@ License: MIT
             }
 
             if (tmpItem.items) {
-                me._loadContentIndex(tmpItem.items, tmpIndex);
+                tmpThisObj.children = [];
+                me._loadContentIndex(tmpItem.items, tmpIndex, tmpThisObj.children);
             }
             if (tmpItem.tabs) {
-                me._loadContentIndex(tmpItem.tabs, tmpIndex);
+                tmpThisObj.children = [];
+                me._loadContentIndex(tmpItem.tabs, tmpIndex, tmpThisObj.children);
             }
             if (tmpItem.content) {
-                me._loadContentIndex(tmpItem.content, tmpIndex);
+                tmpThisObj.children = [];
+                me._loadContentIndex(tmpItem.content, tmpIndex, tmpThisObj.children);
             }
         }
 
