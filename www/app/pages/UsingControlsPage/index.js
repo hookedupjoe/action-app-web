@@ -239,7 +239,7 @@ License: MIT
 
     ThisPage.promptDemoForm = promptDemoForm;
     function promptDemoForm(){
-        ThisPage.controlIndex.frmShowfor.prompt().then(function (theReply, theControl) {
+        ThisPage.controlIndex.demoFormCtl.prompt().then(function (theReply, theControl) {
             if( theReply == false){
                 return false;
             }
