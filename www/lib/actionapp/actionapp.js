@@ -4650,7 +4650,7 @@ License: MIT
         if (!(tmpItems && tmpItems.length)) {
             return '';
         }
-        var tmpClasses = ' segment slim ';
+        var tmpClasses = ' segment basic slim ';
          
         if( tmpControlName ){
             tmpControlName = ' name="' + tmpControlName + '"';
@@ -4823,9 +4823,8 @@ License: MIT
             tmpAttr += ' ' + theObject.attr + ' ';
         }
         
-
         if( tmpName ){
-            tmpAttr = tmpAttr + ' controls item ';
+            tmpAttr = tmpAttr + ' ctlitem ';
             tmpName = ' name="' + tmpName + '" ';
         }
         tmpRet += tmpAttr + tmpName;
