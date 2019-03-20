@@ -4926,7 +4926,29 @@ License: MIT
         type: "boolean",
         notes: "Adds a border to make it look higher than others"
     })
+
     
+    //--- Field related ...
+    me.catalogInfo.add('fieldlabel', {
+        name: "label",
+        label: "Field Label",
+        type: "string",
+        notes: "Label to show"
+    })
+    me.catalogInfo.add('fieldlist', {
+        name: "list",
+        label: "List of values to select from",
+        type: "string",
+        notes: "String or array really, 'One|one,Two|two' can be used. "
+    })
+    
+    me.catalogInfo.add('fieldsize', {
+        name: "size",
+        label: "Semantic Field Size Value",
+        type: "number",
+        notes: "From 1 to 16 using Fields / Form grid"
+    })
+
 
 
     me.getCommonControlProperties = getCommonControlProperties;
@@ -5423,6 +5445,13 @@ License: MIT
             var tmpTitle = 'Page Spot Control';
             var tmpNotes = 'Used to create a spot on a page'
             
+            tmpProps.spotname = {
+                name: "spotname",
+                label: "Spot Name",
+                type: "string",
+                notes: "A place to put stuff using ThisPage.loadPageSpot"
+            }
+
             var tmpRet = {name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
@@ -5506,6 +5535,15 @@ License: MIT
 
     me.ControlField = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
+        getInfo: function(theControlName){
+            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Text Field Control",
+                category: "Common Fields",
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
 
             var tmpObject = theObject || {};
@@ -5550,6 +5588,15 @@ License: MIT
 
     me.ControlDropDown = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
+        getInfo: function(theControlName){
+            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Dropdown Control",
+                category: "Common Fields",
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
 
             var tmpObject = theObject || {};
@@ -5645,6 +5692,15 @@ License: MIT
 
     me.ControlCheckboxList = {
         getHTML: getHTMLforCheckboxList,
+        getInfo: function(theControlName){
+            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Checkbox List Control",
+                category: "Common Fields",
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
         setFieldValue: function (theFieldEl, theValue) {
             var tmpValues = theValue || '';
             if (isStr(tmpValues)) {
@@ -5667,6 +5723,15 @@ License: MIT
 
     me.ControlRadioList = {
         getHTML: getHTMLforCheckboxList,
+        getInfo: function(theControlName){
+            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Radio List Control",
+                category: "Common Fields",
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
         setFieldValue: function (theFieldEl, theValue) {
             if (theFieldEl.length) {
                 for (var iPos = 0; iPos < theFieldEl.length; iPos++) {
@@ -5776,6 +5841,15 @@ License: MIT
 
     me.ControlTextArea = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
+        getInfo: function(theControlName){
+            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic TextArea Control",
+                category: "Common Fields",
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
 
             var tmpObject = theObject || {};
@@ -5824,12 +5898,69 @@ License: MIT
 
 
     me.ControlFullCard = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Image Control",
+                category: "Common Composite Items",
+                properties: tmpProps
+            };
+
+            tmpProps.topHeader = {
+                name: "topHeader",
+                label: "Top Header Value",
+                type: "string",
+                notes: "Header on the top of the card"
+            }
+            tmpProps.imageSrc = {
+                name: "imageSrc",
+                label: "Source for image",
+                type: "string",
+                notes: "Leave blank to not include an image"
+            }
+            tmpProps.imageSrc = {
+                name: "imageSrc",
+                label: "Source for image",
+                type: "string",
+                notes: "Leave blank to not include an image"
+            }
+            tmpProps.header = {
+                name: "header",
+                label: "Header",
+                type: "string",
+                notes: "Larger text under the image area"
+            }
+            tmpProps.meta = {
+                name: "meta",
+                label: "Meta text",
+                type: "string",
+                notes: "Italic text between the header and the description"
+            }
+            tmpProps.description = {
+                name: "description",
+                label: "Description",
+                type: "string",
+                notes: "Longer text that goes in smaller text"
+            }
+            tmpProps.extraText = {
+                name: "extraText",
+                label: "Extra text",
+                type: "string",
+                notes: "Extra text on the bottom"
+            }
+            tmpProps.extraTextRight = {
+                name: "extraTextRight",
+                label: "Extra text right",
+                type: "string",
+                notes: "Extra text on the bottom, right justified"
+            }
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
             var tmpNewContent = [];
-
-
 
             if (tmpObject.topHeader && isStr(tmpObject.topHeader)) {
 
@@ -5924,12 +6055,6 @@ License: MIT
         isField: false
 
     }
-
-
-
-
-
-
 
     me.getControlType = function (theControlName) {
         var tmpControl = me.catalog.get(theControlName)
