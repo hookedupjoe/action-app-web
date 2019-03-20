@@ -4646,16 +4646,19 @@ License: MIT
         var tmpHTML = [];
         var tmpSpecs = theSpecs || {};
         var tmpItems = tmpSpecs.content || [];
-        var tmpControlName = theControlName || 'default';
+        var tmpControlName = theControlName || '';
         if (!(tmpItems && tmpItems.length)) {
             return '';
         }
 
+        if( tmpControlName ){
+            tmpControlName = ' name="' + tmpControlName + '"';
+        }
         tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj));
 
         tmpHTML = tmpHTML.join('');
         if (tmpHTML) {
-            tmpHTML = '<div class="ui segment basic form" controls control name="' + tmpControlName + '">' + tmpHTML + '</div>';
+            tmpHTML = '<div class="ui form" controls control "' + tmpControlName + ' >' + tmpHTML + '</div>';
         }
         return tmpHTML;
     }
@@ -4799,13 +4802,15 @@ License: MIT
         return (typeof (theItem) == 'object')
     }
 
+    //--- Returns 'controls item and name="youritemname" ' if your item has a name
+    //---   this is so you can get any item that has a name in the contorl, 
+    //...   but not include markup when not needed
+    //---   This also gets any attr values and includes them since that is common to items
     me.getItemAttrString = getItemAttrString
     function getItemAttrString(theObject) {
         var tmpRet = '';
         if (!(theObject)) { return '' };
         var tmpName = theObject.name || '';
-        if (!(tmpName)) { return '' };
-
 
         var tmpAttr = '';
         if (isObj(theObject.attr)) {
@@ -4813,9 +4818,17 @@ License: MIT
                 var tmpAttrVal = theObject.attr[aName]
                 tmpAttr += ' ' + aName + '="' + tmpAttrVal + '"';
             }
+        } else if (isStr(theObject.attr)) {
+            tmpAttr += ' ' + theObject.attr + ' ';
+        }
+        if (tmpAttr){
+            tmpAttr + ' controls item '
         }
 
-        tmpRet += tmpAttr + ' controls item name="' + tmpName + '"';
+        if( tmpName ){
+            tmpName = ' name="' + tmpName + '" '
+        }
+        tmpRet += tmpAttr + tmpName;
 
 
         return tmpRet
@@ -4873,6 +4886,31 @@ License: MIT
     //--- =========== =========== =========== =========== =========== ===========
 
 
+    me.ControlImage = {
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+
+            var tmpHTML = [];
+            
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpClasses = ''
+
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="image ' + tmpClasses + ' " style="' + tmpHidden + '">')
+            if (tmpObject.src) {
+                tmpHTML.push('<img src="' + tmpObject.src + '" />')
+            }
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
     me.ControlMessage = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
         getHTML: function (theControlName, theObject, theControlObj) {
@@ -4888,6 +4926,7 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpClasses = ''
+            console.log( 'theObject.color', theObject.color);
 
             tmpClasses += getValueIfTrue(theObject, ['compact','floating']);
             tmpClasses += getValueIfThere(theObject, ['color','attached','size']);
@@ -5026,7 +5065,8 @@ License: MIT
     }
 
     
-    me.ControlSegments = {
+   
+    me.ControlPanel = {
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
@@ -5034,9 +5074,10 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
-            var tmpControlClass = theControlName;
-            var tmpClasses = ''
-            tmpClasses += getValueIfTrue(theObject, ['fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled','vertical','loading','inverted','bottom','top','attached','padded','slim','compact','secondary','tertiary','circular','clearing','right','left','center','aligned','basic']);
+            var tmpClass = tmpObject.class || '';
+            var tmpControlClass = tmpClass || theControlName;
+            var tmpClasses = tmpObject.classes || '';
+            tmpClasses += getValueIfTrue(theObject, ['link','fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled','vertical','loading','inverted','bottom','top','attached','padded','slim','compact','secondary','tertiary','circular','clearing','right','left','center','aligned','basic']);
             tmpClasses += getValueIfThere(theObject, ['color']);
             tmpHTML = [];
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
@@ -5052,8 +5093,8 @@ License: MIT
         },
         isField: false
     }
-
-    me.ControlSegment = {
+    
+    me.ControlDOM = {
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
@@ -5061,24 +5102,67 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
-            var tmpControlClass = 'segment';
-            var tmpClasses = ''
-            tmpClasses += getValueIfTrue(theObject, ['fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled','vertical','loading','inverted','bottom','top','attached','padded','slim','compact','secondary','tertiary','circular','clearing','right','left','center','aligned','basic']);
-            tmpClasses += getValueIfThere(theObject, ['color']);
+            var tmpControlElem = theControlName || 'div';
+            var tmpClasses = tmpObject.classes || '';
             tmpHTML = [];
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+            tmpHTML.push('<' + tmpControlElem + ' ' + getItemAttrString(theObject) + ' class=" ' + tmpClasses + '" style="' + tmpHidden + '">')
+
+            tmpHTML.push(tmpObject.text || tmpObject.html || '')
 
             var tmpItems = tmpObject.items || tmpObject.content || [];
-            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+            if( tmpItems ){
+                tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+            }
 
-            tmpHTML.push('</div>')
-
+            tmpHTML.push('</' + tmpControlElem + '>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
 
         },
         isField: false
     }
+
+    
+    me.ControlElement = {
+        getHTML: function (theControlName, theObject, theControlObj, theIsUI) {
+            var tmpObject = theObject || {};
+            var tmpHTML = [];
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpClass = tmpObject.class || '';
+            var tmpControlClass = tmpClass || theControlName;
+            var tmpClasses = tmpObject.classes || '';
+            
+            var tmpUI = theIsUI ? 'ui ' : '';
+
+            tmpHTML = [];
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpUI + ' ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+
+            tmpHTML.push(tmpObject.text || tmpObject.html || '')
+
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            if( tmpItems ){
+                tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+            }
+            
+            tmpHTML.push('</div>')
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
+    //--- UI Elements
+    me.ControlElementUI = {
+        getHTML: function (theControlName, theObject, theControlObj) {
+            return me.ControlElement.getHTML(theControlName, theObject, theControlObj, true)
+        },
+        isField: false
+    }
+
 
     me.ControlFieldRow = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
@@ -5529,10 +5613,19 @@ License: MIT
 
     me.getValueIfThere = getValueIfThere
     function getValueIfThere(theObject, theParamName) {
-        if (isStr(theObject[theParamName])) {
-            return (' ' + theObject[theParamName] + '').toLowerCase();
+
+        var tmpParams = theParamName;
+        var tmpRet = '';
+        if( isStr(tmpParams) ){
+            tmpParams = [tmpParams];
         }
-        return '';
+        for (var iPos = 0; iPos < tmpParams.length; iPos++) {
+            var tmpParamName = tmpParams[iPos];
+            if (isStr(theObject[tmpParamName])) {
+                tmpRet += (' ' + theObject[tmpParamName] + '').toLowerCase();
+            }
+        }
+        return tmpRet
     }
 
     //---- Functions to extend global pallet
@@ -5562,9 +5655,19 @@ License: MIT
     me.catalog.add('message', me.ControlMessage);
     me.catalog.add('button', me.ControlButton);
     me.catalog.add('pagespot',me.ControlPageSpot);
-    me.catalog.add('segment',me.ControlSegments);
-    me.catalog.add('segments',me.ControlSegments);
-
+    me.catalog.add('segment',me.ControlPanel);
+    me.catalog.add('segments',me.ControlPanel);
+    me.catalog.add('panel',me.ControlPanel);
+    me.catalog.add('image',me.ControlImage);
+    me.catalog.add('element',me.ControlElement);
+    me.catalog.add('card',me.ControlElement);
+    me.catalog.add('cards',me.ControlElementUI);
+    me.catalog.add('content',me.ControlElement);
+    me.catalog.add('header',me.ControlElement);
+    me.catalog.add('i',me.ControlDOM);
+    me.catalog.add('span',me.ControlDOM);
+    me.catalog.add('div',me.ControlDOM);
+    
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 
     //--- Common Actions

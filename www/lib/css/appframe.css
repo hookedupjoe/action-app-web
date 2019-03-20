@@ -125,19 +125,21 @@ cursor: not-allowed !important;
   margin-bottom:2px !important;
 }
 .ui.segment.slim {
-  padding:4px;  
+  padding:6px;  
 }
 
 .ui.cards.slim >.card{
-  padding:4px;
-  margin:4px;
+  padding:6px;
+  margin:6px;
 }
 
 .ui.piled.segment, .ui.piled.segments {
   margin: 5px 0;
 }
 
-
+.slim .ui.message {
+  margin: 4px 0;
+}
 .ui.segment[group] {
   padding-top:8px;
 }
