@@ -3,8 +3,13 @@
 		{
 			"ctl": "cards",
 			"name": "west-cards",
-			"classes": "slim link",
+			"slim": true,
+			"link": true,
 			"content": [
+				{
+					"ctl": "cardfull",
+					"name": "card-matthew-full"
+				},
 				{
 					"ctl": "card",
 					"name": "card-matthew",

@@ -5062,7 +5062,73 @@ License: MIT
         isField: false
     }
 
-    
+    me.ControlFullCard = {
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};            
+            var tmpHTML = [];
+            var tmpBase = {
+                "ctl": "card",
+                "content": [
+                    {
+                        "ctl": "image",
+                        "src": "/images/avatar2/large/matthew.png"
+                    },
+                    {
+                        "ctl": "content",
+                        "content": [
+                            {
+                                "ctl": "header",
+                                "text": "Matt Giampietro"
+                            },
+                            {
+                                "ctl": "meta",
+                                "text": "<a>Friends</a>"
+                            },
+                            {
+                                "ctl": "description",
+                                "text": "Matthew is an interior designer living in New York."
+                            }
+                        ]
+                    },
+                    {
+                        "ctl": "extra",
+                        "content": [
+                            {
+                                "ctl": "span",
+                                "classes": "right floated",
+                                "text": "Joined in 2013"
+                            },
+                            {
+                                "ctl": "span",
+                                "text": "<i class=\"user icon\"></i> 75 Friends"
+                            }
+                        ]
+                    }
+                ]
+            }
+
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            //var tmpClass = tmpObject.class || '';
+            var tmpControlClass = 'card'; //tmpClass || theControlName;
+            var tmpClasses = tmpObject.classes || '';
+            tmpHTML = [];
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+
+            var tmpMyContent = tmpBase.content;
+            tmpHTML.push(getContentHTML(theControlName, tmpMyContent, theControlObj))
+
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+        
+    }
    
     me.ControlPanel = {
         getHTML: function (theControlName, theObject, theControlObj) {
@@ -5076,7 +5142,7 @@ License: MIT
             var tmpControlClass = tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
             tmpClasses += getValueIfTrue(theObject, ['link','fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled','vertical','loading','inverted','bottom','top','attached','padded','slim','compact','secondary','tertiary','circular','clearing','right','left','center','aligned','basic']);
-            tmpClasses += getValueIfThere(theObject, ['color']);
+            tmpClasses += getValueIfThere(theObject, ['color','icon','size']);
             tmpHTML = [];
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
 
@@ -5659,7 +5725,7 @@ License: MIT
     me.catalog.add('image',me.ControlImage);
     me.catalog.add('element',me.ControlElement);
     me.catalog.add('card',me.ControlElement);
-    me.catalog.add('cards',me.ControlElementUI);
+    me.catalog.add('cards',me.ControlPanel);
     me.catalog.add('content',me.ControlElement);
     me.catalog.add('header',me.ControlElement);
     me.catalog.add('meta',me.ControlElement);
@@ -5669,6 +5735,10 @@ License: MIT
     me.catalog.add('i',me.ControlDOM);
     me.catalog.add('span',me.ControlDOM);
     me.catalog.add('div',me.ControlDOM);
+    
+
+    //=== Wrapper - Higher Level Controls ..
+    me.catalog.add('cardfull',me.ControlFullCard);
     
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 
