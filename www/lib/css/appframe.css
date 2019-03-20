@@ -124,9 +124,10 @@ cursor: not-allowed !important;
   margin-top:2px !important;
   margin-bottom:2px !important;
 }
-/* .ui.segment.slim {
-  padding:6px;  
-} */
+.ui.segment.slim {
+  margin:6px;
+  padding:6px;
+}
 
 .ui.cards.slim >.card{
   padding:6px;
