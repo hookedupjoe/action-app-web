@@ -1,4 +1,7 @@
 {
+	"options": {
+		"padding": false
+	},
 	"content": [
 		{
 			"ctl": "tabs",

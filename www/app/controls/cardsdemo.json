@@ -1,6 +1,47 @@
 {
 	"content": [
 		{
+			"ctl": "fieldrow",
+			"inline": true,
+			"name": "name-row",
+			"items": [
+				{
+					"ctl": "button",
+					"toright": true,
+					"color": "blue",
+					"fluid": true,
+					"size": "large",
+					"onClick": {
+						"run": "publish",
+						"event": "blueButton",
+						"validate": true
+					},
+					"labeled": true,
+					"right": true,
+					"icon": "arrow right",
+					"name": "btn-blue",
+					"text": "Publish Blue Hit"
+				},
+				{
+					"ctl": "button",
+					"toright": true,
+					"color": "green",
+					"fluid": true,
+					"size": "large",
+					"onClick": {
+						"run": "publish",
+						"event": "greenButton",
+						"validate": true
+					},
+					"labeled": true,
+					"right": true,
+					"icon": "arrow right",
+					"name": "btn-green",
+					"text": "Publish Green Hit"
+				}
+			]
+		},
+		{
 			"ctl": "cards",
 			"name": "west-cards",
 			"slim": true,

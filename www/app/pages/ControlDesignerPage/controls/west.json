@@ -1,8 +1,43 @@
 {
+	"options": {
+		"padding": false
+	},
 	"content": [
 		{
-			"ctl": "pagespot",
-			"name": "west-area"
+			"ctl": "tabs",
+			"name": "pagetabs",
+			"tabs": [
+				{
+					"label": "Controls",
+					"name": "control-list-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "button",
+							"color": "purple",
+							"size": "large",
+							"name": "btn-runtest",
+							"pageaction": "runTest",
+							"text": "Run Test"
+						},
+						{
+							"ctl": "pagespot",
+							"name": "control-list"
+						}
+					]
+				},
+				{
+					"label": "Loaded",
+					"name": "control-loaded-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "pagespot",
+							"name": "control-loaded"
+						}
+					]
+				}
+			]
 		}
 	]
 }

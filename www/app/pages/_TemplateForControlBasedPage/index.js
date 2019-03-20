@@ -27,6 +27,10 @@ License: MIT
         //-- Page to lookup : name to call it when pulling
         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
         templateMap: {
+            // "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
+            // "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
+            // "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
+            // "page-footer.html": thisPageSpecs.pageNamespace + ":page-footer"
         }
     }
 
@@ -61,6 +65,10 @@ License: MIT
             "west": { partname: "west", control: "westCtl" }
         },
         templates: {
+            // "east": thisPageSpecs.pageNamespace + ":" + "page-east",
+            // "north": thisPageSpecs.pageNamespace + ":" + "page-header",
+            // "center": thisPageSpecs.pageNamespace + ":" + "page-body",
+            // "west": thisPageSpecs.pageNamespace + ":" + "page-west"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,

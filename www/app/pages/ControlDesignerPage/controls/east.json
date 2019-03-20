@@ -1,8 +1,46 @@
 {
+	"options": {
+		"padding": false
+	},
 	"content": [
 		{
-			"ctl": "pagespot",
-			"name": "east-area"
+			"ctl": "tabs",
+			"name": "pagetabs",
+			"tabs": [
+				{
+					"label": "Preview",
+					"name": "preview-control-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "pagespot",
+							"name": "preview-control"
+						}
+					]
+				},
+				{
+					"label": "Details",
+					"name": "preview-details-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "pagespot",
+							"name": "preview-details"
+						}
+					]
+				},
+				{
+					"label": "Properties",
+					"name": "preview-props-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "pagespot",
+							"name": "preview-props"
+						}
+					]
+				}
+			]
 		}
 	]
 }

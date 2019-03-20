@@ -72,8 +72,8 @@ License: MIT
     //--- Customize default layout configuration
     //--- See http://layout.jquery-dev.com/documentation.cfm for details
     thisPageSpecs.layoutConfig = {
-        west__size: "290"
-        , east__size: "290"
+        west__size: "20%"
+        , east__size: "40%"
     }
 
 
@@ -104,34 +104,13 @@ License: MIT
     *     that are needed even if the page was not activated yet
     */
     ThisPage._onFirstActivate = function (theApp) {
-
-
-        //--- Add Custom Web Control BEFORE doign the initOnFirstLoad so your controls are
-        //    ... available to be loaded when controls are loaded
-
-        //--- Add new page specific HTML generator        
-   
-
-
-        ///---- PAGE WEB CONTROLS
-
-
-
-
-
-        ///====== ====== EMD WEB CTL
-
-
-
-
-
         //--- This tells the page to layout the page, load templates and controls, et
         ThisPage.initOnFirstLoad().then(
             function () {
                 //--- Now your done - READY to do stuff the first time on your page
+                ThisPage.loadPageSpot('header-area', 'Welcome');
 
-
-
+                
 
                 //--- Do special stuff on page load here
                 //--- Then optionally call the stuff that will happen every time 
@@ -167,7 +146,12 @@ License: MIT
     ThisPage.runTest = runTest;
     function runTest(theParams, theTarget){
         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['testname'])
-        alert('test ' + (tmpParams.testname || ''))
+        //alert('test ' + (tmpParams.testname || ''))
+
+        var tmpPreviewArea = ThisPage.part.east;
+        ThisPage.loadPageSpot("preview-details", "Hello World Again");
+        tmpPreviewArea.gotoItem('preview-details')
+
     };
     
 
