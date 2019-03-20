@@ -124,18 +124,13 @@ cursor: not-allowed !important;
   margin-top:2px !important;
   margin-bottom:2px !important;
 }
-.ui.segment.slim {
+/* .ui.segment.slim {
   padding:6px;  
-}
+} */
 
 .ui.cards.slim >.card{
   padding:6px;
   margin:6px;
-  margin-bottom:10px;
-}
-
-.ui.header:first-child {
-  margin-top: 4px;
 }
 
 .ui.piled.segment, .ui.piled.segments {

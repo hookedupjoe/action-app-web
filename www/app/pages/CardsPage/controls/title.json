@@ -1,0 +1,11 @@
+{
+	"content": [
+		{
+			"ctl": "title",
+			"size": "large",
+			"icon": "user",
+			"name": "title",
+			"text": "Demo Page - Playing with cards"
+		}
+	]
+}
