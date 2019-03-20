@@ -6,17 +6,40 @@
 			"classes": "slim link",
 			"content": [{
 				"ctl": "card",
+				"attr":{"pageaction": "runTest", "testname": "matthew"},
 				"content": [
 					{
 						"ctl": "image",
 						"src": "/images/avatar2/large/matthew.png"
 					},
 					{
-						"ctl": "message",
-						"name": "javascript",
-						"title": "Javascript",
-						"text": "There is alot you can know about java script, like it is all one word.",
-						"tabname": "javascript"
+						"ctl": "content",
+						"content": [
+							{"ctl": "header",
+							"text": "Matt Giampietro"},
+							{
+								"ctl": "element",
+								"classes": "meta",
+								"text": "<a>Friends</a>"
+							},
+							{
+								"ctl": "element",
+								"classes": "description",
+								"text": "Matthew is an interior designer living in New York."
+							}
+						]
+					},
+					{
+						"ctl": "content",
+						"classes": "extra",
+						"content": [
+							{"ctl": "span",
+								"classes": "right floated",
+							"text": "Joined in 2013"},
+							{"ctl": "span",
+								
+							"text": "<i class=\"user icon\"></i> 75 Friends"}
+						]
 					}
 				]
 			}]

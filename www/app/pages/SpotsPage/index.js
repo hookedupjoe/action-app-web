@@ -273,5 +273,11 @@ License: MIT
         showHello({ 'myname': "Action Jackson" })
     };
 
+    ThisPage.runTest = runTest;
+    function runTest(theParams, theTarget){
+        var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['testname'])
+        alert('test ' + (tmpParams.testname || ''))
+    };
+    
 
 })(ActionAppCore, $);
