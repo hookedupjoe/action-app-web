@@ -134,6 +134,10 @@ cursor: not-allowed !important;
   margin-bottom:10px;
 }
 
+.ui.header:first-child {
+  margin-top: 4px;
+}
+
 .ui.piled.segment, .ui.piled.segments {
   margin: 5px 0;
 }
