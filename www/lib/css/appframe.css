@@ -131,6 +131,7 @@ cursor: not-allowed !important;
 .ui.cards.slim >.card{
   padding:6px;
   margin:6px;
+  margin-bottom:10px;
 }
 
 .ui.piled.segment, .ui.piled.segments {

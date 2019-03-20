@@ -5066,45 +5066,80 @@ License: MIT
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};            
             var tmpHTML = [];
-            var tmpBase = {
-                "ctl": "card",
-                "content": [
-                    {
-                        "ctl": "image",
-                        "src": "/images/avatar2/large/matthew.png"
-                    },
-                    {
-                        "ctl": "content",
-                        "content": [
-                            {
-                                "ctl": "header",
-                                "text": "Matt Giampietro"
-                            },
-                            {
-                                "ctl": "meta",
-                                "text": "<a>Friends</a>"
-                            },
-                            {
-                                "ctl": "description",
-                                "text": "Matthew is an interior designer living in New York."
-                            }
-                        ]
-                    },
-                    {
-                        "ctl": "extra",
-                        "content": [
-                            {
-                                "ctl": "span",
-                                "classes": "right floated",
-                                "text": "Joined in 2013"
-                            },
-                            {
-                                "ctl": "span",
-                                "text": "<i class=\"user icon\"></i> 75 Friends"
-                            }
-                        ]
-                    }
-                ]
+            var tmpNewContent = [];
+
+            
+
+            if( tmpObject.topHeader && isStr(tmpObject.topHeader) ){
+
+                tmpNewContent.push( {
+                    "ctl": "content",
+                    "content": [
+                        {
+                            "ctl": "header",
+                            "text": tmpObject.topHeader || ''
+                        }
+                    ]
+                })
+            }
+            if( tmpObject.imageSrc && isStr(tmpObject.imageSrc) ){
+                tmpNewContent.push({
+                    "ctl": "image",
+                    "src": tmpObject.imageSrc
+                })
+            }
+            var tmpHasFields = tmpObject.header || tmpObject.meta || tmpObject.description;
+            if( tmpHasFields ){
+                var tmpContent = {
+                    "ctl": "content",
+                    "content": []
+                }
+
+                if( tmpObject.header ){
+                    tmpContent.content.push({
+                        "ctl": "header",
+                        "text": tmpObject.header
+                    })
+                }
+                if( tmpObject.meta ){
+                    tmpContent.content.push({
+                        "ctl": "meta",
+                        "text": tmpObject.meta
+                    })
+                }
+                if( tmpObject.description ){
+                    tmpContent.content.push({
+                        "ctl": "description",
+                        "text": tmpObject.description
+                    })
+                }
+                tmpNewContent.push(tmpContent);
+
+            }
+
+            tmpHasFields = tmpObject.extraText || tmpObject.extraTextRight;
+            if( tmpHasFields ){
+                var tmpContent = {
+                    "ctl": "extra",
+                    "content": []
+                }
+
+                if( tmpObject.extraTextRight ){
+                    tmpContent.content.push({
+                        "ctl": "span",
+                        "classes": "right floated",
+                        "text": tmpObject.extraTextRight
+                    })
+                }
+                if( tmpObject.extraText ){
+                    tmpContent.content.push({
+                        "ctl": "span",
+                        "text": tmpObject.extraText
+                    })
+                }
+                
+                tmpNewContent.push(tmpContent);
+
             }
 
             var tmpHidden = '';
@@ -5115,10 +5150,9 @@ License: MIT
             var tmpControlClass = 'card'; //tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
             tmpHTML = [];
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+            tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
 
-            var tmpMyContent = tmpBase.content;
-            tmpHTML.push(getContentHTML(theControlName, tmpMyContent, theControlObj))
+            tmpHTML.push(getContentHTML(theControlName, tmpNewContent, theControlObj))
 
             tmpHTML.push('</div>')
 

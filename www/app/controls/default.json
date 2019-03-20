@@ -1,73 +1,158 @@
 {
 	"content": [
 		{
-			"ctl": "title",
-			"size": "large",
-			"name": "title",
-			"text": "Test Control"
-		},
-		{
-			"ctl": "button",
-			"size": "large",
-			"pageaction": "runTest",
-			"labeled": true,
-			"basic": true,
-			"right": true,
-			"attr" : {
-				"param1":"value1",
-				"param2":"value2"
-			},
-			"icon": "arrow right",
-			"name": "btn-test-01",
-			"text": "RunTest"
-		},
-		{
-			"ctl": "button",
-			"color":"blue",
-			"size": "large",
-			"pageaction": "runTest2",
-			"basic": true,
-			"name": "btn-test-02",
-			"text": "RunTest2"
-		},
-		{
-			"ctl": "divider",
-			"color": "blue",
-			"size": "medium", 
-			"text": "Welcome",
-			"clearing": true
-		},{
-			"ctl": "fieldrow",
-			"name": "name-row",
-			"items": [
+			"ctl": "cards",
+			"name": "west-cards",
+			"slim": true,
+			"link": true,
+			"content": [
 				{
-					"name": "first",
-					"label": "First Name",
-					"note": "Using a nick name is fine",
-					"req": true
+					"ctl": "cardfull"
+					,"classes":"orange raised tall"
+					,"attr": {
+						"pageaction": "runTest",
+						"testname": "matthew-full"
+					}
+					,"name": "card-matthew-full"
+					,"header":"Matt Giampietro"
+					,"imageSrc": "/images/avatar2/large/matthew.png"
+					,"meta": "<a>Friends</a>"
+					,"description": "Matthew is an interior designer living in New York."
+					,"extraText": "<i class=\"user icon\"></i> 75 Friends"
+					,"extraTextRight": "Joined in 2013"
 				},
 				{
-					"name": "last",
-					"label": "Last Name",
-					"req": true
-				}
-			]
-		},
-		{
-			"ctl": "fieldrow",
-			"label": "Badge",
-			"name": "badge-row",
-			"req": true,
-			"items": [
-				{
-					"placeholder": "First Name",
-					"name": "badgefirst",
-					"req": true
+					"ctl": "card",
+					"name": "card-matthew",
+					"attr": {
+						"pageaction": "runTest",
+						"testname": "matthew"
+					},
+					"content": [
+						{
+							"ctl": "image",
+							"src": "/images/avatar2/large/matthew.png"
+						},
+						{
+							"ctl": "content",
+							"content": [
+								{
+									"ctl": "header",
+									"text": "Matt Giampietro"
+								},
+								{
+									"ctl": "meta",
+									"text": "<a>Friends</a>"
+								},
+								{
+									"ctl": "description",
+									"text": "Matthew is an interior designer living in New York."
+								}
+							]
+						},
+						{
+							"ctl": "extra",
+							"content": [
+								{
+									"ctl": "span",
+									"classes": "right floated",
+									"text": "Joined in 2013"
+								},
+								{
+									"ctl": "span",
+									"text": "<i class=\"user icon\"></i> 75 Friends"
+								}
+							]
+						}
+					]
 				},
 				{
-					"placeholder": "Last Name",
-					"name": "badgelast",
-					"req": true
+					"ctl": "card",
+					"attr": {
+						"pageaction": "runTest",
+						"testname": "molly"
+					},
+					"content": [
+						{
+							"ctl": "image",
+							"src": "/images/avatar2/large/molly.png"
+						},
+						{
+							"ctl": "content",
+							"content": [
+								{
+									"ctl": "header",
+									"text": "Molly McMolly"
+								},
+								{
+									"ctl": "meta",
+									"text": "<a>Other</a>"
+								},
+								{
+									"ctl": "description",
+									"text": "Molly is a personal assistant living in Paris"
+								}
+							]
+						},
+						{
+							"ctl": "extra",
+							"content": [
+								{
+									"ctl": "span",
+									"classes": "right floated",
+									"text": "Joined in 2011"
+								},
+								{
+									"ctl": "span",
+									"text": "<i class=\"user icon\"></i> 35 Friends"
+								}
+							]
+						}
+					]
+				},
+				{
+					"ctl": "card",
+					"attr": {
+						"pageaction": "runTest",
+						"testname": "elyse"
+					},
+					"content": [
+						{
+							"ctl": "image",
+							"src": "/images/avatar2/large/elyse.png"
+						},
+						{
+							"ctl": "content",
+							"content": [
+								{
+									"ctl": "header",
+									"text": "Elyse"
+								},
+								{
+									"ctl": "meta",
+									"text": "<a>Other</a>"
+								},
+								{
+									"ctl": "description",
+									"text": "Elyse is the boss"
+								}
+							]
+						},
+						{
+							"ctl": "extra",
+							"content": [
+								{
+									"ctl": "span",
+									"classes": "right floated",
+									"text": "Joined in 2008"
+								},
+								{
+									"ctl": "span",
+									"text": "<i class=\"user icon\"></i> 2035 Friends"
+								}
+							]
+						}
+					]
 				}
 			]
 		}
