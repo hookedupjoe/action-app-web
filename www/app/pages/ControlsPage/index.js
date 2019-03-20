@@ -537,5 +537,22 @@ License: MIT
         }
     };
 
+    ThisPage.showControlInfo = showControlInfo;
+    function showControlInfo(theParams, theTarget){
+        var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['controlname'])
+        var tmpName = tmpParams.controlname || 'title';
+        console.log( 'tmpName', tmpName);
+        var tmpCtl = ThisApp.controls.catalog.get(tmpName);
+        console.log( 'tmpCtl', tmpCtl);
+        if( tmpCtl && tmpCtl.getInfo ){
+            var tmpInfo = tmpCtl.getInfo(tmpName);
+            console.log( 'tmpInfo', tmpInfo);
+        } else {
+            alert( "Not found " + tmpName)
+        }
+        
+
+    };
+    
 
 })(ActionAppCore, $);

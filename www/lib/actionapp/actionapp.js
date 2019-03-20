@@ -2213,10 +2213,10 @@ License: MIT
     var me = SitePage.prototype;
     //var that = this;
 
-    me.addPageWebControl = function(theControlName, theControl){
+    me.addPageWebControl = function (theControlName, theControl) {
         ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
     }
-    
+
     me.initControls = function (theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
         //--- if no templates to process, no prob, return now
@@ -2240,7 +2240,7 @@ License: MIT
                 if (tmpName) {
                     var tmpControlSpecs = theDocs[aKey];
                     var tmpHTML = ThisApp.json(tmpControlSpecs);
-                    var tmpPrefix = tmpThis.ns().replace(":","");
+                    var tmpPrefix = tmpThis.ns().replace(":", "");
                     tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
                     tmpControlSpecs = ThisApp.json(tmpHTML);
                     tmpThis.controlIndex[tmpName] = ThisApp.controls.newControl(tmpControlSpecs, { parent: tmpThis });
@@ -2565,7 +2565,7 @@ License: MIT
             }
         }
     }
-     */    
+     */
     me.runAction = runAction;
     function runAction(theAction, theSourceObject) {
         var tmpAction = theAction || '';
@@ -4818,9 +4818,9 @@ License: MIT
         } else if (isStr(theObject.attr)) {
             tmpAttr += ' ' + theObject.attr + ' ';
         }
-        
+
         tmpAttr = tmpAttr + ' controls item ';
-        if( tmpName ){
+        if (tmpName) {
             tmpName = ' name="' + tmpName + '" ';
         }
         tmpRet += tmpAttr + tmpName;
@@ -4880,12 +4880,97 @@ License: MIT
     //--- =========== =========== =========== =========== =========== ===========
 
 
+
+    //----   COMMON ITEM CONTROLS - INFORMATION =================================
+
+    me.catalogInfo = new Index();
+    me.catalogInfo.add('color', {
+        name: "color",
+        label: "Semantic Color List",
+        type: "string",
+        ctl: "dropdown",
+        list: ["red","orange","yellow","olive","green","teal","blue","violet","purple","pink","brown","black"],
+        notes: "No other options are valid for colors"
+    })
+    me.catalogInfo.add('hidden', {
+        name: "hidden",
+        label: "Hidden",
+        type: "boolean",
+        notes: "Set to true to start initially hidden"
+    })
+    me.catalogInfo.add('icon', {
+        name: "icon",
+        label: "Icon Name",
+        type: "string",
+        notes: "Name of icon to use"
+    })
+    me.catalogInfo.add('size', {
+        name: "size",
+        label: "Semantic Size List",
+        type: "string",
+        ctl: "dropdown",
+        list: ["mini","tiny","small","large","big","huge","massive"],
+        notes: "No other options are valid for colors"
+    })
+    
+    me.catalogInfo.add('compact', {
+        name: "compact",
+        label: "Compact mode",
+        type: "boolean",
+        notes: "Trim the space around it, making it more compact"
+    })
+
+    me.catalogInfo.add('floating', {
+        name: "floating",
+        label: "Floating look",
+        type: "boolean",
+        notes: "Adds a border to make it look higher than others"
+    })
+    
+
+
+    me.getCommonControlProperties = getCommonControlProperties;
+    function getCommonControlProperties(theCommonList){
+        var tmpCommonList = theCommonList || ['hidden'];
+        var tmpRet = {}
+        for (var iPos = 0; iPos < tmpCommonList.length; iPos++) {
+            var tmpPropName = tmpCommonList[iPos];
+            var tmpDetails = me.catalogInfo.get(tmpPropName);
+            if( tmpPropName && tmpDetails ){
+                tmpRet[tmpPropName] = tmpDetails;
+            }
+        }
+
+        return tmpRet;
+    }
+
+    
+     //----   COMMON ITEM CONTROLS =================================
+ 
     me.ControlImage = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Image Control",
+                category: "Common Items",
+                properties: tmpProps
+            };
+
+            tmpProps.src = {
+                name: "src",
+                label: "Image URL",
+                type: "string",
+                notes: "Semantic version, wraps in DIV tag"
+            }
+
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
 
             var tmpHTML = [];
-            
+
             var tmpHidden = '';
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
@@ -4906,7 +4991,23 @@ License: MIT
     }
 
     me.ControlMessage = {
-        setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['color','size','icon','floating', 'hidden']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Message Control",
+                category: "Common Items",
+                properties: tmpProps
+            };
+
+            tmpProps.compact = {
+                name: "compact",
+                label: "Compact mode",
+                type: "boolean",
+                notes: "Turn on to make message only take up the width of its content"
+            }
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
 
@@ -4920,10 +5021,9 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpClasses = ''
-            console.log( 'theObject.color', theObject.color);
 
-            tmpClasses += getValueIfTrue(theObject, ['compact','floating']);
-            tmpClasses += getValueIfThere(theObject, ['color','attached','size']);
+            tmpClasses += getValueIfTrue(theObject, ['compact', 'floating']);
+            tmpClasses += getValueIfThere(theObject, ['color', 'attached', 'size']);
 
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui message ' + tmpClasses + ' " style="' + tmpHidden + '">')
             if (tmpObject.icon) {
@@ -4941,7 +5041,18 @@ License: MIT
     }
 
     me.ControlButton = {
-        setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['color','size','icon','hidden','compact']);
+            var tmpRet = {name: theControlName,
+                title: "Semantic Message Control",
+                category: "Common Items",
+                properties: tmpProps
+            };
+
+          
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
 
@@ -4956,8 +5067,8 @@ License: MIT
             }
 
             var tmpClasses = ''
-            tmpClasses += getValueIfTrue(theObject, ['basic','compact','fluid','right','labeled','circular']);
-            tmpClasses += getValueIfThere(theObject, ['color','size','floated']);
+            tmpClasses += getValueIfTrue(theObject, ['basic', 'compact', 'fluid', 'right', 'labeled', 'circular']);
+            tmpClasses += getValueIfThere(theObject, ['color', 'size', 'floated']);
 
             if (tmpObject.toright === true) {
                 tmpClasses += ' right floated'
@@ -5000,7 +5111,25 @@ License: MIT
     }
 
     me.ControlDivider = {
-        setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['color','size','icon','hidden']);
+            var tmpTitle = 'Semantic Divider Control';
+            var tmpNotes = 'Has a separator bar, otherwize like title'
+            if( theControlName == 'title'){
+                tmpTitle = 'Semantic Title Control';
+                tmpNotes = 'Used to label pages and headings on stuff';
+            }
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+
+          
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpLevel = '';
@@ -5009,7 +5138,7 @@ License: MIT
             }
 
             var tmpHTML = [];
-           
+
             var tmpHidden = '';
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
@@ -5023,8 +5152,8 @@ License: MIT
             var tmpText = tmpObject.text || tmpObject.html || tmpObject.title || '';
 
             var tmpClasses = ''
-            tmpClasses += getValueIfTrue(theObject, ['inverted','fitted','hidden','section','clearing']);
-            tmpClasses += getValueIfThere(theObject, ['color','attached','size']);
+            tmpClasses += getValueIfTrue(theObject, ['inverted', 'fitted', 'hidden', 'section', 'clearing']);
+            tmpClasses += getValueIfThere(theObject, ['color', 'attached', 'size']);
 
             var tmpStarter = 'h' + tmpLevel;
             var tmpHoriz = '';
@@ -5058,109 +5187,24 @@ License: MIT
         isField: false
     }
 
-    me.ControlFullCard = {
-        getHTML: function (theControlName, theObject, theControlObj) {
-            var tmpObject = theObject || {};            
-            var tmpHTML = [];
-            var tmpNewContent = [];
 
-            
-
-            if( tmpObject.topHeader && isStr(tmpObject.topHeader) ){
-
-                tmpNewContent.push( {
-                    "ctl": "content",
-                    "content": [
-                        {
-                            "ctl": "header",
-                            "text": tmpObject.topHeader || ''
-                        }
-                    ]
-                })
-            }
-            if( tmpObject.imageSrc && isStr(tmpObject.imageSrc) ){
-                tmpNewContent.push({
-                    "ctl": "image",
-                    "src": tmpObject.imageSrc
-                })
-            }
-            var tmpHasFields = tmpObject.header || tmpObject.meta || tmpObject.description;
-            if( tmpHasFields ){
-                var tmpContent = {
-                    "ctl": "content",
-                    "content": []
-                }
-
-                if( tmpObject.header ){
-                    tmpContent.content.push({
-                        "ctl": "header",
-                        "text": tmpObject.header
-                    })
-                }
-                if( tmpObject.meta ){
-                    tmpContent.content.push({
-                        "ctl": "meta",
-                        "text": tmpObject.meta
-                    })
-                }
-                if( tmpObject.description ){
-                    tmpContent.content.push({
-                        "ctl": "description",
-                        "text": tmpObject.description
-                    })
-                }
-                tmpNewContent.push(tmpContent);
-
-            }
-
-            tmpHasFields = tmpObject.extraText || tmpObject.extraTextRight;
-            if( tmpHasFields ){
-                var tmpContent = {
-                    "ctl": "extra",
-                    "content": []
-                }
-
-                if( tmpObject.extraTextRight ){
-                    tmpContent.content.push({
-                        "ctl": "span",
-                        "classes": "right floated",
-                        "text": tmpObject.extraTextRight
-                    })
-                }
-                if( tmpObject.extraText ){
-                    tmpContent.content.push({
-                        "ctl": "span",
-                        "text": tmpObject.extraText
-                    })
-                }
-                
-                tmpNewContent.push(tmpContent);
-
-            }
-
-            var tmpHidden = '';
-            if (tmpObject.hidden === true) {
-                tmpHidden = 'display:none;';
-            }
-            //var tmpClass = tmpObject.class || '';
-            var tmpControlClass = 'card'; //tmpClass || theControlName;
-            var tmpClasses = tmpObject.classes || '';
-            tmpHTML = [];
-            tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
-
-            tmpHTML.push(getContentHTML(theControlName, tmpNewContent, theControlObj))
-
-            tmpHTML.push('</div>')
-
-            tmpHTML = tmpHTML.join('');
-            return tmpHTML;
-
-        },
-        isField: false
-        
-    }
-   
     me.ControlPanel = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['color','size','icon','hidden']);
+            var tmpTitle = 'Semantic General Panel Control';
+            var tmpNotes = 'Used by lots of other controls'
+
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+
+          
+            return tmpRet;
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
@@ -5171,8 +5215,8 @@ License: MIT
             var tmpClass = tmpObject.class || '';
             var tmpControlClass = tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
-            tmpClasses += getValueIfTrue(theObject, ['link','fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled','vertical','loading','inverted','bottom','top','attached','padded','slim','compact','secondary','tertiary','circular','clearing','right','left','center','aligned','basic']);
-            tmpClasses += getValueIfThere(theObject, ['color','icon','size']);
+            tmpClasses += getValueIfTrue(theObject, ['link', 'fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled', 'vertical', 'loading', 'inverted', 'bottom', 'top', 'attached', 'padded', 'slim', 'compact', 'secondary', 'tertiary', 'circular', 'clearing', 'right', 'left', 'center', 'aligned', 'basic']);
+            tmpClasses += getValueIfThere(theObject, ['color', 'icon', 'size']);
             tmpHTML = [];
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
 
@@ -5187,8 +5231,24 @@ License: MIT
         },
         isField: false
     }
-    
+
     me.ControlDOM = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'DOM Element Control';
+            var tmpNotes = 'Used to create normal web content in your json'
+            
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+
+          
+            return tmpRet;
+        },        
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
@@ -5204,7 +5264,7 @@ License: MIT
             tmpHTML.push(tmpObject.text || tmpObject.html || '')
 
             var tmpItems = tmpObject.items || tmpObject.content || [];
-            if( tmpItems ){
+            if (tmpItems) {
                 tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
             }
 
@@ -5216,8 +5276,22 @@ License: MIT
         isField: false
     }
 
-    
+
     me.ControlElement = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'Semantic Element Control';
+            var tmpNotes = 'Used to create Semantic web content'
+            
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+            return tmpRet;
+        },             
         getHTML: function (theControlName, theObject, theControlObj, theIsUI) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
@@ -5228,7 +5302,7 @@ License: MIT
             var tmpClass = tmpObject.class || '';
             var tmpControlClass = tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
-            
+
             var tmpUI = theIsUI ? 'ui ' : '';
 
             tmpHTML = [];
@@ -5237,10 +5311,10 @@ License: MIT
             tmpHTML.push(tmpObject.text || tmpObject.html || '')
 
             var tmpItems = tmpObject.items || tmpObject.content || [];
-            if( tmpItems ){
+            if (tmpItems) {
                 tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
             }
-            
+
             tmpHTML.push('</div>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
@@ -5251,6 +5325,20 @@ License: MIT
 
     //--- UI Elements
     me.ControlElementUI = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'Semantic UI Element Control';
+            var tmpNotes = 'Used to create Semantic web content with a ui class'
+            
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+            return tmpRet;
+        },             
         getHTML: function (theControlName, theObject, theControlObj) {
             return me.ControlElement.getHTML(theControlName, theObject, theControlObj, true)
         },
@@ -5259,7 +5347,27 @@ License: MIT
 
 
     me.ControlFieldRow = {
-        setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'Semantic Element Control';
+            var tmpNotes = 'Used to create Semantic web content'
+            
+            tmpProps.items = {
+                name: "items",
+                label: "Hidden",
+                type: "array",
+                notes: "Used to store fields"
+            }
+
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+            return tmpRet;
+        },             
         getHTML: function (theControlName, theObject, theControlObj) {
 
             var tmpObject = theObject || {};
@@ -5307,6 +5415,93 @@ License: MIT
         isField: false
     }
 
+
+    me.ControlPageSpot = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'Page Spot Control';
+            var tmpNotes = 'Used to create a spot on a page'
+            
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+            return tmpRet;
+        },        
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpName = tmpObject.spotname || tmpObject.name || 'default-spot';
+            var tmpClasses = tmpObject.class || tmpObject.classes || '';
+            var tmpStyles = tmpObject.style || tmpObject.styles || '';
+            var tmpHTML = [];
+            tmpHTML.push('<div class="' + tmpClasses + '" style="' + tmpStyles + '" pagespot="' + tmpName + '"></div>')
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
+
+    //--- Tabs are handled in code at a higher level ***
+    me.ControlTabs = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'Semantic Tabs Container';
+            var tmpNotes = 'Used to create tabs in a control'
+            
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpHTML = [];
+            return tmpHTML.join('');
+        },
+        isField: false
+    }
+    me.ControlTab = {
+        getInfo: function(theControlName){
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'Semantic Tab Container';
+            var tmpNotes = 'Used to contain tab content in a tabs control'
+            
+            var tmpRet = {name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpHTML = [];
+
+            return tmpHTML.join('');;
+        },
+        isField: false
+    }
+
+
+
+
+
+
+
+
+
+
+
+    //----   COMMON FIELD CONTROLS =================================
 
 
     me.ControlField = {
@@ -5579,27 +5774,6 @@ License: MIT
     }
 
 
-    //--- Tabs are handled in code at a higher level ***
-    me.ControlTabs = {
-        setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
-        getHTML: function (theControlName, theObject, theControlObj) {
-            var tmpHTML = [];
-            return tmpHTML.join('');
-        },
-        isField: false
-    }
-    me.ControlTab = {
-        setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
-        getHTML: function (theControlName, theObject, theControlObj) {
-            var tmpHTML = [];
-
-            return tmpHTML.join('');;
-        },
-        isField: false
-    }
-
-
-
     me.ControlTextArea = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
         getHTML: function (theControlName, theObject, theControlObj) {
@@ -5638,20 +5812,124 @@ License: MIT
     }
 
 
-    me.ControlPageSpot = {
+
+
+
+
+
+
+    //----   ================================= ================================= =================================
+    //----   COMMON CUSTOM CONTROLS =================================
+    //----   ================================= ================================= =================================
+
+
+    me.ControlFullCard = {
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
-            var tmpName = tmpObject.spotname || tmpObject.name || 'default-spot';
-            var tmpClasses = tmpObject.class || tmpObject.classes || '';
-            var tmpStyles = tmpObject.style || tmpObject.styles || '';
             var tmpHTML = [];
-            tmpHTML.push('<div class="' + tmpClasses + '" style="' + tmpStyles + '" pagespot="' + tmpName + '"></div>')
+            var tmpNewContent = [];
+
+
+
+            if (tmpObject.topHeader && isStr(tmpObject.topHeader)) {
+
+                tmpNewContent.push({
+                    "ctl": "content",
+                    "content": [
+                        {
+                            "ctl": "header",
+                            "text": tmpObject.topHeader || ''
+                        }
+                    ]
+                })
+            }
+            if (tmpObject.imageSrc && isStr(tmpObject.imageSrc)) {
+                tmpNewContent.push({
+                    "ctl": "image",
+                    "src": tmpObject.imageSrc
+                })
+            }
+            var tmpHasFields = tmpObject.header || tmpObject.meta || tmpObject.description;
+            if (tmpHasFields) {
+                var tmpContent = {
+                    "ctl": "content",
+                    "content": []
+                }
+
+                if (tmpObject.header) {
+                    tmpContent.content.push({
+                        "ctl": "header",
+                        "text": tmpObject.header
+                    })
+                }
+                if (tmpObject.meta) {
+                    tmpContent.content.push({
+                        "ctl": "meta",
+                        "text": tmpObject.meta
+                    })
+                }
+                if (tmpObject.description) {
+                    tmpContent.content.push({
+                        "ctl": "description",
+                        "text": tmpObject.description
+                    })
+                }
+                tmpNewContent.push(tmpContent);
+
+            }
+
+            tmpHasFields = tmpObject.extraText || tmpObject.extraTextRight;
+            if (tmpHasFields) {
+                var tmpContent = {
+                    "ctl": "extra",
+                    "content": []
+                }
+
+                if (tmpObject.extraTextRight) {
+                    tmpContent.content.push({
+                        "ctl": "span",
+                        "classes": "right floated",
+                        "text": tmpObject.extraTextRight
+                    })
+                }
+                if (tmpObject.extraText) {
+                    tmpContent.content.push({
+                        "ctl": "span",
+                        "text": tmpObject.extraText
+                    })
+                }
+
+                tmpNewContent.push(tmpContent);
+
+            }
+
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            //var tmpClass = tmpObject.class || '';
+            var tmpControlClass = 'card'; //tmpClass || theControlName;
+            var tmpClasses = tmpObject.classes || '';
+            tmpHTML = [];
+            tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+
+            tmpHTML.push(getContentHTML(theControlName, tmpNewContent, theControlObj))
+
+            tmpHTML.push('</div>')
+
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
-    
+
         },
         isField: false
+
     }
+
+
+
+
+
+
 
     me.getControlType = function (theControlName) {
         var tmpControl = me.catalog.get(theControlName)
@@ -5692,14 +5970,14 @@ License: MIT
     function getValueIfTrue(theObject, theParamName) {
         var tmpParams = theParamName;
         var tmpRet = '';
-        if( isStr(tmpParams) ){
+        if (isStr(tmpParams)) {
             tmpParams = [tmpParams];
         }
         for (var iPos = 0; iPos < tmpParams.length; iPos++) {
             var tmpParamName = tmpParams[iPos];
             if (theObject[tmpParamName] === true) {
                 var tmpClassName = tmpParamName;
-                tmpRet +=  (' ' + tmpClassName + '')
+                tmpRet += (' ' + tmpClassName + '')
             }
         }
         return tmpRet
@@ -5710,7 +5988,7 @@ License: MIT
 
         var tmpParams = theParamName;
         var tmpRet = '';
-        if( isStr(tmpParams) ){
+        if (isStr(tmpParams)) {
             tmpParams = [tmpParams];
         }
         for (var iPos = 0; iPos < tmpParams.length; iPos++) {
@@ -5748,28 +6026,28 @@ License: MIT
     me.catalog.add('textarea', me.ControlTextArea);
     me.catalog.add('message', me.ControlMessage);
     me.catalog.add('button', me.ControlButton);
-    me.catalog.add('pagespot',me.ControlPageSpot);
-    me.catalog.add('segment',me.ControlPanel);
-    me.catalog.add('segments',me.ControlPanel);
-    me.catalog.add('panel',me.ControlPanel);
-    me.catalog.add('image',me.ControlImage);
-    me.catalog.add('element',me.ControlElement);
-    me.catalog.add('card',me.ControlElement);
-    me.catalog.add('cards',me.ControlPanel);
-    me.catalog.add('content',me.ControlElement);
-    me.catalog.add('header',me.ControlElement);
-    me.catalog.add('meta',me.ControlElement);
-    me.catalog.add('description',me.ControlElement);
-    me.catalog.add('extra',me.ControlElement);
-    
-    me.catalog.add('i',me.ControlDOM);
-    me.catalog.add('span',me.ControlDOM);
-    me.catalog.add('div',me.ControlDOM);
-    
+    me.catalog.add('pagespot', me.ControlPageSpot);
+    me.catalog.add('segment', me.ControlPanel);
+    me.catalog.add('segments', me.ControlPanel);
+    me.catalog.add('panel', me.ControlPanel);
+    me.catalog.add('image', me.ControlImage);
+    me.catalog.add('element', me.ControlElement);
+    me.catalog.add('card', me.ControlElement);
+    me.catalog.add('cards', me.ControlPanel);
+    me.catalog.add('content', me.ControlElement);
+    me.catalog.add('header', me.ControlElement);
+    me.catalog.add('meta', me.ControlElement);
+    me.catalog.add('description', me.ControlElement);
+    me.catalog.add('extra', me.ControlElement);
+
+    me.catalog.add('i', me.ControlDOM);
+    me.catalog.add('span', me.ControlDOM);
+    me.catalog.add('div', me.ControlDOM);
+
 
     //=== Wrapper - Higher Level Controls ..
-    me.catalog.add('cardfull',me.ControlFullCard);
-    
+    me.catalog.add('cardfull', me.ControlFullCard);
+
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 
     //--- Common Actions
