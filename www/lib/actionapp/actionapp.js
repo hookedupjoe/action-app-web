@@ -2425,6 +2425,11 @@ License: MIT
         tmpName = this.ns(tmpName);
         return this.loadSpot(tmpName, theContent, theOptionalTemplateName);
     }
+    me.addToPageSpot = function (theName, theContent, theOptionalTemplateName) {
+        var tmpName = theName || '';
+        tmpName = this.ns(tmpName);
+        return this.addToSpot(tmpName, theContent, theOptionalTemplateName);
+    }
 
     me.toTab = function (theGroupName, theItemName) {
         if (!(theGroupName && theItemName)) { return };
@@ -3768,21 +3773,29 @@ License: MIT
         return tmpRet;
     }
 
-    me.openFieldTab = function (theControlNameOrEl, theName) {
-        var tmpFieldEl = me.getElByName$(theControlNameOrEl, theName, 'field')
-
+    me.openFieldTab = function (theControlNameOrEl, theName, theType) {
+        var tmpType = theType || 'field';
+        var tmpFieldEl = me.getElByName$(theControlNameOrEl, theName, tmpType)
         var tmpTabPanes = getTabPanes(tmpFieldEl);
         if (!(tmpTabPanes && tmpTabPanes.length)) {
             return;
         }
-
-
         for (var iPane = 0; iPane < tmpTabPanes.length; iPane++) {
             var tmpPane = tmpTabPanes[iPane];
             ThisApp.gotoTab(tmpPane);
         }
-
     }
+
+
+    me.openItemTab = function (theControlNameOrEl, theName) {
+        return me.openFieldTab(theControlNameOrEl, theName, 'item');
+    }
+    
+    
+    me.gotoItem = function (theControlNameOrEl, theName) {
+        me.openItemTab(theControlNameOrEl, theName)
+    }
+    
     me.gotoField = function (theControlNameOrEl, theName) {
         var tmpIsAvail = me.getFieldDisplay(theControlNameOrEl, theName);
         var tmpIsVis = me.getFieldVisibility(theControlNameOrEl, theName);
@@ -4231,6 +4244,9 @@ License: MIT
     meInstance.gotoField = function (theFieldName) {
         return me.gotoField(this.getEl(), theFieldName)
     }
+    meInstance.gotoItem = function (theName) {
+        return me.gotoItem(this.getEl(), theName)
+    }
     meInstance.getHTML = function () {
         return this.controlSpec.getHTML(this.controlName, this);
     }
@@ -4645,6 +4661,7 @@ License: MIT
     function getControlHTML(theControlName, theSpecs, theControlObj) {
         var tmpHTML = [];
         var tmpSpecs = theSpecs || {};
+        var tmpSpecOptions = tmpSpecs.options || {};
         var tmpItems = tmpSpecs.content || [];
         var tmpControlName = theControlName || 'default';
         if (!(tmpItems && tmpItems.length)) {
@@ -4652,10 +4669,13 @@ License: MIT
         }
 
         tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj));
-
+        var tmpAttr = '';
+        if( tmpSpecOptions.padding !== false){
+            tmpAttr = ' segment basic slim ';
+        }
         tmpHTML = tmpHTML.join('');
         if (tmpHTML) {
-            tmpHTML = '<div class="ui segment basic form" controls control name="' + tmpControlName + '">' + tmpHTML + '</div>';
+            tmpHTML = '<div class="ui ' + tmpAttr + ' form" controls control name="' + tmpControlName + '">' + tmpHTML + '</div>';
         }
         return tmpHTML;
     }
@@ -5466,7 +5486,7 @@ License: MIT
             var tmpClasses = tmpObject.class || tmpObject.classes || '';
             var tmpStyles = tmpObject.style || tmpObject.styles || '';
             var tmpHTML = [];
-            tmpHTML.push('<div class="' + tmpClasses + '" style="' + tmpStyles + '" pagespot="' + tmpName + '"></div>')
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" pagespot="' + tmpName + '"></div>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
 
