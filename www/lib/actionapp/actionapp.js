@@ -5665,6 +5665,10 @@ License: MIT
     me.catalog.add('cards',me.ControlElementUI);
     me.catalog.add('content',me.ControlElement);
     me.catalog.add('header',me.ControlElement);
+    me.catalog.add('meta',me.ControlElement);
+    me.catalog.add('description',me.ControlElement);
+    me.catalog.add('extra',me.ControlElement);
+    
     me.catalog.add('i',me.ControlDOM);
     me.catalog.add('span',me.ControlDOM);
     me.catalog.add('div',me.ControlDOM);

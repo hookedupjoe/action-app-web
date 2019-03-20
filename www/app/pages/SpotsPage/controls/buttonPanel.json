@@ -19,20 +19,17 @@
 							{"ctl": "header",
 							"text": "Matt Giampietro"},
 							{
-								"ctl": "element",
-								"classes": "meta",
+								"ctl": "meta",
 								"text": "<a>Friends</a>"
 							},
 							{
-								"ctl": "element",
-								"classes": "description",
+								"ctl": "description",
 								"text": "Matthew is an interior designer living in New York."
 							}
 						]
 					},
 					{
-						"ctl": "content",
-						"classes": "extra",
+						"ctl": "extra",
 						"content": [
 							{"ctl": "span",
 								"classes": "right floated",
@@ -58,20 +55,17 @@
 							{"ctl": "header",
 							"text": "Molly McMolly"},
 							{
-								"ctl": "element",
-								"classes": "meta",
+								"ctl": "meta",
 								"text": "<a>Other</a>"
 							},
 							{
-								"ctl": "element",
-								"classes": "description",
+								"ctl": "description",
 								"text": "Molly is a personal assistant living in Paris"
 							}
 						]
 					},
 					{
-						"ctl": "content",
-						"classes": "extra",
+						"ctl": "extra",
 						"content": [
 							{"ctl": "span",
 								"classes": "right floated",
@@ -85,7 +79,7 @@
 			},
 			{
 				"ctl": "card",
-				"attr":{"pageaction": "runTest", "testname": "molly"},
+				"attr":{"pageaction": "runTest", "testname": "elyse"},
 				"content": [
 					{
 						"ctl": "image",
@@ -97,20 +91,17 @@
 							{"ctl": "header",
 							"text": "Elyse"},
 							{
-								"ctl": "element",
-								"classes": "meta",
+								"ctl": "meta",
 								"text": "<a>Other</a>"
 							},
 							{
-								"ctl": "element",
-								"classes": "description",
+								"ctl": "description",
 								"text": "Elyse is the boss"
 							}
 						]
 					},
 					{
-						"ctl": "content",
-						"classes": "extra",
+						"ctl": "extra",
 						"content": [
 							{"ctl": "span",
 								"classes": "right floated",
