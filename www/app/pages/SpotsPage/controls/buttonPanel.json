@@ -43,7 +43,86 @@
 						]
 					}
 				]
-			}]
+			},
+			{
+				"ctl": "card",
+				"attr":{"pageaction": "runTest", "testname": "molly"},
+				"content": [
+					{
+						"ctl": "image",
+						"src": "/images/avatar2/large/molly.png"
+					},
+					{
+						"ctl": "content",
+						"content": [
+							{"ctl": "header",
+							"text": "Molly McMolly"},
+							{
+								"ctl": "element",
+								"classes": "meta",
+								"text": "<a>Other</a>"
+							},
+							{
+								"ctl": "element",
+								"classes": "description",
+								"text": "Molly is a personal assistant living in Paris"
+							}
+						]
+					},
+					{
+						"ctl": "content",
+						"classes": "extra",
+						"content": [
+							{"ctl": "span",
+								"classes": "right floated",
+							"text": "Joined in 2011"},
+							{"ctl": "span",
+								
+							"text": "<i class=\"user icon\"></i> 35 Friends"}
+						]
+					}
+				]
+			},
+			{
+				"ctl": "card",
+				"attr":{"pageaction": "runTest", "testname": "molly"},
+				"content": [
+					{
+						"ctl": "image",
+						"src": "/images/avatar2/large/elyse.png"
+					},
+					{
+						"ctl": "content",
+						"content": [
+							{"ctl": "header",
+							"text": "Elyse"},
+							{
+								"ctl": "element",
+								"classes": "meta",
+								"text": "<a>Other</a>"
+							},
+							{
+								"ctl": "element",
+								"classes": "description",
+								"text": "Elyse is the boss"
+							}
+						]
+					},
+					{
+						"ctl": "content",
+						"classes": "extra",
+						"content": [
+							{"ctl": "span",
+								"classes": "right floated",
+							"text": "Joined in 2008"},
+							{"ctl": "span",
+								
+							"text": "<i class=\"user icon\"></i> 2035 Friends"}
+						]
+					}
+				]
+			}
+		]
 		}
 	]
 }
