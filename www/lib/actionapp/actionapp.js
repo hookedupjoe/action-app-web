@@ -2159,6 +2159,7 @@ License: MIT
         this.pageNamespace = this.options.pageNamespace || '';
         this.controlIndex = {}; //--- Control Configs Loaded, not instances
         this.part = {}; //--- Control instances by name
+        this.parts = this.part //longcut - keep typing it wrong, can use either :)
         this.pageActions = {}; //--- A place for actions
         this.pageTitle = this.options.pageTitle || '';
         this.pageTemplates = this.options.pageTemplates || [];
@@ -3781,7 +3782,7 @@ License: MIT
         return ThisApp.getByAttr$(tmpAttr, tmpControlEl);
     }
 
-    me.setDisplayFor = function (theControlNameOrEl, theName, theIsVis, theType) {
+    me.setDisplayFor = function (theControlNameOrEl, theName, theIsVis, theType, theAnimOptions) {
         var tmpType = theType || 'field';
         var tmpEl = me.getElByName$(theControlNameOrEl, theName, theType)
         if (tmpEl && tmpType == 'field') {
@@ -3791,17 +3792,27 @@ License: MIT
             }
         }
 
-        if (theIsVis) {
-            tmpEl.show();
+        if( theAnimOptions ){
+            console.log( 'theAnimOptions', theAnimOptions);
+            if (theIsVis) {
+                tmpEl.show.apply(tmpEl,theAnimOptions);
+            } else {
+                tmpEl.hide.apply(tmpEl,theAnimOptions);
+            }
         } else {
-            tmpEl.hide();
+            if (theIsVis) {
+                tmpEl.show();
+            } else {
+                tmpEl.hide();
+            }
         }
+        
     }
-    me.setItemDisplay = function (theControlNameOrEl, theName, theIsVis) {
-        return me.setDisplayFor(theControlNameOrEl, theName, theIsVis, 'item')
+    me.setItemDisplay = function (theControlNameOrEl, theName, theIsVis, theAnimOptions) {
+        return me.setDisplayFor(theControlNameOrEl, theName, theIsVis, 'item', theAnimOptions)
     }
-    me.setFieldDisplay = function (theControlNameOrEl, theName, theIsVis) {
-        var tmpRet = me.setDisplayFor(theControlNameOrEl, theName, theIsVis, 'field')
+    me.setFieldDisplay = function (theControlNameOrEl, theName, theIsVis, theAnimOptions) {
+        var tmpRet = me.setDisplayFor(theControlNameOrEl, theName, theIsVis, 'field', theAnimOptions)
         return tmpRet;
     }
 
@@ -4370,14 +4381,20 @@ License: MIT
     meInstance.getElByName$ = function (theName, theType) {
         return me.getElByName$(this.getEl(), theName, theType)
     }
-    meInstance.setItemDisplay = function (theName, theIsVis) {
-        return me.setItemDisplay(this.getEl(), theName, theIsVis)
+    meInstance.setItemDisplay = function (theName, theIsVis, theAnimOptions) {
+        return me.setItemDisplay(this.getEl(), theName, theIsVis, theAnimOptions)
     }
-    meInstance.setFieldDisplay = function (theName, theIsVis) {
-        var tmpRet = me.setFieldDisplay(this.getEl(), theName, theIsVis);
+    meInstance.setFieldDisplay = function (theName, theIsVis, theAnimOptions) {
+        var tmpRet = me.setFieldDisplay(this.getEl(), theName, theIsVis, theAnimOptions);
         this.refreshForField(theName);
         return tmpRet;
     }
+    meInstance.setAnyDisplay = function (theName, theIsVis, theAnimOptions) {
+        me.setFieldDisplay(this.getEl(), theName, theIsVis, theAnimOptions)
+        me.setItemDisplay(this.getEl(), theName, theIsVis, theAnimOptions)
+        return true;
+    }
+    
 
 
     meInstance.getData = function () {
