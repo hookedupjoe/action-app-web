@@ -502,17 +502,19 @@ var ActionAppCore = {};
        * @param  {String} theContent   [The content to load or object to use when rendering the template]
        * @param  {String} theOptionalTemplateName   [The content to load or object to use when rendering the template]
        * @param  {String} thePrepend   [true to prepend, blank or false to append (default)]
+       * @param  {String} theOptionalParent$   [The jQuery element to use instead of global]
        * @param  {String} theOptionalTagName   [The tag name to use (i.e. pagespot)]
        * @return void
        * 
        * 
        */
-    me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend, theOptionalTagName) {
+      
+        me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend, theOptionalParent$, theOptionalTagName) {
         var tmpContent = theContent || '';
         if (theOptionalTemplateName) {
             tmpContent = me.getTemplatedContent(theOptionalTemplateName, tmpContent);
         }
-        var tmpSpot = me.getSpot$(theName,theOptionalTemplateName, theOptionalTagName)
+        var tmpSpot = me.getSpot$(theName, theOptionalParent$, theOptionalTagName)
         if (thePrepend === true) {
             tmpSpot.prepend(tmpContent);
         } else {
@@ -2433,9 +2435,10 @@ License: MIT
 
         }
     }
+
     //--- Calls parent loadSpot with this scope and refreshes layouts
-    me.addToSpot = function (theName, theContent, theOptionalTemplateName) {
-        ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'pagespot');
+    me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend) {
+        ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, thePrepend, this.getParent$(), 'pagespot');
         try {
             this.refreshLayouts();
         } catch (error) {
@@ -4163,7 +4166,9 @@ License: MIT
     meInstance.getEl = function () {
         if (!this.controlEl) {
             this.ControlEl = me.getControlEl$(this.controlName);
+            // console.log( 'this.ControlEl ',this.controlName , this.ControlEl);
         }
+        // console.log( 'this.ControlEl ',this.controlName , this.ControlEl);
         return this.ControlEl
     }
 
@@ -4183,8 +4188,8 @@ License: MIT
         }
     }
     //--- Calls parent loadSpot with this scope and refreshes layouts
-    meInstance.addToSpot = function (theName, theContent, theOptionalTemplateName) {
-        ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'myspot');
+    meInstance.addToSpot = addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend) {
+        ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, thePrepend, this.getParent$(), 'myspot');
         try {
             this.refreshLayouts();
         } catch (error) {
