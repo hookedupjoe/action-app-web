@@ -6129,10 +6129,24 @@ License: MIT
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpRet = {
                 name: theControlName,
-                title: "Semantic Image Control",
-                category: "Common Composite Items",
-                properties: tmpProps
+                title: "Custom Control - Semantic Card with Options",
+                category: "Common Web Custom Controls",
+                properties: tmpProps,
+                actions: {}
             };
+            
+            tmpRet.actions.setTopHeader = {
+                name: 'setTopHeader', 
+                label: "Set Top Header",
+                notes: "Sets the top header of the card, blank hides it",
+                properties: {
+                    text: {
+                        name: 'text', 
+                        label: 'Text for header'
+                    }
+                }
+            }
+            
 
             tmpProps.topHeader = {
                 name: "topHeader",
