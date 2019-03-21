@@ -2444,20 +2444,9 @@ License: MIT
         
     }
 
+    //--- Deprecated, use ThisPage.loadSpot and addToSpot ***
     me.loadPageSpot = me.loadSpot;
     me.addToPageSpot = me.addSpot;
-    
-    //--- DEPRECATED    
-    // me.loadPageSpot = function (theName, theContent, theOptionalTemplateName) {
-    //     var tmpName = theName || '';
-    //     tmpName = this.ns(tmpName);
-    //     return ThisApp.loadSpot(tmpName, theContent, theOptionalTemplateName);
-    // }
-    // me.addToPageSpot = function (theName, theContent, theOptionalTemplateName) {
-    //     var tmpName = theName || '';
-    //     tmpName = this.ns(tmpName);
-    //     return ThisApp.addToSpot(tmpName, theContent, theOptionalTemplateName);
-    // }
 
     me.toTab = function (theGroupName, theItemName) {
         if (!(theGroupName && theItemName)) { return };
@@ -4178,17 +4167,75 @@ License: MIT
         return this.ControlEl
     }
 
-    meInstance.getSpot$
-    meInstance.getSpot$ = function (theName) {
-        var tmpName = theName || '';
-        tmpName = this.ns(tmpName);
-        var tmpEl = ThisApp.getByAttr$({ myspot: tmpName }, this.getEl())
-        return tmpEl;
-    }
-    meInstance.spot$ = me.getSpot$; //shortcuts
-    meInstance.getSpot = me.getSpot$; //shortcuts
-    meInstance.spot = me.getSpot$; //shortcuts
+    //--- Spot for spot related stuff
 
+
+
+
+    
+    //--- Calls parent loadSpot with this scope and refreshes layouts
+    meInstance.loadSpot = function (theName, theContent, theOptionalTemplateName) {
+        ThisApp.loadSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'myspot');
+        try {
+            this.refreshLayouts();
+        } catch (error) {
+
+        }
+    }
+    //--- Calls parent loadSpot with this scope and refreshes layouts
+    meInstance.addToSpot = function (theName, theContent, theOptionalTemplateName) {
+        ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'myspot');
+        try {
+            this.refreshLayouts();
+        } catch (error) {
+
+        }
+        
+    }
+
+    //--- Deprecated, use ThisPage.loadSpot and addToSpot ***
+    meInstance.loadPageSpot = meInstance.loadSpot;
+    meInstance.addToPageSpot = meInstance.addSpot;
+
+    meInstance.toTab = function (theGroupName, theItemName) {
+        //--- ToDo: Implement?   gotoItem and gotoField do this already
+    }
+
+    //--- Returns jQuery element for the spot name on this page
+    meInstance.getSpot$ = function (theName) {
+        return ThisApp.getSpot$(theName, this.getParent$(), 'myspot');
+    }
+    meInstance.spot$ = meInstance.getSpot$; //shortcuts
+    meInstance.spot = meInstance.getSpot$; //shortcuts
+    meInstance.getSpot = meInstance.getSpot$; //shortcuts
+
+    //--- Set display (true/false) for the spot name on this page
+    meInstance.spotDisplay = function (theName, theIsVis) {
+        tmpEl = this.getSpot$(theName);
+        if (theIsVis) {
+            tmpEl.show();
+        } else {
+            tmpEl.hide();
+        }
+    }
+
+    meInstance.getByAttr$ = function (theItems, theExcludeBlanks) {
+        return ThisApp.getByAttr$(theItems, this.getParent$(), theExcludeBlanks);
+    }
+    meInstance.getParent$ = function () {
+        return this.getEl();
+    }
+    meInstance.refreshLayouts = function () {
+        if (this.layout) {
+            this.layout.resizeAll();
+        }
+    }
+
+
+
+
+
+    //--- end spots
 
     meInstance.getFieldSpecs = function (theFieldName) {
         try {
