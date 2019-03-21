@@ -142,15 +142,48 @@ License: MIT
     }
 
     //=== Page Stuff
+    
+  
+    var tests = {
+        "hello": function(theParams){
+            alert("Hello World Again")
+        }
+        ,"test2": test2
+        ,"spots": playWithSpots
+    }
 
-    ThisPage.runTest = runTest;
-    function runTest(theParams, theTarget){
-        var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['testname'])
-        //alert('test ' + (tmpParams.testname || ''))
+    
+    function test2(theName){
+        var tmpArea = ThisPage.part.body;
+        // tmpArea.getSpot("body").html("Hello Spot");
+        // tmpArea.gotoItem('body');
+        
 
+    }
+
+    function playWithSpots(theName){
         var tmpPreviewArea = ThisPage.part.east;
+        
+        ThisPage.loadPageSpot("hello-area", "Hello Area");
         ThisPage.loadPageSpot("preview-details", "Hello World Again");
-        tmpPreviewArea.gotoItem('preview-details')
+        tmpPreviewArea.gotoItem('preview-details');
+        tmpPreviewArea.setItemDisplay('preview-details', !tmpPreviewArea.getItemDisplay('preview-details'));
+    }
+
+    actions.runTest = runTest;
+    function runTest(theParams, theTarget){
+        var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['testname','param1','param2'])
+        var tmpName = tmpParams.testname || '';
+        if( !(tmpName) ){
+            alert('Test ran, add testname param to run a specific test');
+            return;
+        }
+        var tmpTestFunc = tests[tmpName];
+        if( !(tmpTestFunc) ){
+            alert('Test ' + tmpName + ', add testname param to run a specific test');
+            return;
+        }
+        tmpTestFunc(theParams);
 
     };
     

@@ -10,14 +10,14 @@
     "tabsonly": {
       "title": "Just the Tabs"
     },
+    "tabsnestedonly": {
+      "title": "Just nested tabs"
+    },
     "cardsdemo": {
       "title": "Cards Demo"
     },    
     "validation": {
       "title": "Validation Function"
-    },
-    "hello": {
-      "title": "Hello World"
     },
     "inline": {
       "title": "Inline Demo"

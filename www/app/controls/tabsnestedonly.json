@@ -15,7 +15,6 @@
 						{
 							"ctl": "tabs",
 							"name": "catalog-tabs",
-							"color": "purple",
 							"tabs": [
 								{
 									"label": "Available",
@@ -24,30 +23,11 @@
 									"content": [
 										{
 											"ctl": "button",
-											"color": "purple",											
-											"attr": {
-												"pageaction": "runTest",
-												"testname":"hello"
-											},
-											"text": "Say Hello"
-										},
-										{
-											"ctl": "button",
-											"color": "purple",											
-											"attr": {
-												"pageaction": "runTest",
-												"testname":"spots"
-											},
-											"text": "Fun with spots"
-										},
-										{
-											"ctl": "button",
-											"color": "blue",											
-											"attr": {
-												"pageaction": "runTest",
-												"testname":"test2"
-											},
-											"text": "Test 2"
+											"color": "purple",
+											"size": "large",
+											"name": "btn-runtest",
+											"pageaction": "runTest",
+											"text": "Run Test"
 										},
 										{
 											"ctl": "pagespot",
@@ -78,10 +58,6 @@
 						{
 							"ctl": "pagespot",
 							"name": "controls-clipboard"
-						},
-						{
-							"ctl": "pagespot",
-							"name": "hello-area"
 						}
 					]
 				}

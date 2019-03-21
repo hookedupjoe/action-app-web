@@ -4,8 +4,15 @@
 	},
 	"content": [
 		{
-			"ctl": "pagespot",
-			"name": "header-area"
+			"ctl":"segment",
+			"basic": true,
+			"content": [
+				{
+					"ctl": "sep",
+					"size": "small",
+					"text": "Action Controls Designer"
+				}
+			]
 		}
 	]
 }

@@ -19,17 +19,6 @@
 					]
 				},
 				{
-					"label": "Details",
-					"name": "preview-details-tab",
-					"ctl": "tab",
-					"content": [
-						{
-							"ctl": "pagespot",
-							"name": "preview-details"
-						}
-					]
-				},
-				{
 					"label": "Properties",
 					"name": "preview-props-tab",
 					"ctl": "tab",
@@ -37,6 +26,17 @@
 						{
 							"ctl": "pagespot",
 							"name": "preview-props"
+						}
+					]
+				},
+				{
+					"label": "Details",
+					"name": "preview-details-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "pagespot",
+							"name": "preview-details"
 						}
 					]
 				}
