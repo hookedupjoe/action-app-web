@@ -4001,7 +4001,8 @@ License: MIT
     meControl.create = function (theControlName, theOptions) {
         var tmpOptions = theOptions || {};
         tmpOptions.parent = tmpOptions.parent || this.controlConfig.parent
-        return new ControlInstance(this, theControlName, tmpOptions)
+        var tmpObj = new ControlInstance(this, theControlName, tmpOptions)
+        return tmpObj
     }
 
     meControl.prompt = function (theOptions) {
@@ -4124,6 +4125,13 @@ License: MIT
 
     meInstance.extend = function (theNewFunctionality) {
         $.extend(this, theNewFunctionality)
+    }
+
+    meInstance.getCustomSpec = function(theContentItems){
+        var tmpCustomSpec = {};
+        tmpCustomSpec.index = me._loadContentIndex(theContentItems);
+        tmpCustomSpec.content = theContentItems;
+        return tmpCustomSpec;
     }
 
     meInstance.prompt = function (theOptions) {
@@ -6114,13 +6122,11 @@ License: MIT
                 var tmpValue = theParams.text || '';
                 var tmpHide = !(tmpValue);
                 var tmpItem = this.getItem('topHeader');
+                console.log( 'tmpItem', tmpItem);
                 if( tmpItem && tmpItem.el ){
                     tmpItem.el.html(tmpValue)
                     this.setItemDisplay('topHeaderArea',!tmpHide)
-                } else {
-                    console.log( 'tmpItem not found', tmpItem);
                 }
-                
             }
         },
         getInfo: function (theControlName) {
@@ -6197,9 +6203,8 @@ License: MIT
             }
             return tmpRet;
         },
-        getHTML: function (theControlName, theObject, theControlObj) {
+        getCustomContent: function(theControlName, theObject, theControlObj){
             var tmpObject = theObject || {};
-            var tmpHTML = [];
             var tmpNewContent = [];
 
             var tmpTopHeaderText = '';
@@ -6283,16 +6288,25 @@ License: MIT
 
             }
 
+            return tmpNewContent;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpHTML = [];
+            var tmpNewContent = this.getCustomContent(theControlName, theObject, theControlObj);
+
             var tmpHidden = '';
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
-            //var tmpClass = tmpObject.class || '';
+
             var tmpControlClass = 'card'; //tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
             tmpHTML = [];
             tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
 
+            //--- Create the proper content and index needed for this
+            // theControlObj.initCustomSpec(tmpNewContent);
             tmpHTML.push(getContentHTML(theControlName, tmpNewContent, theControlObj))
 
             tmpHTML.push('</div>')
@@ -6304,7 +6318,7 @@ License: MIT
         isField: false
 
     }
-
+    
     me.getControlType = function (theControlName) {
         var tmpControl = me.catalog.get(theControlName)
         if (tmpControl && tmpControl.isField === true) {
