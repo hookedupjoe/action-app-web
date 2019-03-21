@@ -6111,7 +6111,6 @@ License: MIT
     me.ControlFullCard = {
         actions: {
             setTopHeader: function (theParams, theTarget) {
-                console.log( 'theParams', theParams);
                 var tmpValue = theParams.text || '';
                 var tmpHide = !(tmpValue);
                 var tmpItem = this.getItem('topHeader');
@@ -6134,7 +6133,7 @@ License: MIT
                 properties: tmpProps,
                 actions: {}
             };
-            
+
             tmpRet.actions.setTopHeader = {
                 name: 'setTopHeader', 
                 label: "Set Top Header",
