@@ -15,6 +15,10 @@
 						{
 							"ctl": "pagespot",
 							"name": "preview-control"
+						},
+						{
+							"ctl": "spot",
+							"name": "body"
 						}
 					]
 				},

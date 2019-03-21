@@ -153,12 +153,20 @@ License: MIT
     }
 
     
+    var tmpTest2Counter = 0;
     function test2(theName){
-        var tmpArea = ThisPage.part.body;
-        // tmpArea.getSpot("body").html("Hello Spot");
-        // tmpArea.gotoItem('body');
-        
+        tmpTest2Counter++;
+        var tmpArea = ThisPage.parts.body;
+        var tmpArea2 = ThisPage.parts.east;
+        tmpArea.getSpot("body").css('color','blue');
+        tmpArea.loadSpot("body", "Hello Center Spot " + tmpTest2Counter);
+        tmpArea.gotoItem('body');
 
+        // tmpArea2.getSpot("body").append("Hello East Spot");
+        tmpArea2.loadSpot("body", "Hello East Spot " + tmpTest2Counter);
+        
+        tmpArea2.gotoItem('body');
+        //ThisPage.part.east.addToSpot("body", "Hello East Spot");
     }
 
     function playWithSpots(theName){
@@ -167,7 +175,15 @@ License: MIT
         ThisPage.loadPageSpot("hello-area", "Hello Area");
         ThisPage.loadPageSpot("preview-details", "Hello World Again");
         tmpPreviewArea.gotoItem('preview-details');
-        tmpPreviewArea.setItemDisplay('preview-details', !tmpPreviewArea.getItemDisplay('preview-details'));
+        
+        var tmpIsVis = tmpPreviewArea.getItemDisplay('preview-details');
+        var tmpO = '.9';
+        if( tmpIsVis ){
+            tmpO = '0.1';
+        }
+        tmpPreviewArea.setItemDisplay('preview-details', !tmpIsVis, ['slow']);
+
+        
     }
 
     actions.runTest = runTest;

@@ -3793,7 +3793,6 @@ License: MIT
         }
 
         if( theAnimOptions ){
-            console.log( 'theAnimOptions', theAnimOptions);
             if (theIsVis) {
                 tmpEl.show.apply(tmpEl,theAnimOptions);
             } else {
