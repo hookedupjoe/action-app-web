@@ -522,7 +522,7 @@ var ActionAppCore = {};
     }
 
     /**
-  * asSpot$
+  * asEl
   *  - Returns jQuery element ...
   *    -  jQuery element passed, returns object
   *    -  if string passed, returns object from selector
@@ -541,7 +541,7 @@ var ActionAppCore = {};
    *    -  if string passed, returns spot from ThisApp
    *    -  if base element passed, converts to DOM
    */
-    me.asSpot = function (theEl) {
+    me.asSpot$ = function (theEl) {
         if (theEl instanceof jQuery) {
             return theEl;
         }
@@ -550,6 +550,7 @@ var ActionAppCore = {};
         }
         return $(theEl);
     }
+    me.asSpot = me.asSpot$
 
     /**
    * getSpot$

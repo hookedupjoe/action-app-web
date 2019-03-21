@@ -46,12 +46,12 @@ License: MIT
 
     //--- Hook into the app lifecycle as needed    
     ThisPage.writeToOut = function(theHTML){
-        ThisApp.loadSpot('dts:home-output', theHTML);
+        ThisPage.loadSpot('home-output', theHTML);
     }
 
     ThisPage.showOutLoading = showOutLoading;
     function showOutLoading() {
-        ThisApp.loadSpot('dts:home-output', '', 'app:page-loading-spinner');
+        ThisPage.loadSpot('home-output', '', 'app:page-loading-spinner');
     }
 
     ThisPage.transformDocs = function (theDocs) {
@@ -139,7 +139,7 @@ License: MIT
             //ThisPage.writeToOut(JSON.stringify(theDoc));
             var tmpData = ThisPage.transformDocs(theDoc.rows);
 
-            var tmpTableEl = ThisPage.dt.addTable('dts:home-output');
+            var tmpTableEl = ThisPage.dt.addTable(ThisPage.getSpot('home-output'));
                 var tmpNewTable = tmpTableEl.DataTable({
                     data: tmpData.data,
                     responsive: {
@@ -207,7 +207,7 @@ License: MIT
             //ThisPage.writeToOut(JSON.stringify(theDoc));
             var tmpData = ThisPage.transformDocs(theDoc.rows);
 
-            var tmpTableEl = ThisPage.dt.addTable('dts:home-output');
+            var tmpTableEl = ThisPage.dt.addTable(ThisPage.getSpot('home-output'));
                 var tmpNewTable = tmpTableEl.DataTable({
                     data: tmpData.data,
                     responsive: {
@@ -269,7 +269,7 @@ License: MIT
             //ThisPage.writeToOut(JSON.stringify(theDoc));
             var tmpData = ThisPage.transformDocs(theDoc.rows);
 
-            var tmpTableEl = ThisPage.dt.addTable('dts:home-output');
+            var tmpTableEl = ThisPage.dt.addTable(ThisPage.getSpot('home-output'));
                 var tmpNewTable = tmpTableEl.DataTable({
                     data: tmpData.data,
                     "drawCallback": function ( settings ) {
@@ -345,7 +345,7 @@ License: MIT
             var tmpData = ThisPage.transformDocs(theDoc.rows);
             ThisPage.activeData = tmpData;
 
-            var tmpTableEl = ThisPage.dt.addTable('dts:home-output');
+            var tmpTableEl = ThisPage.dt.addTable(ThisPage.getSpot('home-output'));
                 var tmpNewTable = tmpTableEl.DataTable({
                     data: tmpData.data,
                     responsive: {

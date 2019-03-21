@@ -48,8 +48,8 @@ License: MIT
     //--- Impl ========== ========== ========== ========== ========== ========== ========== ========== ========== ========== 
     //--- Impl ========== ========== ========== ========== ========== ========== ========== ========== ========== ========== 
 
-    me.addTable = function (theSpotName) {
-        var tmpEl = ThisApp.getSpot$(theSpotName);
+    me.addTable = function (theElOrSpotName) {
+        var tmpEl = ThisApp.asSpot$(theElOrSpotName);
         //--- Load spot with table htmo=l
         //     ... then returns the table element
         return me.dth.addTable(tmpEl);
