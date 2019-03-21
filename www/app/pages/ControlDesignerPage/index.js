@@ -162,6 +162,11 @@ License: MIT
         tmpArea.loadSpot("body", "Hello Center Spot " + tmpTest2Counter);
         tmpArea.gotoItem('body');
 
+        var tmpNewText = '';
+        if( (tmpTest2Counter % 2) == 1 ){
+            tmpNewText = 'New Top Header';
+        }
+        tmpArea.runItemAction('card-full-matt', 'setTopHeader', {text:tmpNewText})
         // tmpArea2.getSpot("body").append("Hello East Spot");
         tmpArea2.loadSpot("body", "Hello East Spot " + tmpTest2Counter);
         
@@ -170,19 +175,16 @@ License: MIT
     }
 
     function playWithSpots(theName){
-        var tmpPreviewArea = ThisPage.part.east;
+        var tmpPreviewArea = ThisPage.parts.east;
         
-        ThisPage.loadPageSpot("hello-area", "Hello Area");
-        ThisPage.loadPageSpot("preview-details", "Hello World Again");
+        ThisPage.loadSpot("hello-area", "Hello Area");
+        ThisPage.loadSpot("preview-details", "Hello World Again");
         tmpPreviewArea.gotoItem('preview-details');
         
         var tmpIsVis = tmpPreviewArea.getItemDisplay('preview-details');
-        var tmpO = '.9';
-        if( tmpIsVis ){
-            tmpO = '0.1';
-        }
         tmpPreviewArea.setItemDisplay('preview-details', !tmpIsVis, ['slow']);
 
+        
         
     }
 

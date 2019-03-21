@@ -440,8 +440,8 @@ var ActionAppCore = {};
                 // .replace(/pagespot="/g, 'spot="' + theNS + ":")
                 // .replace(/pageaction="/g, 'action="' + theNS + ":")
                 .replace(/\"pagectl\": \"/g, '"ctl": "' + theNS + ":")
-                // .replace(/\"pagespot\": \"/g, '"spot": "' + theNS + ":")
-                // .replace(/\"pageaction\": \"/g, '"action": "' + theNS + ":")
+            // .replace(/\"pagespot\": \"/g, '"spot": "' + theNS + ":")
+            // .replace(/\"pageaction\": \"/g, '"action": "' + theNS + ":")
         } catch (ex) {
             console.error("Error getting updated markup " + ex);
             return theHTML;
@@ -479,14 +479,14 @@ var ActionAppCore = {};
         if (theOptionalTemplateName) {
             tmpContent = me.getTemplatedContent(theOptionalTemplateName, tmpContent);
         }
-        var tmpSpot = me.getSpot$(theName,theOptionalParent$, theOptionalTagName)
-        if( tmpSpot ){
+        var tmpSpot = me.getSpot$(theName, theOptionalParent$, theOptionalTagName)
+        if (tmpSpot) {
             try {
-                tmpSpot.html(tmpContent);    
+                tmpSpot.html(tmpContent);
             } catch (ex) {
                 //--- ToDo: Global error handling
             }
-            
+
         }
         return tmpSpot;
     }
@@ -508,8 +508,8 @@ var ActionAppCore = {};
        * 
        * 
        */
-      
-        me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend, theOptionalParent$, theOptionalTagName) {
+
+    me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend, theOptionalParent$, theOptionalTagName) {
         var tmpContent = theContent || '';
         if (theOptionalTemplateName) {
             tmpContent = me.getTemplatedContent(theOptionalTemplateName, tmpContent);
@@ -573,7 +573,7 @@ var ActionAppCore = {};
         var tmpTagName = theOptionalTagName || 'spot';
         var tmpSelector = '[' + tmpTagName + '="' + theName + '"]';
         var tmpSpot = false;
-        if( theOptionalParent$ ){
+        if (theOptionalParent$) {
             tmpSpot = $(tmpSelector, theOptionalParent$.get(0));
         } else {
             tmpSpot = $(tmpSelector);
@@ -1512,7 +1512,7 @@ var ActionAppCore = {};
 
     //---- Internal: Gets the action or action from the current element or the first parent element with such an entry,
     //               ... this is needed so when a child element is clicked, the proper parent action element is used.
-    me.getActionFromObj = function(theObj, theOptionalTag) {
+    me.getActionFromObj = function (theObj, theOptionalTag) {
         var tmpTagName = theOptionalTag || 'action';
         var tmpObj = theObj;
         var tmpAction = $(tmpObj).attr(tmpTagName) || "";
@@ -1540,7 +1540,7 @@ var ActionAppCore = {};
         var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
         var tmpActionDetails = me.getActionFromObj(tmpObj);
         if (!((tmpActionDetails.hasOwnProperty('action') || tmpActionDetails.hasOwnProperty('action')) && tmpActionDetails.hasOwnProperty('el'))) {
-                //--- OK, just clicked somewhere with nothing to catch it, but not an action
+            //--- OK, just clicked somewhere with nothing to catch it, but not an action
             return;
         }
         var tmpAction = tmpActionDetails.action;
@@ -2445,7 +2445,7 @@ License: MIT
         } catch (error) {
 
         }
-        
+
     }
 
     //--- Deprecated, use ThisPage.loadSpot and addToSpot ***
@@ -2539,9 +2539,9 @@ License: MIT
             this.parentEl = this.app.getByAttr$({ group: "app:pages", item: this.pageName });
             this.parentEl.html(this.getLayoutHTML());
 
-           
+
             this.parentEl.on("click", itemClicked.bind(this))
-           
+
 
             if (typeof (this._onInit) == 'function') {
                 this._onInit(this.app)
@@ -2589,7 +2589,7 @@ License: MIT
     function itemClicked(theEvent) {
         var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
         var tmpActionDetails = ThisApp.getActionFromObj(tmpObj, 'pageaction');
-        if (!( tmpActionDetails.hasOwnProperty('action' ) && tmpActionDetails.hasOwnProperty('el'))) {
+        if (!(tmpActionDetails.hasOwnProperty('action') && tmpActionDetails.hasOwnProperty('el'))) {
             //--- OK, just clicked somewhere with nothing to catch it, but not an action
             return;
         }
@@ -2602,7 +2602,7 @@ License: MIT
             this.runAction(tmpAction, tmpObj);
         }
         return false;
-        
+
     }
     me.runAction = runAction;
     function runAction(theAction, theSourceObject) {
@@ -3792,11 +3792,11 @@ License: MIT
             }
         }
 
-        if( theAnimOptions ){
+        if (theAnimOptions) {
             if (theIsVis) {
-                tmpEl.show.apply(tmpEl,theAnimOptions);
+                tmpEl.show.apply(tmpEl, theAnimOptions);
             } else {
-                tmpEl.hide.apply(tmpEl,theAnimOptions);
+                tmpEl.hide.apply(tmpEl, theAnimOptions);
             }
         } else {
             if (theIsVis) {
@@ -3805,7 +3805,7 @@ License: MIT
                 tmpEl.hide();
             }
         }
-        
+
     }
     me.setItemDisplay = function (theControlNameOrEl, theName, theIsVis, theAnimOptions) {
         return me.setDisplayFor(theControlNameOrEl, theName, theIsVis, 'item', theAnimOptions)
@@ -3832,12 +3832,12 @@ License: MIT
     me.openItemTab = function (theControlNameOrEl, theName) {
         return me.openFieldTab(theControlNameOrEl, theName, 'item');
     }
-    
-    
+
+
     me.gotoItem = function (theControlNameOrEl, theName) {
         me.openItemTab(theControlNameOrEl, theName)
     }
-    
+
     me.gotoField = function (theControlNameOrEl, theName) {
         var tmpIsAvail = me.getFieldDisplay(theControlNameOrEl, theName);
         var tmpIsVis = me.getFieldVisibility(theControlNameOrEl, theName);
@@ -4187,7 +4187,7 @@ License: MIT
 
 
 
-    
+
     //--- Calls parent loadSpot with this scope and refreshes layouts
     meInstance.loadSpot = function (theName, theContent, theOptionalTemplateName) {
         ThisApp.loadSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'myspot');
@@ -4205,7 +4205,7 @@ License: MIT
         } catch (error) {
 
         }
-        
+
     }
 
     //--- Deprecated, use ThisPage.loadSpot and addToSpot ***
@@ -4247,7 +4247,16 @@ License: MIT
     }
 
 
-
+    meInstance.getItem = function (theItemName) {
+        var tmpEl = this.getElByName$(theItemName, 'item')
+        if (!(tmpEl)) { return false }
+        var tmpSpecs = this.getItemSpecs(theItemName);
+        
+        return {
+            el: tmpEl,
+            specs: tmpSpecs
+        }
+    }
 
 
     //--- end spots
@@ -4368,6 +4377,33 @@ License: MIT
         return this.controlSpec.controlConfig || {};
     }
 
+    meInstance.runItemAction = function (theName, theActionName, theOptionalParams) {
+        var tmpItem = this.getItem(theName);
+        var tmpEl = tmpItem.el;
+        var tmpSpecs = tmpItem.specs;
+        
+        if (tmpSpecs) {
+            var tmpCtl = tmpSpecs.ctl || 'field';
+            var tmpControl = me.catalog.get(tmpCtl);
+            if( tmpControl && tmpControl.actions && tmpControl.actions[theActionName]){
+                var tmpFunc = tmpControl.actions[theActionName];
+                if( isFunc(tmpFunc) ){
+                    tmpFunc = tmpFunc.bind(this);
+                    if( theOptionalParams ){
+                        tmpFunc( theOptionalParams );
+                    } else {
+                        tmpFunc('', tmpEl);
+                    }
+                    
+                }
+            }
+        } else {
+            console.warn("No item found for ", theName)
+        }
+
+
+    }
+    
     meInstance.getItemDisplay = function (theName) {
         return me.getItemDisplay(this.getEl(), theName)
     }
@@ -4393,7 +4429,7 @@ License: MIT
         me.setItemDisplay(this.getEl(), theName, theIsVis, theAnimOptions)
         return true;
     }
-    
+
 
 
     meInstance.getData = function () {
@@ -4790,7 +4826,7 @@ License: MIT
 
         tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj));
         var tmpAttr = '';
-        if( tmpSpecOptions.padding !== false){
+        if (tmpSpecOptions.padding !== false) {
             tmpAttr = ' segment basic slim ';
         }
         tmpHTML = tmpHTML.join('');
@@ -4820,7 +4856,7 @@ License: MIT
                 if (tmpItem.color) {
                     tmpColor = tmpItem.color;
                 }
-                
+
                 tmpTabsHTML.push('<div class=" ui bottom attached slim ' + tmpColor + ' segment " >');
                 for (var iTab = 0; iTab < tmpItem.tabs.length; iTab++) {
                     var tmpTab = tmpItem.tabs[iTab];
@@ -4878,7 +4914,7 @@ License: MIT
             var tmpItem = tmpItems[iPos];
             var tmpCtl = tmpItem.ctl || 'field';
             var tmpThisObj = {
-                ctl: tmpCtl, 
+                ctl: tmpCtl,
                 name: tmpItem.name || ''
             }
 
@@ -5042,7 +5078,7 @@ License: MIT
         label: "Semantic Color List",
         type: "string",
         ctl: "dropdown",
-        list: ["red","orange","yellow","olive","green","teal","blue","violet","purple","pink","brown","black"],
+        list: ["red", "orange", "yellow", "olive", "green", "teal", "blue", "violet", "purple", "pink", "brown", "black"],
         notes: "No other options are valid for colors"
     })
     me.catalogInfo.add('hidden', {
@@ -5062,10 +5098,10 @@ License: MIT
         label: "Semantic Size List",
         type: "string",
         ctl: "dropdown",
-        list: ["mini","tiny","small","large","big","huge","massive"],
+        list: ["mini", "tiny", "small", "large", "big", "huge", "massive"],
         notes: "No other options are valid for colors"
     })
-    
+
     me.catalogInfo.add('compact', {
         name: "compact",
         label: "Compact mode",
@@ -5080,7 +5116,7 @@ License: MIT
         notes: "Adds a border to make it look higher than others"
     })
 
-    
+
     //--- Field related ...
     me.catalogInfo.add('fieldlabel', {
         name: "label",
@@ -5094,7 +5130,7 @@ License: MIT
         type: "string",
         notes: "String or array really, 'One|one,Two|two' can be used. "
     })
-    
+
     me.catalogInfo.add('fieldsize', {
         name: "size",
         label: "Semantic Field Size Value",
@@ -5105,13 +5141,13 @@ License: MIT
 
 
     me.getCommonControlProperties = getCommonControlProperties;
-    function getCommonControlProperties(theCommonList){
+    function getCommonControlProperties(theCommonList) {
         var tmpCommonList = theCommonList || ['hidden'];
         var tmpRet = {}
         for (var iPos = 0; iPos < tmpCommonList.length; iPos++) {
             var tmpPropName = tmpCommonList[iPos];
             var tmpDetails = me.catalogInfo.get(tmpPropName);
-            if( tmpPropName && tmpDetails ){
+            if (tmpPropName && tmpDetails) {
                 tmpRet[tmpPropName] = tmpDetails;
             }
         }
@@ -5119,14 +5155,15 @@ License: MIT
         return tmpRet;
     }
 
-    
-     //----   COMMON ITEM CONTROLS =================================
- 
+
+    //----   COMMON ITEM CONTROLS =================================
+
     me.ControlImage = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
-            var tmpRet = {name: theControlName,
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Image Control",
                 category: "Common Items",
                 properties: tmpProps
@@ -5166,10 +5203,11 @@ License: MIT
     }
 
     me.ControlMessage = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
-            var tmpProps = getCommonControlProperties(['color','size','icon','floating', 'hidden']);
-            var tmpRet = {name: theControlName,
+            var tmpProps = getCommonControlProperties(['color', 'size', 'icon', 'floating', 'hidden']);
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Message Control",
                 category: "Common Items",
                 properties: tmpProps
@@ -5216,16 +5254,17 @@ License: MIT
     }
 
     me.ControlButton = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
-            var tmpProps = getCommonControlProperties(['color','size','icon','hidden','compact']);
-            var tmpRet = {name: theControlName,
+            var tmpProps = getCommonControlProperties(['color', 'size', 'icon', 'hidden', 'compact']);
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Message Control",
                 category: "Common Items",
                 properties: tmpProps
             };
 
-          
+
             return tmpRet;
         },
         getHTML: function (theControlName, theObject, theControlObj) {
@@ -5286,23 +5325,24 @@ License: MIT
     }
 
     me.ControlDivider = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
-            var tmpProps = getCommonControlProperties(['color','size','icon','hidden']);
+            var tmpProps = getCommonControlProperties(['color', 'size', 'icon', 'hidden']);
             var tmpTitle = 'Semantic Divider Control';
             var tmpNotes = 'Has a separator bar, otherwize like title'
-            if( theControlName == 'title'){
+            if (theControlName == 'title') {
                 tmpTitle = 'Semantic Title Control';
                 tmpNotes = 'Used to label pages and headings on stuff';
             }
-            var tmpRet = {name: theControlName,
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
                 properties: tmpProps
             };
 
-          
+
             return tmpRet;
         },
         getHTML: function (theControlName, theObject, theControlObj) {
@@ -5364,20 +5404,21 @@ License: MIT
 
 
     me.ControlPanel = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
-            var tmpProps = getCommonControlProperties(['color','size','icon','hidden']);
+            var tmpProps = getCommonControlProperties(['color', 'size', 'icon', 'hidden']);
             var tmpTitle = 'Semantic General Panel Control';
             var tmpNotes = 'Used by lots of other controls'
 
-            var tmpRet = {name: theControlName,
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
                 properties: tmpProps
             };
 
-          
+
             return tmpRet;
         },
         getHTML: function (theControlName, theObject, theControlObj) {
@@ -5408,22 +5449,23 @@ License: MIT
     }
 
     me.ControlDOM = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpTitle = 'DOM Element Control';
             var tmpNotes = 'Used to create normal web content in your json'
-            
-            var tmpRet = {name: theControlName,
+
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
                 properties: tmpProps
             };
 
-          
+
             return tmpRet;
-        },        
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
@@ -5453,20 +5495,21 @@ License: MIT
 
 
     me.ControlElement = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpTitle = 'Semantic Element Control';
             var tmpNotes = 'Used to create Semantic web content'
-            
-            var tmpRet = {name: theControlName,
+
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
                 properties: tmpProps
             };
             return tmpRet;
-        },             
+        },
         getHTML: function (theControlName, theObject, theControlObj, theIsUI) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
@@ -5500,20 +5543,21 @@ License: MIT
 
     //--- UI Elements
     me.ControlElementUI = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpTitle = 'Semantic UI Element Control';
             var tmpNotes = 'Used to create Semantic web content with a ui class'
-            
-            var tmpRet = {name: theControlName,
+
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
                 properties: tmpProps
             };
             return tmpRet;
-        },             
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             return me.ControlElement.getHTML(theControlName, theObject, theControlObj, true)
         },
@@ -5522,12 +5566,12 @@ License: MIT
 
 
     me.ControlFieldRow = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpTitle = 'Semantic Element Control';
             var tmpNotes = 'Used to create Semantic web content'
-            
+
             tmpProps.items = {
                 name: "items",
                 label: "Hidden",
@@ -5535,14 +5579,15 @@ License: MIT
                 notes: "Used to store fields"
             }
 
-            var tmpRet = {name: theControlName,
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
                 properties: tmpProps
             };
             return tmpRet;
-        },             
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
 
             var tmpObject = theObject || {};
@@ -5592,12 +5637,12 @@ License: MIT
 
 
     me.ControlSpot = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpTitle = 'Page Spot Control';
             var tmpNotes = 'Used to create a spot on a page'
-            
+
             tmpProps.spotname = {
                 name: "spotname",
                 label: "Spot Name",
@@ -5605,14 +5650,15 @@ License: MIT
                 notes: "The unique name of this spot (in scope)"
             }
 
-            var tmpRet = {name: theControlName,
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
                 properties: tmpProps
             };
             return tmpRet;
-        },        
+        },
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpName = tmpObject.spotname || tmpObject.name || 'default-spot';
@@ -5621,10 +5667,10 @@ License: MIT
             var tmpHTML = [];
 
             var tmpSpotAttr = 'myspot'
-            if (theControlName == 'pagespot'){
+            if (theControlName == 'pagespot') {
                 tmpSpotAttr = 'pagespot'
             }
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpSpotAttr  + '="' + tmpName + '"></div>')
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpSpotAttr + '="' + tmpName + '"></div>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
 
@@ -5635,13 +5681,14 @@ License: MIT
 
     //--- Tabs are handled in code at a higher level ***
     me.ControlTabs = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpTitle = 'Semantic Tabs Container';
             var tmpNotes = 'Used to create tabs in a control'
-            
-            var tmpRet = {name: theControlName,
+
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
@@ -5656,13 +5703,14 @@ License: MIT
         isField: false
     }
     me.ControlTab = {
-        getInfo: function(theControlName){
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
             var tmpTitle = 'Semantic Tab Container';
             var tmpNotes = 'Used to contain tab content in a tabs control'
-            
-            var tmpRet = {name: theControlName,
+
+            var tmpRet = {
+                name: theControlName,
                 title: tmpTitle,
                 category: "Common Items",
                 notes: tmpNotes,
@@ -5693,9 +5741,10 @@ License: MIT
 
     me.ControlField = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
-        getInfo: function(theControlName){
-            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel']);
-            var tmpRet = {name: theControlName,
+        getInfo: function (theControlName) {
+            var tmpProps = getCommonControlProperties(['hidden', 'fieldlname', 'fieldlabel']);
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Text Field Control",
                 category: "Common Fields",
                 properties: tmpProps
@@ -5746,9 +5795,10 @@ License: MIT
 
     me.ControlDropDown = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
-        getInfo: function(theControlName){
-            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
-            var tmpRet = {name: theControlName,
+        getInfo: function (theControlName) {
+            var tmpProps = getCommonControlProperties(['hidden', 'fieldlname', 'fieldlabel', 'fieldlist']);
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Dropdown Control",
                 category: "Common Fields",
                 properties: tmpProps
@@ -5850,9 +5900,10 @@ License: MIT
 
     me.ControlCheckboxList = {
         getHTML: getHTMLforCheckboxList,
-        getInfo: function(theControlName){
-            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
-            var tmpRet = {name: theControlName,
+        getInfo: function (theControlName) {
+            var tmpProps = getCommonControlProperties(['hidden', 'fieldlname', 'fieldlabel', 'fieldlist']);
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Checkbox List Control",
                 category: "Common Fields",
                 properties: tmpProps
@@ -5881,9 +5932,10 @@ License: MIT
 
     me.ControlRadioList = {
         getHTML: getHTMLforCheckboxList,
-        getInfo: function(theControlName){
-            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
-            var tmpRet = {name: theControlName,
+        getInfo: function (theControlName) {
+            var tmpProps = getCommonControlProperties(['hidden', 'fieldlname', 'fieldlabel', 'fieldlist']);
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Radio List Control",
                 category: "Common Fields",
                 properties: tmpProps
@@ -5999,9 +6051,10 @@ License: MIT
 
     me.ControlTextArea = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
-        getInfo: function(theControlName){
-            var tmpProps = getCommonControlProperties(['hidden','fieldlname','fieldlabel','fieldlist']);
-            var tmpRet = {name: theControlName,
+        getInfo: function (theControlName) {
+            var tmpProps = getCommonControlProperties(['hidden', 'fieldlname', 'fieldlabel', 'fieldlist']);
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic TextArea Control",
                 category: "Common Fields",
                 properties: tmpProps
@@ -6056,10 +6109,26 @@ License: MIT
 
 
     me.ControlFullCard = {
-        getInfo: function(theControlName){
+        actions: {
+            setTopHeader: function (theParams, theTarget) {
+                console.log( 'theParams', theParams);
+                var tmpValue = theParams.text || '';
+                var tmpHide = !(tmpValue);
+                var tmpItem = this.getItem('topHeader');
+                if( tmpItem && tmpItem.el ){
+                    tmpItem.el.html(tmpValue)
+                    this.setItemDisplay('topHeaderArea',!tmpHide)
+                } else {
+                    console.log( 'tmpItem not found', tmpItem);
+                }
+                
+            }
+        },
+        getInfo: function (theControlName) {
 
             var tmpProps = getCommonControlProperties(['hidden']);
-            var tmpRet = {name: theControlName,
+            var tmpRet = {
+                name: theControlName,
                 title: "Semantic Image Control",
                 category: "Common Composite Items",
                 properties: tmpProps
@@ -6120,18 +6189,27 @@ License: MIT
             var tmpHTML = [];
             var tmpNewContent = [];
 
-            if (tmpObject.topHeader && isStr(tmpObject.topHeader)) {
+            var tmpTopHeaderText = '';
+            var tmpTopHeaderVis = false;
 
-                tmpNewContent.push({
-                    "ctl": "content",
-                    "content": [
-                        {
-                            "ctl": "header",
-                            "text": tmpObject.topHeader || ''
-                        }
-                    ]
-                })
+            if (tmpObject.topHeader && isStr(tmpObject.topHeader)) {
+                tmpTopHeaderText = tmpObject.topHeader || '';
+                tmpTopHeaderVis = true;
             }
+            tmpNewContent.push({
+                "ctl": "content",
+                "hidden": !tmpTopHeaderVis,
+                "name": "topHeaderArea",
+                "content": [
+                    {
+                        "ctl": "title",
+                        "name": "topHeader",
+                        "text": tmpTopHeaderText
+                        
+                    }
+                ]
+            })
+
             if (tmpObject.imageSrc && isStr(tmpObject.imageSrc)) {
                 tmpNewContent.push({
                     "ctl": "image",
@@ -6299,7 +6377,7 @@ License: MIT
 
     //=== Root Common Web Controls ..
     me.catalog.add('pagespot', me.ControlSpot);
-    me.catalog.add('spot', me.ControlSpot);    
+    me.catalog.add('spot', me.ControlSpot);
 
     me.catalog.add('fieldrow', me.ControlFieldRow);
     me.catalog.add('field', me.ControlField);

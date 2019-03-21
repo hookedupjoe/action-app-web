@@ -160,8 +160,11 @@ License: MIT
                 }
                 //--- Extend the page header with new exciting funtionality
                 ThisPage.part.pageTitle.extend(myStuff);
-                
-                
+
+                // ThisPage.part.pageTitle.addAction("refreshList", ThisPage.sayHelloTitle)
+                // ThisPage.part.pageTitle.runAction("refreshList", {})
+
+
                 //--- Do special stuff on page load here
                 //--- Then optionally call the stuff that will happen every time 
                 //      the page is activated if not already called by above code
