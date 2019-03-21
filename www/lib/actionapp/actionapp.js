@@ -4127,12 +4127,12 @@ License: MIT
         $.extend(this, theNewFunctionality)
     }
 
-    meInstance.getCustomSpec = function(theContentItems){
-        var tmpCustomSpec = {};
-        tmpCustomSpec.index = me._loadContentIndex(theContentItems);
-        tmpCustomSpec.content = theContentItems;
-        return tmpCustomSpec;
-    }
+    // meInstance.getCustomSpec = function(theContentItems){
+    //     var tmpCustomSpec = {};
+    //     tmpCustomSpec.index = me._loadContentIndex(theContentItems);
+    //     tmpCustomSpec.content = theContentItems;
+    //     return tmpCustomSpec;
+    // }
 
     meInstance.prompt = function (theOptions) {
         var tmpOptions = theOptions || {};
@@ -4799,6 +4799,7 @@ License: MIT
 
     meInstance.loadToElement = function (theEl, theOptions) {
         this.parentEl = ThisApp.asSpot(theEl);
+        
         var tmpHTML = this.getHTML();
         this.parentEl.html(tmpHTML);
         this.parentEl.on('change', this.onFieldChange.bind(this))
@@ -4921,6 +4922,7 @@ License: MIT
         for (var iPos = 0; iPos < tmpItems.length; iPos++) {
             var tmpItem = tmpItems[iPos];
             var tmpCtl = tmpItem.ctl || 'field';
+
             var tmpThisObj = {
                 ctl: tmpCtl,
                 name: tmpItem.name || ''
@@ -6320,11 +6322,18 @@ License: MIT
     }
     
     me.getControlType = function (theControlName) {
-        var tmpControl = me.catalog.get(theControlName)
+        var tmpControl = me.getControl(theControlName)
         if (tmpControl && tmpControl.isField === true) {
             return 'field'
         }
         return 'item'
+    }
+    me.getControl = function (theControlName) {
+        var tmpControl = me.catalog.get(theControlName)
+        if (tmpControl) {
+            return tmpControl
+        }
+        return false;
     }
 
     //---- Control Helpers
