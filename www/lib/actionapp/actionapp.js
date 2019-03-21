@@ -438,10 +438,10 @@ var ActionAppCore = {};
         try {
             return theHTML.replace(/_page_:/g, theNS + ":")
                 // .replace(/pagespot="/g, 'spot="' + theNS + ":")
-                .replace(/pageaction="/g, 'action="' + theNS + ":")
+                // .replace(/pageaction="/g, 'action="' + theNS + ":")
                 .replace(/\"pagectl\": \"/g, '"ctl": "' + theNS + ":")
                 // .replace(/\"pagespot\": \"/g, '"spot": "' + theNS + ":")
-                .replace(/\"pageaction\": \"/g, '"action": "' + theNS + ":")
+                // .replace(/\"pageaction\": \"/g, '"action": "' + theNS + ":")
         } catch (ex) {
             console.error("Error getting updated markup " + ex);
             return theHTML;
@@ -1507,27 +1507,24 @@ var ActionAppCore = {};
     function initAppActions() {
         $('body').on("click", itemClicked)
     }
-    function instClicked(theEvent) {
-        theEvent.preventDefault();
-        theEvent.stopPropagation();
-    }
 
     //---- Internal: Gets the action or appaction from the current element or the first parent element with such an entry,
     //               ... this is needed so when a child element is clicked, the proper parent action element is used.
-    function _getActionFromObj(theObj) {
+    me.getActionFromObj = function(theObj, theOptionalTag) {
+        var tmpTagName = theOptionalTag || 'action';
         var tmpObj = theObj;
-        var tmpAction = $(tmpObj).attr("appaction") || $(tmpObj).attr("action") || "";
+        var tmpAction = $(tmpObj).attr(tmpTagName) || "";
         if (!tmpAction) {
-            var tmpParent = $(tmpObj).closest('[action]');
+            var tmpParent = $(tmpObj).closest('[' + tmpTagName + ']');
             if (tmpParent.length == 1) {
                 tmpObj = tmpParent.get(0);
-                tmpAction = $(tmpObj).attr("action") || "";
+                tmpAction = $(tmpObj).attr(tmpTagName) || "";
             } else {
-                tmpParent = $(tmpObj).closest('[appaction]');
+                tmpParent = $(tmpObj).closest('[' + tmpTagName + ']');
                 if (tmpParent.length == 1) {
                     tmpObj = tmpParent.get(0);
-                    tmpAction = $(tmpObj).attr("appaction") || "";
-                    $(tmpObj).attr("action", tmpAction)
+                    tmpAction = $(tmpObj).attr(tmpTagName) || "";
+                    $(tmpObj).attr(tmpTagName, tmpAction)
                 } else {
                     return false; //not an action
                 }
@@ -1539,7 +1536,7 @@ var ActionAppCore = {};
     //---- Internal: Catch a click item to look for the action
     function itemClicked(theEvent) {
         var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
-        var tmpActionDetails = _getActionFromObj(tmpObj);
+        var tmpActionDetails = me.getActionFromObj(tmpObj);
         if (!((tmpActionDetails.hasOwnProperty('action') || tmpActionDetails.hasOwnProperty('appaction')) && tmpActionDetails.hasOwnProperty('el'))) {
             //--- OK, just clicked somewhere with nothing to catch it, but not an action
             return;
@@ -2549,6 +2546,10 @@ License: MIT
             this.parentEl = this.app.getByAttr$({ group: "app:pages", item: this.pageName });
             this.parentEl.html(this.getLayoutHTML());
 
+           
+            this.parentEl.on("click", itemClicked.bind(this))
+           
+
             if (typeof (this._onInit) == 'function') {
                 this._onInit(this.app)
             };
@@ -2591,6 +2592,25 @@ License: MIT
         }
     }
      */
+
+    function itemClicked(theEvent) {
+        var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
+        var tmpActionDetails = ThisApp.getActionFromObj(tmpObj, 'pageaction');
+        if (!( tmpActionDetails.hasOwnProperty('action' ) && tmpActionDetails.hasOwnProperty('el'))) {
+            //--- OK, just clicked somewhere with nothing to catch it, but not an action
+            return;
+        }
+        var tmpAction = tmpActionDetails.action;
+        tmpObj = tmpActionDetails.el;
+
+        if (tmpAction) {
+            theEvent.preventDefault();
+            theEvent.stopPropagation();
+            this.runAction(tmpAction, tmpObj);
+        }
+        return false;
+        
+    }
     me.runAction = runAction;
     function runAction(theAction, theSourceObject) {
         var tmpAction = theAction || '';
