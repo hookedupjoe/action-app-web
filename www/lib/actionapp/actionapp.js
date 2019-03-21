@@ -437,10 +437,10 @@ var ActionAppCore = {};
     function getUpdatedMarkupForNS(theHTML, theNS) {
         try {
             return theHTML.replace(/_page_:/g, theNS + ":")
-                .replace(/pagespot="/g, 'spot="' + theNS + ":")
+                // .replace(/pagespot="/g, 'spot="' + theNS + ":")
                 .replace(/pageaction="/g, 'action="' + theNS + ":")
                 .replace(/\"pagectl\": \"/g, '"ctl": "' + theNS + ":")
-                .replace(/\"pagespot\": \"/g, '"spot": "' + theNS + ":")
+                // .replace(/\"pagespot\": \"/g, '"spot": "' + theNS + ":")
                 .replace(/\"pageaction\": \"/g, '"action": "' + theNS + ":")
         } catch (ex) {
             console.error("Error getting updated markup " + ex);
@@ -466,20 +466,28 @@ var ActionAppCore = {};
        * @param  {String} theContent   [The content to load or object to use when rendering the template]
        * @param  {String} theOptionalTemplateName   [The content to load or object to use when rendering the template]
        * @param  {String} theOptionalParent$   [The jQuery element to use instead of global]
+       * @param  {String} theOptionalTagName   [The tag name to use (i.e. pagespot)]
        * 
        * @return void
        * 
        * 
        */
-    me.loadSpot = function (theName, theContent, theOptionalTemplateName, theOptionalParent$) {
-        var tmpSelector = '[spot="' + theName + '"]';
+    me.loadSpot = function (theName, theContent, theOptionalTemplateName, theOptionalParent$, theOptionalTagName) {
+        var tmpTagName = theOptionalTagName || 'spot';
+        var tmpSelector = '[' + tmpTagName + '="' + theName + '"]';
         var tmpContent = theContent || '';
         if (theOptionalTemplateName) {
             tmpContent = me.getTemplatedContent(theOptionalTemplateName, tmpContent);
         }
-        var tmpParent = (theOptionalParent$ && (theOptionalParent$.find) == 'function') ? theOptionalParent$.find : $;
-        var tmpSpot = tmpParent(tmpSelector);
-        tmpSpot.html(tmpContent);
+        var tmpSpot = me.getSpot$(theName,theOptionalParent$, theOptionalTagName)
+        if( tmpSpot ){
+            try {
+                tmpSpot.html(tmpContent);    
+            } catch (ex) {
+                //--- ToDo: Global error handling
+            }
+            
+        }
         return tmpSpot;
     }
 
@@ -494,17 +502,17 @@ var ActionAppCore = {};
        * @param  {String} theContent   [The content to load or object to use when rendering the template]
        * @param  {String} theOptionalTemplateName   [The content to load or object to use when rendering the template]
        * @param  {String} thePrepend   [true to prepend, blank or false to append (default)]
+       * @param  {String} theOptionalTagName   [The tag name to use (i.e. pagespot)]
        * @return void
        * 
        * 
        */
-    me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend) {
-        var tmpSelector = '[spot="' + theName + '"]';
+    me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend, theOptionalTagName) {
         var tmpContent = theContent || '';
-        if (theOptionalTemplateName && theOptionalTemplateName != '' && theOptionalTemplateName != null) {
+        if (theOptionalTemplateName) {
             tmpContent = me.getTemplatedContent(theOptionalTemplateName, tmpContent);
         }
-        var tmpSpot = $(tmpSelector);
+        var tmpSpot = me.getSpot$(theName,theOptionalTemplateName, theOptionalTagName)
         if (thePrepend === true) {
             tmpSpot.prepend(tmpContent);
         } else {
@@ -553,24 +561,22 @@ var ActionAppCore = {};
    *   var tmpEl = ThisApp.getSpot('main:out',parentEl)
    * 
    * @param  {String} theName   [The name of the spot to append/prepend to]
-   * @param  {jQuery Element} theOptionalParent   [The parent to find in, uses global search if not provided]
+   * @param  {jQuery Element} theOptionalParent$   [The parent to find in, uses global search if not provided]
+   * @param  {String} theOptionalTagName   [The tag name to use (i.e. pagespot)]
    * @return {jQuery Element} [The spot element]
    * 
    */
-    me.getSpot$ = function (theName, theOptionalParent) {
-        var tmpSelector = '[spot="' + theName + '"]';
-        var tmpParent = false;
-        if (theOptionalParent && theOptionalParent != null) {
-            tmpParent = theOptionalParent;
-            if (!tmpParent.attr) {
-                tmpParent = $(tmpParent);
-            }
-        }
-        if (tmpParent) {
-            return tmpParent.find(tmpSelector);
+    me.getSpot$ = function (theName, theOptionalParent$, theOptionalTagName) {
+        var tmpTagName = theOptionalTagName || 'spot';
+        var tmpSelector = '[' + tmpTagName + '="' + theName + '"]';
+        var tmpSpot = false;
+        if( theOptionalParent$ ){
+            tmpSpot = $(tmpSelector, theOptionalParent$.get(0));
         } else {
-            return $(tmpSelector);
+            tmpSpot = $(tmpSelector);
         }
+
+        return tmpSpot;
     }
 
 
@@ -2183,7 +2189,7 @@ License: MIT
             //--- Extend with new layout related spot functions
             this.addToRegion = function (theRegion, theContent, theOptionalTemplateName, thePrepend) {
                 var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
-                ThisApp.addToSpot(tmpRegionSpotName, theContent, theOptionalTemplateName, thePrepend)
+                ThisApp.addToSpot(tmpRegionSpotName, theContent, theOptionalTemplateName, thePrepend, this.getParent$())
             }
 
             this.createInstance = function (theControl, theInstanceName) {
@@ -2200,7 +2206,7 @@ License: MIT
 
             this.loadRegion = function (theRegion, theContent, theOptionalTemplateName) {
                 var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
-                ThisApp.loadSpot(tmpRegionSpotName, theContent, theOptionalTemplateName)
+                ThisApp.loadSpot(tmpRegionSpotName, theContent, theOptionalTemplateName, this.getParent$())
             }
 
         }
@@ -2413,23 +2419,47 @@ License: MIT
     }
     me.focus = me.open;
 
-    //--- Will prefix with this.pageNamespace as needed
+    //--- Will prefix with this.pageName as needed
     me.loadLayoutSpot = function (theRegionName, theContent, theOptionalTemplateName) {
         var tmpName = theRegionName || 'center';
         tmpName = this.pageName + ":" + tmpName;
         return this.loadSpot(tmpName, theContent, theOptionalTemplateName);
     }
-    //--- Will prefix with this.pageNamespace as needed
-    me.loadPageSpot = function (theName, theContent, theOptionalTemplateName) {
-        var tmpName = theName || '';
-        tmpName = this.ns(tmpName);
-        return this.loadSpot(tmpName, theContent, theOptionalTemplateName);
+
+    //--- Calls parent loadSpot with this scope and refreshes layouts
+    me.loadSpot = function (theName, theContent, theOptionalTemplateName) {
+        ThisApp.loadSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'pagespot');
+        try {
+            this.refreshLayouts();
+        } catch (error) {
+
+        }
     }
-    me.addToPageSpot = function (theName, theContent, theOptionalTemplateName) {
-        var tmpName = theName || '';
-        tmpName = this.ns(tmpName);
-        return this.addToSpot(tmpName, theContent, theOptionalTemplateName);
+    //--- Calls parent loadSpot with this scope and refreshes layouts
+    me.addToSpot = function (theName, theContent, theOptionalTemplateName) {
+        ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'pagespot');
+        try {
+            this.refreshLayouts();
+        } catch (error) {
+
+        }
+        
     }
+
+    me.loadPageSpot = me.loadSpot;
+    me.addToPageSpot = me.addSpot;
+    
+    //--- DEPRECATED    
+    // me.loadPageSpot = function (theName, theContent, theOptionalTemplateName) {
+    //     var tmpName = theName || '';
+    //     tmpName = this.ns(tmpName);
+    //     return ThisApp.loadSpot(tmpName, theContent, theOptionalTemplateName);
+    // }
+    // me.addToPageSpot = function (theName, theContent, theOptionalTemplateName) {
+    //     var tmpName = theName || '';
+    //     tmpName = this.ns(tmpName);
+    //     return ThisApp.addToSpot(tmpName, theContent, theOptionalTemplateName);
+    // }
 
     me.toTab = function (theGroupName, theItemName) {
         if (!(theGroupName && theItemName)) { return };
@@ -2438,12 +2468,11 @@ License: MIT
 
     //--- Returns jQuery element for the spot name on this page
     me.getSpot$ = function (theName) {
-        var tmpName = theName || '';
-        tmpName = this.ns(tmpName);
-        var tmpEl = ThisApp.getByAttr$({ spot: tmpName }, this.getParent$())
-        return tmpEl;
+        return ThisApp.getSpot$(theName, this.getParent$(), 'pagespot');
     }
-    me.spot$ = me.getSpot$; //shortcut
+    me.spot$ = me.getSpot$; //shortcuts
+    me.spot = me.getSpot$; //shortcuts
+    me.getSpot = me.getSpot$; //shortcuts
 
     //--- Set display (true/false) for the spot name on this page
     me.spotDisplay = function (theName, theIsVis) {
@@ -2455,16 +2484,6 @@ License: MIT
         }
     }
 
-    //--- Calls parent loadSpot and refreshes layouts
-    me.loadSpot = function (theName, theContent, theOptionalTemplateName) {
-        var tmpSpot = ThisApp.loadSpot(theName, theContent, theOptionalTemplateName, this.getParent$());
-        try {
-            this.refreshLayouts();
-        } catch (error) {
-
-        }
-        return tmpSpot;
-    }
     me.getByAttr$ = function (theItems, theExcludeBlanks) {
         return ThisApp.getByAttr$(theItems, this.getParent$(), theExcludeBlanks);
     }
@@ -4138,6 +4157,18 @@ License: MIT
         return this.ControlEl
     }
 
+    meInstance.getSpot$
+    meInstance.getSpot$ = function (theName) {
+        var tmpName = theName || '';
+        tmpName = this.ns(tmpName);
+        var tmpEl = ThisApp.getByAttr$({ myspot: tmpName }, this.getEl())
+        return tmpEl;
+    }
+    meInstance.spot$ = me.getSpot$; //shortcuts
+    meInstance.getSpot = me.getSpot$; //shortcuts
+    meInstance.spot = me.getSpot$; //shortcuts
+
+
     meInstance.getFieldSpecs = function (theFieldName) {
         try {
             var tmpConfig = this.getConfig();
@@ -4757,7 +4788,6 @@ License: MIT
         for (var iPos = 0; iPos < tmpItems.length; iPos++) {
             var tmpItem = tmpItems[iPos];
             var tmpCtl = tmpItem.ctl || 'field';
-// console.log( 'tmpItem', tmpItem);
             var tmpThisObj = {
                 ctl: tmpCtl, 
                 name: tmpItem.name || ''
@@ -5472,7 +5502,7 @@ License: MIT
     }
 
 
-    me.ControlPageSpot = {
+    me.ControlSpot = {
         getInfo: function(theControlName){
 
             var tmpProps = getCommonControlProperties(['hidden']);
@@ -5483,7 +5513,7 @@ License: MIT
                 name: "spotname",
                 label: "Spot Name",
                 type: "string",
-                notes: "A place to put stuff using ThisPage.loadPageSpot"
+                notes: "The unique name of this spot (in scope)"
             }
 
             var tmpRet = {name: theControlName,
@@ -5500,7 +5530,12 @@ License: MIT
             var tmpClasses = tmpObject.class || tmpObject.classes || '';
             var tmpStyles = tmpObject.style || tmpObject.styles || '';
             var tmpHTML = [];
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" pagespot="' + tmpName + '"></div>')
+
+            var tmpSpotAttr = 'myspot'
+            if (theControlName == 'pagespot'){
+                tmpSpotAttr = 'pagespot'
+            }
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpSpotAttr  + '="' + tmpName + '"></div>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
 
@@ -6172,20 +6207,26 @@ License: MIT
 
     //---- Add Common Controls to Catalog
 
-    me.catalog.add('title', me.ControlDivider);
+
+    //=== Root Common Web Controls ..
+    me.catalog.add('pagespot', me.ControlSpot);
+    me.catalog.add('spot', me.ControlSpot);    
+
     me.catalog.add('fieldrow', me.ControlFieldRow);
-    me.catalog.add('sep', me.ControlDivider);
-    me.catalog.add('divider', me.ControlDivider);
     me.catalog.add('field', me.ControlField);
     me.catalog.add('dropdown', me.ControlDropDown);
     me.catalog.add('checkboxlist', me.ControlCheckboxList);
     me.catalog.add('radiolist', me.ControlRadioList);
+    me.catalog.add('textarea', me.ControlTextArea);
+
     me.catalog.add('tabs', me.ControlTabs);
     me.catalog.add('tab', me.ControlTab);
-    me.catalog.add('textarea', me.ControlTextArea);
+
+    me.catalog.add('title', me.ControlDivider);
+    me.catalog.add('sep', me.ControlDivider);
+    me.catalog.add('divider', me.ControlDivider);
     me.catalog.add('message', me.ControlMessage);
     me.catalog.add('button', me.ControlButton);
-    me.catalog.add('pagespot', me.ControlPageSpot);
     me.catalog.add('segment', me.ControlPanel);
     me.catalog.add('segments', me.ControlPanel);
     me.catalog.add('panel', me.ControlPanel);
@@ -6204,7 +6245,7 @@ License: MIT
     me.catalog.add('div', me.ControlDOM);
 
 
-    //=== Wrapper - Higher Level Controls ..
+    //=== Common Custom Web Controls ..
     me.catalog.add('cardfull', me.ControlFullCard);
 
 
