@@ -45,7 +45,7 @@ Key features:
 Key concepts / features the application framework provides:
   - Common / responsive navigational components such as primary pages and sub-tabs
     * Navigation areas can be included in the top menu and/or the sidebar
-  - Common way to add a special "appaction" attribute to any element and have it trigger a common or custom function
+  - Common way to add a special "action" attribute to any element and have it trigger a common or custom function
     * So there is no need to have onclick events or other bindings
   - Application Actions use attributes on the target element to look for related parameters, such as the ID of the selected item
     * So there is no need to specify a bunch of parameters in function calls
@@ -995,7 +995,7 @@ var ActionAppCore = {};
      *   me.logs = ThisApp.getComponent("app:Logs");
      *
      *  Note: You can then call the related component functions
-     *        There is no need to get the component to use the related registered actions (i.e. <div appaction="logs:doSomeAction")
+     *        There is no need to get the component to use the related registered actions (i.e. <div action="logs:doSomeAction")
      *
      * @param  {String} theName   [the full name of the component to load including module name]
      * @return void
@@ -1070,7 +1070,7 @@ var ActionAppCore = {};
      * 
      * Example: 
      *   ThisApp.registerActionDelegate("previews", runAction);
-     *    - this makes any <div appaction="previews:doSomething" .. 
+     *    - this makes any <div action="previews:doSomething" .. 
      *     ...   go be routed to the callback "runAction" delegate function
      *
      * @param  {String} theActionDelegateName   [the prefix to use (do not iclude the ":")]
@@ -1349,7 +1349,7 @@ var ActionAppCore = {};
     /**
      * AppAction: showPage
      * 
-     * To Use:  <div appaction="showPage" item="THEPAGENAME">...
+     * To Use:  <div action="showPage" item="THEPAGENAME">...
      *
      * @param  {String} theAction   [name of the action (showPage)]
      * @param  {Object} theTargetObj   [target object with details about the page to open]
@@ -1371,7 +1371,7 @@ var ActionAppCore = {};
     /**
      * AppAction: showSubPage
      * 
-     * To Use:  <div appaction="showPage" group="THEGROUPNAME" item="THEPAGENAME" >...
+     * To Use:  <div action="showPage" group="THEGROUPNAME" item="THEPAGENAME" >...
      *
      * @param  {String} theAction   [name of the action (showSubPage)]
      * @param  {Object} theTargetObj   [target object with details about the page to open]
@@ -1508,7 +1508,7 @@ var ActionAppCore = {};
         $('body').on("click", itemClicked)
     }
 
-    //---- Internal: Gets the action or appaction from the current element or the first parent element with such an entry,
+    //---- Internal: Gets the action or action from the current element or the first parent element with such an entry,
     //               ... this is needed so when a child element is clicked, the proper parent action element is used.
     me.getActionFromObj = function(theObj, theOptionalTag) {
         var tmpTagName = theOptionalTag || 'action';
@@ -1537,8 +1537,8 @@ var ActionAppCore = {};
     function itemClicked(theEvent) {
         var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
         var tmpActionDetails = me.getActionFromObj(tmpObj);
-        if (!((tmpActionDetails.hasOwnProperty('action') || tmpActionDetails.hasOwnProperty('appaction')) && tmpActionDetails.hasOwnProperty('el'))) {
-            //--- OK, just clicked somewhere with nothing to catch it, but not an action
+        if (!((tmpActionDetails.hasOwnProperty('action') || tmpActionDetails.hasOwnProperty('action')) && tmpActionDetails.hasOwnProperty('el'))) {
+                //--- OK, just clicked somewhere with nothing to catch it, but not an action
             return;
         }
         var tmpAction = tmpActionDetails.action;
@@ -1774,8 +1774,8 @@ var ActionAppCore = {};
             }
         }
 
-        var tmpNavHTML = '{{#each navlinks}} {{#if isTopLink}}<a appuse="tablinks" group="app:pages" item="{{name}}" appaction="showPage" class="item blue">{{title}}</a>{{/if}} {{/each}}';
-        var tmpSideLinksHTML = '{{#each navlinks}} {{#if isSideLink}}<a appuse="tablinks" group="app:pages" item="{{name}}" appaction="showPage" class="item">{{{iconHTML}}}{{title}}</a>{{/if}} {{/each}}';
+        var tmpNavHTML = '{{#each navlinks}} {{#if isTopLink}}<a appuse="tablinks" group="app:pages" item="{{name}}" action="showPage" class="item blue">{{title}}</a>{{/if}} {{/each}}';
+        var tmpSideLinksHTML = '{{#each navlinks}} {{#if isSideLink}}<a appuse="tablinks" group="app:pages" item="{{name}}" action="showPage" class="item">{{{iconHTML}}}{{title}}</a>{{/if}} {{/each}}';
         ThisApp.addTemplate('tpl-side-menu-item', tmpSideLinksHTML)
         ThisApp.addTemplate('tpl-nav-menu-item', tmpNavHTML)
         $('[appuse="side-menu"]').html(ThisApp.renderTemplate('tpl-side-menu-item', me.config));
