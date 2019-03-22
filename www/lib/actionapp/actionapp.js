@@ -3982,7 +3982,7 @@ License: MIT
         return true;
     }
     //--- Store controls used by this plugin
-    me.catalog = new Index();
+    me.webControls = new Index();
 
     //--- Store actions used by controls in this plugin
     me.actions = new Index();
@@ -4286,7 +4286,7 @@ License: MIT
         var tmpFieldSpecs = this.getFieldSpecs(theFieldName);
         if (tmpFieldSpecs) {
             var tmpCtl = tmpFieldSpecs.ctl || 'field';
-            var tmpControl = me.catalog.get(tmpCtl);
+            var tmpControl = me.webControls.get(tmpCtl);
             if (!(tmpControl.setFieldValue)) {
                 tmpFieldEl.val(theValue);
                 tmpFieldEl.trigger('change');
@@ -4310,7 +4310,7 @@ License: MIT
         var tmpFieldSpecs = this.getFieldSpecs(theFieldName);
         if (tmpFieldSpecs) {
             var tmpCtl = tmpFieldSpecs.ctl || 'field';
-            var tmpControl = me.catalog.get(tmpCtl);
+            var tmpControl = me.webControls.get(tmpCtl);
             if (!(tmpControl.setFieldNote)) {
                 return true;
             } else {
@@ -4331,7 +4331,7 @@ License: MIT
         var tmpFieldSpecs = this.getFieldSpecs(theFieldName);
         if (tmpFieldSpecs) {
             var tmpCtl = tmpFieldSpecs.ctl || 'field';
-            var tmpControl = me.catalog.get(tmpCtl);
+            var tmpControl = me.webControls.get(tmpCtl);
             if (!(tmpControl.setFieldNote)) {
                 return true;
             } else {
@@ -4360,7 +4360,7 @@ License: MIT
         var tmpFieldSpecs = this.getFieldSpecs(theFieldName);
         if (tmpFieldSpecs) {
             var tmpCtl = tmpFieldSpecs.ctl || 'field';
-            var tmpControl = me.catalog.get(tmpCtl);
+            var tmpControl = me.webControls.get(tmpCtl);
             if (!(tmpControl.getFieldValue)) {
                 tmpRet = me._getControlData(this.getEl(), theFieldName);
             } else {
@@ -4392,7 +4392,7 @@ License: MIT
         
         if (tmpSpecs) {
             var tmpCtl = tmpSpecs.ctl || 'field';
-            var tmpControl = me.catalog.get(tmpCtl);
+            var tmpControl = me.webControls.get(tmpCtl);
             if( tmpControl && tmpControl.actions && tmpControl.actions[theActionName]){
                 var tmpFunc = tmpControl.actions[theActionName];
                 if( isFunc(tmpFunc) ){
@@ -5061,7 +5061,10 @@ License: MIT
             return '';
         }
 
-        var tmpControl = me.catalog.get(theControlName);
+        var tmpControl = me.webControls.get(theControlName);
+        // if( isFunc(tmpControl) ){
+
+        // }
         if (!(tmpControl && tmpControl.getHTML)) {
             console.warn("No HTML for " + theControlName)
             return '';
@@ -6205,6 +6208,8 @@ License: MIT
             }
             return tmpRet;
         },
+        //---ToDo: Change this to always create every element and apply hidden later
+        //---     this is so we get pull the spec off anytime ????
         getCustomContent: function(theControlName, theObject, theControlObj){
             var tmpObject = theObject || {};
             var tmpNewContent = [];
@@ -6322,14 +6327,14 @@ License: MIT
     }
     
     me.getControlType = function (theControlName) {
-        var tmpControl = me.getControl(theControlName)
+        var tmpControl = me.getWebControl(theControlName)
         if (tmpControl && tmpControl.isField === true) {
             return 'field'
         }
         return 'item'
     }
-    me.getControl = function (theControlName) {
-        var tmpControl = me.catalog.get(theControlName)
+    me.getWebControl = function (theControlName) {
+        var tmpControl = me.webControls.get(theControlName)
         if (tmpControl) {
             return tmpControl
         }
@@ -6399,7 +6404,7 @@ License: MIT
 
     //---- Functions to extend global pallet
     me.addWebControl = function (theName, theWebControl) {
-        me.catalog.add(theName, theWebControl);
+        me.webControls.add(theName, theWebControl);
     }
     me.addAction = function (theName, theAction) {
         me.actions.add(theName, theAction);
@@ -6412,44 +6417,44 @@ License: MIT
 
 
     //=== Root Common Web Controls ..
-    me.catalog.add('pagespot', me.ControlSpot);
-    me.catalog.add('spot', me.ControlSpot);
+    me.webControls.add('pagespot', me.ControlSpot);
+    me.webControls.add('spot', me.ControlSpot);
 
-    me.catalog.add('fieldrow', me.ControlFieldRow);
-    me.catalog.add('field', me.ControlField);
-    me.catalog.add('dropdown', me.ControlDropDown);
-    me.catalog.add('checkboxlist', me.ControlCheckboxList);
-    me.catalog.add('radiolist', me.ControlRadioList);
-    me.catalog.add('textarea', me.ControlTextArea);
+    me.webControls.add('fieldrow', me.ControlFieldRow);
+    me.webControls.add('field', me.ControlField);
+    me.webControls.add('dropdown', me.ControlDropDown);
+    me.webControls.add('checkboxlist', me.ControlCheckboxList);
+    me.webControls.add('radiolist', me.ControlRadioList);
+    me.webControls.add('textarea', me.ControlTextArea);
 
-    me.catalog.add('tabs', me.ControlTabs);
-    me.catalog.add('tab', me.ControlTab);
+    me.webControls.add('tabs', me.ControlTabs);
+    me.webControls.add('tab', me.ControlTab);
 
-    me.catalog.add('title', me.ControlDivider);
-    me.catalog.add('sep', me.ControlDivider);
-    me.catalog.add('divider', me.ControlDivider);
-    me.catalog.add('message', me.ControlMessage);
-    me.catalog.add('button', me.ControlButton);
-    me.catalog.add('segment', me.ControlPanel);
-    me.catalog.add('segments', me.ControlPanel);
-    me.catalog.add('panel', me.ControlPanel);
-    me.catalog.add('image', me.ControlImage);
-    me.catalog.add('element', me.ControlElement);
-    me.catalog.add('card', me.ControlElement);
-    me.catalog.add('cards', me.ControlPanel);
-    me.catalog.add('content', me.ControlElement);
-    me.catalog.add('header', me.ControlElement);
-    me.catalog.add('meta', me.ControlElement);
-    me.catalog.add('description', me.ControlElement);
-    me.catalog.add('extra', me.ControlElement);
+    me.webControls.add('title', me.ControlDivider);
+    me.webControls.add('sep', me.ControlDivider);
+    me.webControls.add('divider', me.ControlDivider);
+    me.webControls.add('message', me.ControlMessage);
+    me.webControls.add('button', me.ControlButton);
+    me.webControls.add('segment', me.ControlPanel);
+    me.webControls.add('segments', me.ControlPanel);
+    me.webControls.add('panel', me.ControlPanel);
+    me.webControls.add('image', me.ControlImage);
+    me.webControls.add('element', me.ControlElement);
+    me.webControls.add('card', me.ControlElement);
+    me.webControls.add('cards', me.ControlPanel);
+    me.webControls.add('content', me.ControlElement);
+    me.webControls.add('header', me.ControlElement);
+    me.webControls.add('meta', me.ControlElement);
+    me.webControls.add('description', me.ControlElement);
+    me.webControls.add('extra', me.ControlElement);
 
-    me.catalog.add('i', me.ControlDOM);
-    me.catalog.add('span', me.ControlDOM);
-    me.catalog.add('div', me.ControlDOM);
+    me.webControls.add('i', me.ControlDOM);
+    me.webControls.add('span', me.ControlDOM);
+    me.webControls.add('div', me.ControlDOM);
 
 
     //=== Common Custom Web Controls ..
-    me.catalog.add('cardfull', me.ControlFullCard);
+    me.webControls.add('cardfull', me.ControlFullCard);
 
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 
@@ -6637,3 +6642,554 @@ License: MIT
 })(ActionAppCore, $);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+Author: Joseph Francis
+License: MIT
+*/
+
+//---  SiteControl - Base for all application controls --- --- --- --- --- --- --- --- --- --- --- --- 
+(function (ActionAppCore, $) {
+
+    var SiteMod = ActionAppCore.module("site");
+    SiteMod.SiteControl = SiteControl;
+
+    var defaultLayoutOptions = {
+        spacing_closed: 8,
+        spacing_open: 6,
+        resizable: true,
+        togglerLength_open: 100,
+        togglerLength_closed: 100,
+        south__resizable: false,
+        south__closable: false,
+        south__slidable: false,
+        south__togglerLength_open: 0,
+        south__spacing_open: 0,
+        north__resizable: false,
+        north__closable: false,
+        north__slidable: false,
+        north__togglerLength_open: 0,
+        north__spacing_open: 0,
+        center__paneSelector: ".middle-center",
+        north__paneSelector: ".middle-north",
+        south__paneSelector: ".middle-south",
+        west__paneSelector: ".middle-west",
+        east: { paneSelector: ".middle-east", resizable: true, resizeWhileDragging: true, slidable: true }
+    };
+
+
+
+    //--- Base class for application controls
+    function SiteControl(theOptions) {
+        this.options = theOptions || {};
+        this.controlName = this.options.controlName || '';
+        this.controlNamespace = this.options.controlNamespace || '';
+        this.controlIndex = {}; //--- Control Configs Loaded, not instances
+        this.part = {}; //--- Control instances by name
+        this.parts = this.part //longcut - keep typing it wrong, can use either :)
+        this.controlActions = {}; //--- A place for actions
+        this.controlTitle = this.options.controlTitle || '';
+        this.controlTemplates = this.options.controlTemplates || [];
+        this.controlControls = this.options.controlControls || [];
+        this.layoutTemplates = this.options.layoutTemplates || false;
+
+        this.navOptions = this.navOptions || this.options.navOptions || {};
+        this._activatedFlag = false;
+        //this.controlTemplate = this.options.controlTemplate || '';
+        this.layoutOptions = this.options.layoutOptions || false;
+
+        //!this.controlTemplate || 
+        if (this.layoutOptions) {
+            this.layoutOptions = this.layoutOptions || {};
+            this.layoutConfig = $.extend({}, defaultLayoutOptions, (this.options.layoutConfig || {}));
+
+            //--- Use standard border layout template if none provided
+            this.layoutOptions.spotPrefix = this.layoutOptions.spotPrefix || this.controlName;
+            //this.controlTemplate = this.controlTemplate || 'tpl-border-layout';
+            this.layoutConfig.onresize = (
+                function (thePane, theElement, theState, theOptions, theName) {
+                    if (typeof (this._onResizeLayout) == 'function') {
+                        this._onResizeLayout(thePane, theElement, theState, theOptions, theName);
+                    }
+                }
+            ).bind(this);
+
+            //--- Extend with new layout related spot functions
+            this.addToRegion = function (theRegion, theContent, theOptionalTemplateName, thePrepend) {
+                var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
+                ThisApp.addToSpot(tmpRegionSpotName, theContent, theOptionalTemplateName, thePrepend, this.getParent$())
+            }
+
+            this.createInstance = function (theControl, theInstanceName) {
+                this.part[theInstanceName] = theControl.create(theInstanceName);
+                return theControl.create(theInstanceName);
+            }
+
+            this.loadLayoutControl = function (theRegion, theControl, theInstanceName) {
+                var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
+                var tmpInstance = this.createInstance(theControl, theInstanceName)
+                tmpInstance.loadToElement(tmpRegionSpotName);
+
+            }
+
+            this.loadRegion = function (theRegion, theContent, theOptionalTemplateName) {
+                var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
+                ThisApp.loadSpot(tmpRegionSpotName, theContent, theOptionalTemplateName, this.getParent$())
+            }
+
+        }
+        this.appModule = this.options.appModule || false;
+        if (this.appModule) {
+            this.appModule[this.controlName] = this;
+        }
+    }
+
+    var me = SiteControl.prototype;
+    //var that = this;
+
+    me.addControlWebControl = function (theControlName, theControl) {
+        ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
+    }
+
+    me.initControls = function (theSpecs, theOptions) {
+        var dfd = jQuery.Deferred();
+        //--- if no templates to process, no prob, return now
+        if (!(theSpecs && theSpecs.controlsMap)) {
+            dfd.resolve(true);
+            return dfd.promise();
+        }
+
+        var tmpTpls = [];
+        for (var aName in theSpecs.controlsMap) {
+            tmpTpls.push(aName);
+        }
+        var tmpBaseURL = theSpecs.baseURL || '/controls/';
+
+        //--- This is needed because this changes inside the promise due to 
+        //    not .bind(this) in the function, the temp reference is quicker, same result
+        var tmpThis = this;
+        ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpTpls).then(function (theDocs) {
+            for (var aKey in theDocs) {
+                var tmpName = theSpecs.controlsMap[aKey];
+                if (tmpName) {
+                    var tmpControlSpecs = theDocs[aKey];
+                    var tmpHTML = ThisApp.json(tmpControlSpecs);
+                    var tmpPrefix = tmpThis.ns().replace(":", "");
+                    tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
+                    tmpControlSpecs = ThisApp.json(tmpHTML);
+                    tmpThis.controlIndex[tmpName] = ThisApp.controls.newControl(tmpControlSpecs, { parent: tmpThis });
+                }
+            }
+            dfd.resolve(true);
+        });
+        return dfd.promise();
+    }
+
+
+    me.initOnFirstLoad = function () {
+        var dfd = jQuery.Deferred();
+        var tmpThis = this;
+        var tmpNS = '';
+        this.options = this.options || {};
+        me.controls = {};
+        var tmpThis = this;
+        ThisApp.initTemplates(tmpThis.controlTemplates, tmpThis.options).then(
+            function () {
+                tmpThis.initControls(tmpThis.controlControls, tmpThis.options).then(
+                    function () {
+                        //--- No async calls, just run it
+                        tmpThis.initLayout();
+                        tmpThis.initAppComponents();
+                        dfd.resolve(true);
+                    }
+                )
+            }
+        );
+        return dfd.promise();
+    }
+
+
+    //--- Usage: <div appuse="template" name="yourns:yourname">Template for {{titie}}</div>
+    me.loadTemplatesFromMarkup = function () {
+
+
+        var tmpNS = '';
+        var tmpOptions = this.options || {};
+        if (tmpOptions && tmpOptions.controlNamespace) {
+            tmpNS = tmpOptions.controlNamespace + ":";
+        }
+
+        var tmpEls = ThisApp.getByAttr$({ control: this.controlName, appuse: "template" })
+
+        if (tmpEls && tmpEls.length > 0) {
+            for (var i = 0; i < tmpEls.length; i++) {
+                var tmpEl = $(tmpEls[i]);
+                var tmpName = tmpEl.attr('name') || '';
+                var tmpHTML = tmpEl.html();
+                if (tmpNS) {
+                    tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpNS)
+                }
+                ThisApp.addTemplate(tmpName, tmpHTML);
+            }
+        }
+    }
+
+    //--- Usage: <div appuse="content" region="north">North Content</div>
+    me.loadLayoutFromMarkup = function () {
+        var tmpRegions = ['north', 'south', 'east', 'west'];
+        var tmpOptions = this.options || {};
+        var tmpEls = ThisApp.getByAttr$({ control: this.controlName, region: "center", appuse: "content" })
+
+        if (tmpEls && tmpEls.length > 0) {
+            var tmpCenterHTML = tmpEls.html();
+            if (tmpOptions && tmpOptions.controlNamespace) {
+                tmpCenterHTML = ThisApp.getUpdatedMarkupForNS(tmpCenterHTML, tmpOptions.controlNamespace)
+            }
+            this.loadRegion('center', tmpCenterHTML);
+            tmpEls.remove();
+        }
+
+        for (var i = 0; i < tmpRegions.length; i++) {
+            var tmpRegion = tmpRegions[i];
+            //--- Is this region turned on?
+            if (this.layoutOptions[tmpRegion]) {
+                //--- Find related element and use it
+                var tmpEls = ThisApp.getByAttr$({ control: this.controlName, region: tmpRegion, appuse: "content" })
+                if (tmpEls && tmpEls.length > 0) {
+                    var tmpHTML = tmpEls.html();
+                    if (tmpOptions && tmpOptions.controlNamespace) {
+                        tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.controlNamespace)
+                    }
+                    this.loadRegion(tmpRegion, tmpHTML);
+                    tmpEls.remove();
+                }
+
+            }
+        }
+    }
+
+    //--- Control level call to init app components on this control
+    me.initAppComponents = function () {
+        ThisApp.initAppComponents(this.getParent$())
+    }
+    me.getUpdatedMarkupForNS = function (theHTML) {
+        return ThisApp.getUpdatedMarkupForNS(this.ns());
+    }
+
+    me.initLayout = function () {
+
+        if (this.layoutOptions && this.layoutOptions.content) {
+            var tmpContentItems = this.layoutOptions.content;
+            for (var aName in tmpContentItems) {
+                var tmpContent = tmpContentItems[aName];
+                this.loadRegion(aName, tmpContent);
+            }
+        }
+        if (this.layoutOptions && this.layoutOptions.markedupLayout === true) {
+            this.loadLayoutFromMarkup();
+        }
+        if (this.layoutOptions && this.layoutOptions.markedupTemplates === true) {
+            this.loadTemplatesFromMarkup();
+        }
+
+        if (this.layoutOptions && this.layoutOptions.templates) {
+            var tmpLTs = this.layoutOptions.templates;
+            var tmpContext = {}
+            for (var aName in tmpLTs) {
+                var tmpLT = tmpLTs[aName];
+                var tmpLTName = '';
+                if (typeof (tmpLT) == 'string') {
+                    tmpLTName = tmpLT;
+                } else {
+                    tmpLTName = tmpLT.name;
+                }
+                this.loadRegion(aName, ThisApp.renderTemplate(tmpLTName, tmpContext));
+            }
+        }
+
+        if (this.layoutOptions && this.layoutOptions.controls) {
+            var tmpLTs = this.layoutOptions.controls;
+            var tmpContext = {}
+
+            for (var aName in tmpLTs) {
+                var tmpInstanceName = aName;
+                var tmpLT = tmpLTs[aName];
+                var tmpLTName = '';
+                if (typeof (tmpLT) == 'string') {
+                    tmpLTName = tmpLT;
+                } else {
+                    tmpLTName = tmpLT.control;
+                    tmpInstanceName = tmpLT.partname || tmpLT.name;
+                }
+                var tmpCtl = this.controlIndex[tmpLTName];
+                tmpCtl.controlConfig.parentRegionName = aName;
+                this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
+            }
+        }
+
+        //--- This resizes the layouts with the new content loaded from templates
+        if (typeof (ThisApp.refreshLayouts) == 'function') {
+            ThisApp.refreshLayouts();
+        }
+    }
+
+    //--- Used to add this controls namespace to a string
+    // returns controlNamespace:theString
+    // returns controlNamespace: if nothing passed, to get the NS of the control
+    me.prefixString = function (theString) {
+        return this.controlNamespace + ":" + (theString || '');
+    }
+    //-- Shortcut
+    me.ns = me.prefixString;
+
+    me.open = function (theOptions) {
+        return ThisApp.gotoControl(this.controlName);
+    }
+    me.focus = me.open;
+
+    //--- Will prefix with this.controlName as needed
+    me.loadLayoutSpot = function (theRegionName, theContent, theOptionalTemplateName) {
+        var tmpName = theRegionName || 'center';
+        tmpName = this.controlName + ":" + tmpName;
+        return this.loadSpot(tmpName, theContent, theOptionalTemplateName);
+    }
+
+    //--- Calls parent loadSpot with this scope and refreshes layouts
+    me.loadSpot = function (theName, theContent, theOptionalTemplateName) {
+        ThisApp.loadSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'controlspot');
+        try {
+            this.refreshLayouts();
+        } catch (error) {
+
+        }
+    }
+
+    //--- Calls parent loadSpot with this scope and refreshes layouts
+    me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend) {
+        ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, thePrepend, this.getParent$(), 'controlspot');
+        try {
+            this.refreshLayouts();
+        } catch (error) {
+
+        }
+
+    }
+
+    //--- Deprecated, use ThisControl.loadSpot and addToSpot ***
+    me.loadControlSpot = me.loadSpot;
+    me.addToControlSpot = me.addSpot;
+
+    me.toTab = function (theGroupName, theItemName) {
+        if (!(theGroupName && theItemName)) { return };
+        ThisApp.gotoTab(this.ns(theGroupName), theItemName)
+    }
+
+    //--- Returns jQuery element for the spot name on this control
+    me.getSpot$ = function (theName) {
+        return ThisApp.getSpot$(theName, this.getParent$(), 'controlspot');
+    }
+    me.spot$ = me.getSpot$; //shortcuts
+    me.spot = me.getSpot$; //shortcuts
+    me.getSpot = me.getSpot$; //shortcuts
+
+    //--- Set display (true/false) for the spot name on this control
+    me.spotDisplay = function (theName, theIsVis) {
+        tmpEl = this.getSpot$(theName);
+        if (theIsVis) {
+            tmpEl.show();
+        } else {
+            tmpEl.hide();
+        }
+    }
+
+    me.getByAttr$ = function (theItems, theExcludeBlanks) {
+        return ThisApp.getByAttr$(theItems, this.getParent$(), theExcludeBlanks);
+    }
+    me.getParent$ = function () {
+        var tmpAttribs = {
+            group: "app:controls",
+            item: this.controlName
+        }
+        this.parent$ = this.parent$ || $(this._el)
+        return this.parent$;
+    }
+    me.refreshLayouts = function () {
+        if (this.layout) {
+            this.layout.resizeAll();
+        }
+    }
+
+    //======================================
+    //======================================
+    //======================================
+
+
+    me.init = init;
+    function init(theApp) {
+
+        if (theApp) {
+            this.app = theApp;
+        }
+
+        if (typeof (this._onPreInit) == 'function') {
+            this._onPreInit(this.app)
+        }
+
+        if (this.app && this.controlNamespace && this.controlNamespace != '') {
+            this.app.registerActionDelegate(this.controlNamespace, runAction.bind(this));
+        }
+
+        //--- Add dynamic link on init from plugin module
+        if (this.app && this.app.$appControlContainer) {
+            this.app.$appControlContainer.append('<div appuse="cards" group="app:controls" item="' + this.controlName + '" class="hidden">' + this.controlTitle + '</div>');
+            this._el = this.app.$appControlContainer.find('[group="app:controls"][item="' + this.controlName + '"]')
+
+            this.app.registerNavLink({
+                "name": this.controlName,
+                "title": this.controlTitle,
+                "options": this.navOptions || {},
+                "onActivate": onActivateThisControl.bind(this)
+            });
+            this.getLayoutHTML = function () {
+                var tmpRet = "";
+                var tmpAll = ['north', 'south', 'center', 'east', 'west'];
+                var tmpPre = this.layoutOptions.spotPrefix;
+                for (var i = 0; i < tmpAll.length; i++) {
+                    var tmpArea = tmpAll[i];
+                    if (this.layoutOptions[tmpArea] !== false) {
+                        tmpRet += '<div spot="' + tmpPre + ':' + tmpArea + '" class="middle-' + tmpArea + '"></div>';
+                    }
+                }
+                return tmpRet;
+            };
+
+            this.parentEl = this.app.getByAttr$({ group: "app:controls", item: this.controlName });
+            this.parentEl.html(this.getLayoutHTML());
+
+
+            this.parentEl.on("click", itemClicked.bind(this))
+
+
+            if (typeof (this._onInit) == 'function') {
+                this._onInit(this.app)
+            };
+
+            if (this.layoutOptions && this.layoutConfig) {
+                this.layoutSpot = ThisApp.getByAttr$({ group: ThisApp.controlsGroup, "item": this.controlName });
+                this.layout = this.layoutSpot.layout(this.layoutConfig);
+            };
+
+        }
+
+    }
+
+
+
+    //---- Internal Stuff ---------------------
+    /*
+    function registerControl() {
+        if (typeof (me.options.app) == 'object') {
+            ThisApp = me.options.app;
+            if (me.controlName != '' && ThisApp && ThisApp.registerComponent) {
+                ThisApp.registerComponent("app:" + me.controlName, this);
+            }
+        }
+    }
+     */
+
+    function itemClicked(theEvent) {
+        var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
+        var tmpActionDetails = ThisApp.getActionFromObj(tmpObj, 'controlaction');
+        if (!(tmpActionDetails.hasOwnProperty('action') && tmpActionDetails.hasOwnProperty('el'))) {
+            //--- OK, just clicked somewhere with nothing to catch it, but not an action
+            return;
+        }
+        var tmpAction = tmpActionDetails.action;
+        tmpObj = tmpActionDetails.el;
+
+        if (tmpAction) {
+            theEvent.preventDefault();
+            theEvent.stopPropagation();
+            this.runAction(tmpAction, tmpObj);
+        }
+        return false;
+
+    }
+    me.runAction = runAction;
+    function runAction(theAction, theSourceObject) {
+        var tmpAction = theAction || '';
+        tmpAction = tmpAction.replace((this.controlNamespace + ":"), '');
+        var tmpMyActions = this.controlActions || {};
+
+        if (typeof (tmpMyActions[tmpAction]) == 'function') {
+            tmpMyActions[tmpAction](tmpAction, theSourceObject);
+        } else if (typeof (this[tmpAction]) == 'function') {
+            this[tmpAction](tmpAction, theSourceObject);
+        } else if (typeof (me[tmpAction]) == 'function') {
+            me[tmpAction](tmpAction, theSourceObject);
+        }
+    }
+
+    function onActivateThisControl() {
+        //-- Runs _onFirstActivate one time, 
+        //    ... then calls _onActivate sucessive times
+        //  _onActivate NOT CALLED the first time, 
+        //   ... call manually if needed from _onFirstActivate
+        if (!this._activatedFlag) {
+            this._activatedFlag = true;
+            if (typeof (this._onFirstActivate) == 'function') {
+                this._onFirstActivate(this.app);
+            }
+        } else if (typeof (this._onActivate) == 'function') {
+            this._onActivate(this.app);
+        }
+    }
+
+    return me;
+
+})(ActionAppCore, $);
