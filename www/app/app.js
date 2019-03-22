@@ -34,7 +34,7 @@
       var tmpAppPanelSpecs = {
         baseURL: 'app/panels',
         panelMap: {
-          "TesterControl": "TesterControl"
+          "showfor.json": "frmShowFor"
         }
       };
 
@@ -68,7 +68,7 @@
       var tmpHidePages = (tmpAppCompsToInit.length < 2)
 
 
-      ThisApp.init({ appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
+      ThisApp.init({ appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {

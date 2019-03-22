@@ -211,7 +211,8 @@ var ActionAppCore = {};
         me.actions = me.options.actions || {};
         me.actionsDelegates = me.options.actionsDelegates || {};
 
-        me.ctls = {};
+        me.panelIndex = {};
+        me.ctlIndex = {};
 
         var defaults = {};
         me.events = $({});
@@ -389,26 +390,67 @@ var ActionAppCore = {};
 
     }
 
+    
+
+    
+    me.hasPanel = function(thePanelName){
+        var tmpPanel = me.panelIndex(thePanelName);
+        return !(!tmpPanel);
+    }
+    me.registerPanel = function(thePanelName, thePanel){
+        console.log( 'registerPanel', thePanelName, thePanel);
+        this.panelIndex[thePanelName] = thePanel
+    }
+    me.getPanel = function(thePanelName){
+        var dfd = jQuery.Deferred();
+
+        try {
+            var tmpPanel = me.panelIndex[thePanelName];
+            if( tmpPanel ){
+                console.log( 'tmpPanel cached', tmpPanel);
+                dfd.resolve(tmpPanel)
+                return dfd;
+            }
+            me.loadAppPanel(thePanelName).then(function(){
+                tmpPanel = me.ctlIndex[thePanelName];
+                if( tmpPanel ){
+                    console.log( 'tmpPanel new', tmpPanel);
+                    dfd.resolve(tmpPanel);
+                } else {
+                    dfd.reject("Not found " + thePanelName)
+                }
+            })
+
+
+        } catch (ex) {
+            dfd.reject(ex)
+        }
+        
+        
+        return dfd
+    }
+
+
     me.hasControl = function(theControlName){
-        var tmpControl = me.ctls(theControlName);
+        var tmpControl = me.ctlIndex(theControlName);
         return !(!tmpControl);
     }
     me.registerControl = function(theControlName, theControl){
         console.log( 'registerControl', theControlName, theControl);
-        me.ctls[theControlName] = theControl
+        this.ctlIndex[theControlName] = theControl
     }
     me.getControl = function(theControlName){
         var dfd = jQuery.Deferred();
 
         try {
-            var tmpControl = me.ctls[theControlName];
+            var tmpControl = me.ctlIndex[theControlName];
             if( tmpControl ){
                 console.log( 'tmpControl cached', tmpControl);
                 dfd.resolve(tmpControl)
                 return dfd;
             }
             me.loadAppControl(theControlName).then(function(){
-                tmpControl = me.ctls[theControlName];
+                tmpControl = me.ctlIndex[theControlName];
                 if( tmpControl ){
                     console.log( 'tmpControl new', tmpControl);
                     dfd.resolve(tmpControl);
@@ -438,11 +480,13 @@ var ActionAppCore = {};
         //      it can be created using the me._getNewControl function
         jQuery.getScript(tmpURL)
             .done(function () {
-               
-                ThisApp.delay(2000).then(function(){
+                dfd.resolve(theControlName);    
+
+                // Fake delay to show it waits to load
+                /** ThisApp.delay(2000).then(function(){
                     console.log("ThisApp",ThisApp)
                     dfd.resolve(theControlName);    
-                })
+                })*/
                 
             })
             .fail(function (theError) {
@@ -533,6 +577,46 @@ var ActionAppCore = {};
 
     }
     
+    me.initPanels = function (theSpecs, theOptions) {
+        var tmpOptions = theOptions || {};
+        
+        console.log( 'initPanels', theSpecs);
+        var dfd = jQuery.Deferred();
+        //--- if no templates to process, no prob, return now
+        if (!(theSpecs && theSpecs.panelMap)) {
+            dfd.resolve(true);
+            return dfd.promise();
+        }
+
+        var tmpCtls = [];
+        for (var aName in theSpecs.panelMap) {
+            tmpCtls.push(aName);
+        }
+        var tmpBaseURL = theSpecs.baseURL || '/panels';
+
+        //--- This is needed because this changes inside the promise due to 
+        //    not .bind(this) in the function, the temp reference is quicker, same result
+        var tmpThis = this;
+        ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
+            for (var aKey in theDocs) {
+                var tmpName = theSpecs.panelMap[aKey];
+                if (tmpName) {
+                    var tmpEntrySpecs = theDocs[aKey];
+                    var tmpHTML = ThisApp.json(tmpEntrySpecs);
+                    var tmpParentNSParent = tmpOptions.nsParent || false;
+                    var tmpPrefix = '';
+                    if (tmpParentNSParent){
+                        tmpPrefix = tmpParentNSParent.ns().replace(":", "");
+                    }
+                    tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
+                    tmpEntrySpecs = ThisApp.json(tmpHTML);
+                    tmpThis.registerPanel(tmpName, ThisApp.controls.newControl(tmpEntrySpecs, { parent: ThisApp }));
+                }
+            }
+            dfd.resolve(true);
+        });
+        return dfd.promise();
+    }
 
     me.initTemplates = function (theTemplateSpecs, theOptions) {
         var dfd = jQuery.Deferred();
@@ -1838,16 +1922,20 @@ var ActionAppCore = {};
 
         var tmpPromTpl = true;
         if (theAppConfig && theAppConfig.appTemplates) {
-            tmpPromTpl = me.initTemplates(theAppConfig.appTemplates).then(function () {})
+            tmpPromTpl = me.initTemplates(theAppConfig.appTemplates)
         };
         
         var tmpPromCtl = true;
         if (theAppConfig && theAppConfig.appControls) {
-            
-            tmpPromCtl = me.initControls(theAppConfig.appControls).then(function () {})
+            tmpPromCtl = me.initControls(theAppConfig.appControls)
         };
 
-        $.when(tmpPromCtl,tmpPromTpl).then(function(){
+        var tmpPromPanel = true;
+        if (theAppConfig && theAppConfig.appPanels) {
+            tmpPromPanel = me.initPanels(theAppConfig.appPanels)
+        };
+
+        $.when(tmpPromCtl,tmpPromTpl, tmpPromPanel).then(function(){
             //--- do the rest of the app load
             dfd.resolve(true);
         })
