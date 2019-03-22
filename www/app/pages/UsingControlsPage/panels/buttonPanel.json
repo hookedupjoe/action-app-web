@@ -46,6 +46,15 @@
 			"icon": "arrow right","right":true,"labeled": true,
 			"name": "btn-test-03",
 			"text": "Run Test 3"
+		},
+		{
+			"ctl": "button",
+			"size": "large",
+			"pageaction": "runTest",
+			"attr": {
+				"testname": "Test 4"
+			},
+			"text": "Run Test 4"
 		}
 	]
 }

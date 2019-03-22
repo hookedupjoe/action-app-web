@@ -18,7 +18,7 @@
 					"content": [
 						{
 							"ctl": "tabs",
-							"color": "green",
+							"color": "purple",
 							"name": "secondary-tab",
 							"tabs": [
 								{

@@ -170,7 +170,7 @@ License: MIT
                     }
                 }
                 //--- Extend the page header with new exciting funtionality
-                ThisPage.part.pageTitle.extend(myStuff);
+                ThisPage.parts.pageTitle.extend(myStuff);
 
                 // ThisPage.part.pageTitle.addAction("refreshList", ThisPage.sayHelloTitle)
                 // ThisPage.part.pageTitle.runAction("refreshList", {})
@@ -220,17 +220,20 @@ License: MIT
         } else if( tmpTestName == "Test 2"){
             ThisPage.part.pageTitle.sayHello();
         } else if( tmpTestName == "Test 3"){
-            ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theControl) {
+            ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theData) {
                 if( theReply == false){
                     return false;
                 }
-                if (theControl) {
-                    var tmpData = theControl.getData();
-                    console.log("tmpData",tmpData);
+                if (theData) {
+                    console.log("theData",theData);
                     alert( "See console for form data","Form Submitted");
+                } else {
+                    console.warn("No data returned, expected some")
                 }
             })
 
+        } else if( tmpTestName == "Test 4"){
+            
         } else {
             tmpTestName = 'Just the test'
         }
