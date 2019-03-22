@@ -4291,6 +4291,9 @@ License: MIT
     }
 
     meControl.prompt = function (theOptions) {
+        var dfd = jQuery.Deferred();
+        
+        
         var tmpOptions = theOptions || {};
         var tmpConfig = this.controlConfig;
         var tmpCaption = tmpOptions.defaultCaption || tmpConfig.defaultCaption || "Save Changes";
@@ -4332,7 +4335,17 @@ License: MIT
             $.extend(tmpPromptOptions, tmpExtraOptions)
         }
 
-        return ThisApp.prompter.prompt(tmpPromptOptions)
+        ThisApp.prompter.prompt(tmpPromptOptions).then(function(theReply, theControl){
+            var tmpData = {};
+            if( theReply && theControl && isFunc(theControl.getData) ){
+                tmpData = theControl.getData();
+            }
+            dfd.resolve(theReply, tmpData)
+        })
+
+        
+        
+        return dfd;
     }
 
 
