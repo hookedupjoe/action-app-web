@@ -153,13 +153,18 @@ License: MIT
     }
 
     function test4(theParams){
-        var tmpReady = true;
-        if( !(ThisPage.scope.test3Control) ){
-            tmpReady = test3();
-        }
-        $.when(tmpReady).then(function(){
-            ThisPage.scope.test3Control.sayHello();
-        })
+        // var tmpReady = true;
+        // if( !(ThisPage.scope.test3Control) ){
+        //     tmpReady = test3();
+        // }
+        // $.when(tmpReady).then(function(){
+        //     ThisPage.scope.test3Control.sayHello();
+        // })
+
+        ThisApp.getControl('TesterControl').prompt().then(function(theReply, theData){
+            console.log( 'theData', theData);
+            
+        });
     }
     function test3(theParams){
         var dfd = jQuery.Deferred();
