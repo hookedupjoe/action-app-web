@@ -480,7 +480,15 @@ var ActionAppCore = {};
        
         var dfd = jQuery.Deferred();
         var tmpBaseURL = '/app/controls';
-        var tmpURL = tmpBaseURL + "/" + theControlName.replace(/\./g,'/');
+
+        var tmpURL = '';
+        //theControlName
+        if( theControlName.indexOf('/') == 0){
+            tmpURL = theControlName.replace(/\./g,'/');
+        } else {
+            tmpURL = tmpBaseURL + "/" + theControlName.replace(/\./g,'/');
+        }
+        
         tmpURL += "/index.js";
 
         //--- Get the control, when the control loads - it registers itself

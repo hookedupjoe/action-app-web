@@ -4,7 +4,7 @@ License: MIT
 */
 (function (ActionAppCore, $) {
 
-    var ControlName = "MySpecialTesterControl";
+    var ControlName = "TesterControl";
 
     var ControlSpecs = {
         "content": [

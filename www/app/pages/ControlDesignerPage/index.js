@@ -161,10 +161,13 @@ License: MIT
         //     ThisPage.scope.test3Control.sayHello();
         // })
 
-        ThisApp.getControl('TesterControl').prompt().then(function(theReply, theData){
-            console.log( 'theData', theData);
-            
-        });
+        ThisApp.loadControl('TesterControl', '/app/pages/ControlDesignerPage/controls').then(function(theControl){
+            theControl.prompt().then(function(theReply, theData){
+                console.log( 'theData', theData);
+            });
+        })
+        
+        
     }
     function test3(theParams){
         var dfd = jQuery.Deferred();
