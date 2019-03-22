@@ -391,28 +391,28 @@ var ActionAppCore = {};
     }
 
     
-
+    
     
     me.hasPanel = function(thePanelName){
-        var tmpPanel = me.panelIndex(thePanelName);
+        var tmpPanel = this.panelIndex(thePanelName);
         return !(!tmpPanel);
     }
     me.registerPanel = function(thePanelName, thePanel){
-        console.log( 'registerPanel', thePanelName, thePanel);
+        console.log( 'registerPanel', thePanelName, thePanel, this);
         this.panelIndex[thePanelName] = thePanel
     }
     me.getPanel = function(thePanelName){
         var dfd = jQuery.Deferred();
 
         try {
-            var tmpPanel = me.panelIndex[thePanelName];
+            var tmpPanel = this.panelIndex[thePanelName];
             if( tmpPanel ){
                 console.log( 'tmpPanel cached', tmpPanel);
                 dfd.resolve(tmpPanel)
                 return dfd;
             }
-            me.loadAppPanel(thePanelName).then(function(){
-                tmpPanel = me.ctlIndex[thePanelName];
+            this.loadAppPanel(thePanelName).then(function(){
+                tmpPanel = this.panelIndex[thePanelName];
                 if( tmpPanel ){
                     console.log( 'tmpPanel new', tmpPanel);
                     dfd.resolve(tmpPanel);
@@ -580,7 +580,7 @@ var ActionAppCore = {};
     me.initPanels = function (theSpecs, theOptions) {
         var tmpOptions = theOptions || {};
         
-        console.log( 'initPanels', theSpecs);
+        console.log( 'initPanels', theSpecs, this);
         var dfd = jQuery.Deferred();
         //--- if no templates to process, no prob, return now
         if (!(theSpecs && theSpecs.panelMap)) {
@@ -610,7 +610,7 @@ var ActionAppCore = {};
                     }
                     tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
                     tmpEntrySpecs = ThisApp.json(tmpHTML);
-                    tmpThis.registerPanel(tmpName, ThisApp.controls.newControl(tmpEntrySpecs, { parent: ThisApp }));
+                    tmpThis.registerPanel(tmpName, ThisApp.controls.newControl(tmpEntrySpecs, { parent: tmpThis }));
                 }
             }
             dfd.resolve(true);
@@ -2408,6 +2408,12 @@ License: MIT
         this.pageTitle = this.options.pageTitle || '';
         this.pageTemplates = this.options.pageTemplates || [];
         this.pageControls = this.options.pageControls || [];
+        this.pagePanels = this.options.pagePanels || [];
+        console.log( 'this.pagePanels', this.pagePanels);
+        
+        this.panelIndex = {};
+        this.ctlIndex = {};
+
         this.layoutTemplates = this.options.layoutTemplates || false;
 
         this.navOptions = this.navOptions || this.options.navOptions || {};
@@ -2464,6 +2470,20 @@ License: MIT
     var me = SitePage.prototype;
     //var that = this;
 
+    
+    me.getPanel = function(thePanelName){
+        return this.panelIndex[thePanelName];
+    }
+    me.hasPanel = function(thePanelName){
+        var tmpPanel = this.panelIndex[thePanelName];
+        return !(!tmpPanel);
+    }
+    me.registerPanel = function(thePanelName, thePanel){
+        console.log( 'registerPanel page ', thePanelName, thePanel, this);
+        this.panelIndex[thePanelName] = thePanel
+    }
+
+
     me.addPageWebControl = function (theControlName, theControl) {
         ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
     }
@@ -2509,19 +2529,53 @@ License: MIT
         var tmpNS = '';
         this.options = this.options || {};
         me.controls = {};
+        
         var tmpThis = this;
-        ThisApp.initTemplates(tmpThis.pageTemplates, tmpThis.options).then(
-            function () {
-                tmpThis.initControls(tmpThis.pageControls, tmpThis.options).then(
-                    function () {
-                        //--- No async calls, just run it
-                        tmpThis.initLayout();
-                        tmpThis.initAppComponents();
-                        dfd.resolve(true);
-                    }
-                )
-            }
-        );
+
+        var tmpPromTpl = true;
+        if (this.pageTemplates && this.pageTemplates.length) {
+            tmpPromTpl = ThisApp.initTemplates(this.pageTemplates, this.options)
+        };
+        
+        // var tmpPromCtl = true;
+        // if (theAppConfig && theAppConfig.appControls) {
+        //     tmpPromCtl = me.initControls(theAppConfig.appControls)
+        // };
+
+        // var tmpPromPanel = true;
+        // if (this.appPanels && this.appPanels.length) {
+        //     var tmpGetPanels = ThisApp.initPanels.bind(this);
+        //     tmpPromPanel = tmpRun(theAppConfig.appPanels)
+        // };
+        var tmpPromPanel = true;
+        
+
+        if (this.pagePanels) {
+            console.log( 'pagePanels', this.pagePanels);
+            var tmpInitPanels = ThisApp.initPanels.bind(this);
+            var tmpIndex = this.panelIndex;
+            tmpPromPanel = tmpInitPanels(this.pagePanels, this.panelIndex)
+        };
+        
+       
+        $.when(tmpPromPanel).then(function(theReply){
+            ThisApp.initTemplates(tmpThis.pageTemplates, tmpThis.options).then(
+                function () {
+                    tmpThis.initControls(tmpThis.pageControls, tmpThis.options).then(
+                        function () {
+                            //--- No async calls, just run it
+                            tmpThis.initLayout();
+                            tmpThis.initAppComponents();
+                            dfd.resolve(true);
+                        }
+                    )
+                }
+            );
+            
+        })
+
+     
+        
         return dfd.promise();
     }
 
@@ -2624,8 +2678,8 @@ License: MIT
             }
         }
 
-        if (this.layoutOptions && this.layoutOptions.controls) {
-            var tmpLTs = this.layoutOptions.controls;
+        if (this.layoutOptions && this.layoutOptions.panels) {
+            var tmpLTs = this.layoutOptions.panels;
             var tmpContext = {}
 
             for (var aName in tmpLTs) {
@@ -2638,7 +2692,8 @@ License: MIT
                     tmpLTName = tmpLT.control;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
-                var tmpCtl = this.controlIndex[tmpLTName];
+                console.log( 'panelIndex', this.panelIndex);
+                var tmpCtl = this.panelIndex[tmpLTName];
                 tmpCtl.controlConfig.parentRegionName = aName;
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
             }
@@ -7197,7 +7252,7 @@ License: MIT
                     tmpLTName = tmpLT.control;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
-                var tmpCtl = this.controlIndex[tmpLTName];
+                var tmpCtl = this.panelIndex[tmpLTName];
                 tmpCtl.controlConfig.parentRegionName = aName;
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
             }

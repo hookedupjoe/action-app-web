@@ -30,18 +30,29 @@ License: MIT
         }
     }
 
-    thisPageSpecs.pageControls  = {
-        baseURL: pageBaseURL + 'controls',
+    // thisPageSpecs.pageControls  = {
+    //     baseURL: pageBaseURL + 'controls',
+    //     //-- Page to lookup : name to call it when pulling
+    //     //---  No need to "namespace" your controls, they are page specific
+    //     controlsMap: {
+    //         "title.json": "titleBarCtl",
+    //         "nestedtabs.json": "previewPanelCtl",
+    //         "showfor.json": "demoFormCtl",
+    //         "buttonPanel.json": "buttonPanelCtl"
+    //     }
+    // }
+    
+    thisPageSpecs.pagePanels  = {
+        baseURL: pageBaseURL + 'panels',
         //-- Page to lookup : name to call it when pulling
         //---  No need to "namespace" your controls, they are page specific
-        controlsMap: {
+        panelMap: {
             "title.json": "titleBarCtl",
             "nestedtabs.json": "previewPanelCtl",
             "showfor.json": "demoFormCtl",
             "buttonPanel.json": "buttonPanelCtl"
         }
     }
-    
 
     //--- Define this applications layouts
     //controls:  (use name from thisPageSpecs.pageControls)
@@ -53,7 +64,7 @@ License: MIT
 
     
     thisPageSpecs.layoutOptions = {
-        controls: {
+        panels: {
             "north": {partname: "pageTitle", control: "titleBarCtl"},
             "east": {partname: "previewPanel", control: "previewPanelCtl"},  
             "west": {partname: "buttonPanel", control: "buttonPanelCtl"}
@@ -209,7 +220,7 @@ License: MIT
         } else if( tmpTestName == "Test 2"){
             ThisPage.part.pageTitle.sayHello();
         } else if( tmpTestName == "Test 3"){
-            ThisPage.controlIndex.demoFormCtl.prompt().then(function (theReply, theControl) {
+            ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theControl) {
                 if( theReply == false){
                     return false;
                 }
@@ -242,7 +253,7 @@ License: MIT
 
     ThisPage.promptDemoForm = promptDemoForm;
     function promptDemoForm(){
-        ThisPage.controlIndex.demoFormCtl.prompt().then(function (theReply, theControl) {
+        ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theControl) {
             if( theReply == false){
                 return false;
             }
