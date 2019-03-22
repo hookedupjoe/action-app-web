@@ -68,7 +68,7 @@
       var tmpHidePages = (tmpAppCompsToInit.length < 2)
 
 
-      ThisApp.init({ rem_appPanels: tmpAppPanelSpecs, rem_appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
+      ThisApp.init({ appPanels: tmpAppPanelSpecs, rem_appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {
