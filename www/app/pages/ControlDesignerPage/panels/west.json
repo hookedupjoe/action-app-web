@@ -48,6 +48,22 @@
 												"testname":"test2"
 											},
 											"text": "Test 2"
+										},	{
+											"ctl": "button",
+											"color": "green",											
+											"attr": {
+												"pageaction": "runTest",
+												"testname":"test3"
+											},
+											"text": "Test 3"
+										},	{
+											"ctl": "button",
+											"color": "red",											
+											"attr": {
+												"pageaction": "runTest",
+												"testname":"test4"
+											},
+											"text": "Test 4"
 										},
 										{
 											"ctl": "pagespot",

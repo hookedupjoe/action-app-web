@@ -29,6 +29,7 @@
         baseURL: 'app/controls',
         controlMap: {
           "TesterControl": "TesterControl"
+          // ,"forms/TesterFormControl": "TesterFormControl"
         }
       };
       var tmpAppPanelSpecs = {
@@ -52,7 +53,7 @@
       //     [blank] = blank or missing value will make it show on the left only
       */
       var tmpPluginComponents = ['DataTables'];
-      var tmpAppCompsToInit = ['UsingControlsPage', 'ControlDesignerPage',  'ControlsPage', 'HomePage', 'DocsPage',  'PromptsPage', 'DataTablesPage', 'JsonPage', 'LogsPage'];
+      var tmpAppCompsToInit = ['ControlDesignerPage', 'UsingControlsPage',  'ControlsPage', 'HomePage', 'DocsPage',  'PromptsPage', 'DataTablesPage', 'JsonPage', 'LogsPage'];
       var tmpAppComponents = [];
 
       ThisApp.useModuleComponents('plugin', tmpPluginComponents)
@@ -68,7 +69,7 @@
       var tmpHidePages = (tmpAppCompsToInit.length < 2)
 
 
-      ThisApp.init({ appPanels: tmpAppPanelSpecs, rem_appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
+      ThisApp.init({ appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {

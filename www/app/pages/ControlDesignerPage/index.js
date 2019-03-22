@@ -147,9 +147,44 @@ License: MIT
             alert("Hello World Again")
         }
         ,"test2": test2
+        ,"test3": test3
+        ,"test4": test4
         ,"spots": playWithSpots
     }
 
+    function test4(theParams){
+        var tmpReady = true;
+        if( !(ThisPage.scope.test3Control) ){
+            tmpReady = test3();
+        }
+        $.when(tmpReady).then(function(){
+            ThisPage.scope.test3Control.sayHello();
+        })
+    }
+    function test3(theParams){
+        var dfd = jQuery.Deferred();
+        ThisApp.loadControl('TesterFormControl', 'forms').then(function(theControl){
+            console.log( 'theControl', theControl);
+            var tmpTargetName = 'preview-props';
+//            ThisPage.loadSpot(tmpTargetName, 'got a control');
+            if( ThisPage.scope.test3Control ){
+                delete(ThisPage.scope.test3Control);
+            }
+            ThisPage.scope.test3Control = theControl.create(tmpTargetName + '-ctl');
+            ThisPage.scope.test3Control.loadToElement(ThisPage.spot(tmpTargetName))
+            ThisPage.parts.east.gotoItem(tmpTargetName);
+
+            ThisPage.scope.test3Control.sayHello("You just created")
+            dfd.resolve(theControl);
+            // theControl.prompt().then(function(theReply, theData){
+            //     if( theReply ){
+            //         alert("got theData");
+            //         console.log( 'theData', theData);
+            //     }
+            // })
+        })
+        return dfd;
+    }
     
     var tmpTest2Counter = 0;
     function test2(theName){

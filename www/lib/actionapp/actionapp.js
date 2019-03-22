@@ -429,38 +429,53 @@ var ActionAppCore = {};
 
 
     me.hasControl = function(theControlName){
-        var tmpControl = me.ctlIndex(theControlName);
+        var tmpControl = me.ctlIndex[theControlName];
         return !(!tmpControl);
     }
     me.registerControl = function(theControlName, theControl){
         this.ctlIndex[theControlName] = theControl
     }
-    me.getControl = function(theControlName){
-        var dfd = jQuery.Deferred();
 
+    me.loadControl = function(theControlName, theLocation){
+        var dfd = jQuery.Deferred();
+       
+        if( this.hasControl(theControlName) ){
+            console.log( 'we have theControlName', theControlName);
+            dfd.resolve(this.getControl(theControlName));
+        } else {
+            console.log( 'no theControlName', theControlName);
+            var tmpLocation = theLocation || '';
+            var tmpName = theControlName || '';
+            if( tmpLocation ){
+                tmpName = tmpLocation + '/' + tmpName;
+            }
+            console.log( 'tmpName', tmpName);
+            me.loadAppControl(tmpName).then(function(){
+                tmpControl = me.ctlIndex[theControlName];
+                if( tmpControl ){
+                    dfd.resolve(tmpControl)
+                } else {
+                    theDeferred.reject("Not found " + theControlName)                    
+                }
+            })
+        }
+        return dfd;
+    }
+
+    me.getControl = function(theControlName){
         try {
             var tmpControl = me.ctlIndex[theControlName];
             if( tmpControl ){
-                dfd.resolve(tmpControl)
-                return dfd;
+                return tmpControl;
             }
-            me.loadAppControl(theControlName).then(function(){
-                tmpControl = me.ctlIndex[theControlName];
-                if( tmpControl ){
-                    dfd.resolve(tmpControl);
-                } else {
-                    dfd.reject("Not found " + theControlName)
-                }
-            })
-
-
+            console.warn("Attempting to load control " + theControlName + ".  Not loaded yet, use load control or include in startup to initialize a control.")
         } catch (ex) {
-            dfd.reject(ex)
+            console.error("Error loading control " + theControlName + '.  Error: ' + ex)
         }
-        
-        
-        return dfd
+        //ToDo: Update to look for control name in directory to get location
+        return false
     }
+
     me.loadAppControl = function(theControlName){
        
         var dfd = jQuery.Deferred();
@@ -2403,6 +2418,8 @@ License: MIT
         this.panelIndex = {};
         this.ctlIndex = {};
 
+        this.scope = {};
+
         this.layoutTemplates = this.options.layoutTemplates || false;
 
         this.navOptions = this.navOptions || this.options.navOptions || {};
@@ -2433,7 +2450,7 @@ License: MIT
             }
 
             this.createInstance = function (theControl, theInstanceName) {
-                this.part[theInstanceName] = theControl.create(theInstanceName);
+                this.parts[theInstanceName] = theControl.create(theInstanceName);
                 return theControl.create(theInstanceName);
             }
 
@@ -2471,6 +2488,7 @@ License: MIT
         this.panelIndex[thePanelName] = thePanel
     }
 
+    
 
     me.addPageWebControl = function (theControlName, theControl) {
         ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
@@ -4286,7 +4304,11 @@ License: MIT
     meControl.create = function (theControlName, theOptions) {
         var tmpOptions = theOptions || {};
         tmpOptions.parent = tmpOptions.parent || this.controlConfig.parent
-        var tmpObj = new ControlInstance(this, theControlName, tmpOptions)
+        tmpOptions.proto = tmpOptions.proto || this.controlConfig.proto || false;
+        var tmpObj = new ControlInstance(this, theControlName, tmpOptions);
+        if( tmpOptions.proto ){
+            tmpObj.extend(tmpOptions.proto);
+        }
         return tmpObj
     }
 
