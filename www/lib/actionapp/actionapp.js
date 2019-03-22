@@ -593,10 +593,10 @@ var ActionAppCore = {};
                 if (tmpName) {
                     var tmpEntrySpecs = theDocs[aKey];
                     var tmpHTML = ThisApp.json(tmpEntrySpecs);
-                    var tmpParentNSParent = tmpOptions.nsParent || false;
+                    var tmpNSParent = tmpOptions.nsParent || false;
                     var tmpPrefix = '';
-                    if (tmpParentNSParent){
-                        tmpPrefix = tmpParentNSParent.ns().replace(":", "");
+                    if (tmpNSParent){
+                        tmpPrefix = tmpNSParent.ns().replace(":", "");
                     }
                     tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
                     tmpEntrySpecs = ThisApp.json(tmpHTML);
@@ -2541,7 +2541,7 @@ License: MIT
         if (this.pagePanels) {
             var tmpInitPanels = ThisApp.initPanels.bind(this);
             var tmpIndex = this.panelIndex;
-            tmpPromPanel = tmpInitPanels(this.pagePanels, this.panelIndex)
+            tmpPromPanel = tmpInitPanels(this.pagePanels, {nsParent: this})
         };
         
        
