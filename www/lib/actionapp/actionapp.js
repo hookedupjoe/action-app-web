@@ -4340,6 +4340,10 @@ License: MIT
             if( theReply && theControl && isFunc(theControl.getData) ){
                 tmpData = theControl.getData();
             }
+            if( theControl && theControl.destroy ){
+                theControl.destroy();
+                delete theControl;
+            }
             dfd.resolve(theReply, tmpData)
         })
 
