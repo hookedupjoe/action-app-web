@@ -30,11 +30,9 @@ License: MIT
         }
     }
 
-    thisPageSpecs.pageControls = {
-        baseURL: pageBaseURL + 'controls',
-        //-- Page to lookup : name to call it when pulling
-        //---  No need to "namespace" your controls, they are page specific
-        controlsMap: {
+    thisPageSpecs.pagePanels = {
+        baseURL: pageBaseURL + 'panels',
+        panelMap: {
             "body.json": "bodyCtl",
             "header.json": "headerCtl",
             "footer.json": "footerCtl",
@@ -53,7 +51,7 @@ License: MIT
     //  "north": thisPageSpecs.pageNamespace + ":" + "page-north",
 
     thisPageSpecs.layoutOptions = {
-        controls: {
+        panels: {
             "center": { partname: "body", control: "bodyCtl" },
             "north": { partname: "header", control: "headerCtl" },
             "south": { partname: "footer", control: "footerCtl" },

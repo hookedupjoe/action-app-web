@@ -398,7 +398,6 @@ var ActionAppCore = {};
         return !(!tmpPanel);
     }
     me.registerPanel = function(thePanelName, thePanel){
-        console.log( 'registerPanel', thePanelName, thePanel, this);
         this.panelIndex[thePanelName] = thePanel
     }
     me.getPanel = function(thePanelName){
@@ -407,14 +406,12 @@ var ActionAppCore = {};
         try {
             var tmpPanel = this.panelIndex[thePanelName];
             if( tmpPanel ){
-                console.log( 'tmpPanel cached', tmpPanel);
                 dfd.resolve(tmpPanel)
                 return dfd;
             }
             this.loadAppPanel(thePanelName).then(function(){
                 tmpPanel = this.panelIndex[thePanelName];
                 if( tmpPanel ){
-                    console.log( 'tmpPanel new', tmpPanel);
                     dfd.resolve(tmpPanel);
                 } else {
                     dfd.reject("Not found " + thePanelName)
@@ -436,7 +433,6 @@ var ActionAppCore = {};
         return !(!tmpControl);
     }
     me.registerControl = function(theControlName, theControl){
-        console.log( 'registerControl', theControlName, theControl);
         this.ctlIndex[theControlName] = theControl
     }
     me.getControl = function(theControlName){
@@ -445,14 +441,12 @@ var ActionAppCore = {};
         try {
             var tmpControl = me.ctlIndex[theControlName];
             if( tmpControl ){
-                console.log( 'tmpControl cached', tmpControl);
                 dfd.resolve(tmpControl)
                 return dfd;
             }
             me.loadAppControl(theControlName).then(function(){
                 tmpControl = me.ctlIndex[theControlName];
                 if( tmpControl ){
-                    console.log( 'tmpControl new', tmpControl);
                     dfd.resolve(tmpControl);
                 } else {
                     dfd.reject("Not found " + theControlName)
@@ -474,7 +468,6 @@ var ActionAppCore = {};
         var tmpURL = tmpBaseURL + "/" + theControlName.replace(/\./g,'/');
         tmpURL += "/index.js";
 
-        console.log( 'tmpURL', tmpURL);
         //--- Get the control, when the control loads - it registers itself
         //    Once a control is registered in the WebCtlCatalogMod module, 
         //      it can be created using the me._getNewControl function
@@ -535,7 +528,6 @@ var ActionAppCore = {};
 
     me.initControls = function (theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
-        console.log( 'initControls', theSpecs);
         this.controlSpecs = {};
         var tmpOptions = theOptions || {};
         //--- if no templates to process, no prob, return now
@@ -551,7 +543,6 @@ var ActionAppCore = {};
         this.controlSpecs = theSpecs;
         
         // var tmpBaseURL = theSpecs.baseURL || '/controls';
-        // console.log( 'tmpCtls', tmpCtls, tmpBaseURL);
         loadControlsForApp(this.controlSpecs).then(function(){
             dfd.resolve(true);
         })
@@ -580,7 +571,6 @@ var ActionAppCore = {};
     me.initPanels = function (theSpecs, theOptions) {
         var tmpOptions = theOptions || {};
         
-        console.log( 'initPanels', theSpecs, this);
         var dfd = jQuery.Deferred();
         //--- if no templates to process, no prob, return now
         if (!(theSpecs && theSpecs.panelMap)) {
@@ -2409,7 +2399,6 @@ License: MIT
         this.pageTemplates = this.options.pageTemplates || [];
         this.pageControls = this.options.pageControls || [];
         this.pagePanels = this.options.pagePanels || [];
-        console.log( 'this.pagePanels', this.pagePanels);
         
         this.panelIndex = {};
         this.ctlIndex = {};
@@ -2479,7 +2468,6 @@ License: MIT
         return !(!tmpPanel);
     }
     me.registerPanel = function(thePanelName, thePanel){
-        console.log( 'registerPanel page ', thePanelName, thePanel, this);
         this.panelIndex[thePanelName] = thePanel
     }
 
@@ -2551,7 +2539,6 @@ License: MIT
         
 
         if (this.pagePanels) {
-            console.log( 'pagePanels', this.pagePanels);
             var tmpInitPanels = ThisApp.initPanels.bind(this);
             var tmpIndex = this.panelIndex;
             tmpPromPanel = tmpInitPanels(this.pagePanels, this.panelIndex)
@@ -2692,7 +2679,6 @@ License: MIT
                     tmpLTName = tmpLT.control;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
-                console.log( 'panelIndex', this.panelIndex);
                 var tmpCtl = this.panelIndex[tmpLTName];
                 tmpCtl.controlConfig.parentRegionName = aName;
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
@@ -4483,9 +4469,7 @@ License: MIT
     meInstance.getEl = function () {
         if (!this.controlEl) {
             this.ControlEl = me.getControlEl$(this.controlName);
-            // console.log( 'this.ControlEl ',this.controlName , this.ControlEl);
         }
-        // console.log( 'this.ControlEl ',this.controlName , this.ControlEl);
         return this.ControlEl
     }
 
@@ -6426,7 +6410,6 @@ License: MIT
                 var tmpValue = theParams.text || '';
                 var tmpHide = !(tmpValue);
                 var tmpItem = this.getItem('topHeader');
-                console.log( 'tmpItem', tmpItem);
                 if( tmpItem && tmpItem.el ){
                     tmpItem.el.html(tmpValue)
                     this.setItemDisplay('topHeaderArea',!tmpHide)
@@ -6803,7 +6786,7 @@ License: MIT
         tmpClasses += getValueIfThere(tmpOptions, 'size');
 
         if (!tmpNoteEl) {
-            console.log("no field msg found ")
+            console.warm("no field msg found ")
             return;
         }
         if (theValue === false) {
