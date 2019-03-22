@@ -259,7 +259,7 @@ License: MIT
                 tmpObjectName += '.json';
             }
             var tmpDocsList = [tmpObjectName];
-            var tmpLocation = ThisApp.common.controlsBaseURL;
+            var tmpLocation = ThisApp.common.samplesBaseURL;
             ThisApp.om.getObjects('[get]:' + tmpLocation, tmpDocsList).then(function (theDocs) {
                 var tmpDoc = theDocs[tmpObjectName];
                 if (!(tmpDoc)) {
@@ -287,7 +287,7 @@ License: MIT
             return;
         }
         var tmpDocsList = [theControlName + '.json'];
-        var tmpLocation = ThisApp.common.controlsBaseURL;
+        var tmpLocation = ThisApp.common.samplesBaseURL;
         ThisApp.om.getObjects('[get]:' + tmpLocation, tmpDocsList).then(function (theDocs) {
             var tmpControlDoc = theDocs[theControlName + ".json"];
             if (!(tmpControlDoc)) {

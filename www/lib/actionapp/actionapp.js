@@ -211,6 +211,8 @@ var ActionAppCore = {};
         me.actions = me.options.actions || {};
         me.actionsDelegates = me.options.actionsDelegates || {};
 
+        me.ctls = {};
+
         var defaults = {};
         me.events = $({});
         me.$window = $(window);
@@ -386,6 +388,151 @@ var ActionAppCore = {};
 
 
     }
+
+    me.hasControl = function(theControlName){
+        var tmpControl = me.ctls(theControlName);
+        return !(!tmpControl);
+    }
+    me.registerControl = function(theControlName, theControl){
+        console.log( 'registerControl', theControlName, theControl);
+        me.ctls[theControlName] = theControl
+    }
+    me.getControl = function(theControlName){
+        var dfd = jQuery.Deferred();
+
+        try {
+            var tmpControl = me.ctls[theControlName];
+            if( tmpControl ){
+                console.log( 'tmpControl cached', tmpControl);
+                dfd.resolve(tmpControl)
+                return dfd;
+            }
+            me.loadAppControl(theControlName).then(function(){
+                tmpControl = me.ctls[theControlName];
+                if( tmpControl ){
+                    console.log( 'tmpControl new', tmpControl);
+                    dfd.resolve(tmpControl);
+                } else {
+                    dfd.reject("Not found " + theControlName)
+                }
+            })
+
+
+        } catch (ex) {
+            dfd.reject(ex)
+        }
+        
+        
+        return dfd
+    }
+    me.loadAppControl = function(theControlName){
+       
+        var dfd = jQuery.Deferred();
+        var tmpBaseURL = '/app/controls';
+        var tmpURL = tmpBaseURL + "/" + theControlName.replace(/\./g,'/');
+        tmpURL += "/index.js";
+
+        console.log( 'tmpURL', tmpURL);
+        //--- Get the control, when the control loads - it registers itself
+        //    Once a control is registered in the WebCtlCatalogMod module, 
+        //      it can be created using the me._getNewControl function
+        jQuery.getScript(tmpURL)
+            .done(function () {
+               
+                ThisApp.delay(2000).then(function(){
+                    console.log("ThisApp",ThisApp)
+                    dfd.resolve(theControlName);    
+                })
+                
+            })
+            .fail(function (theError) {
+                console.error("Error loading script " + theError);
+                dfd.reject(theError);
+            });
+
+        return dfd;
+    }
+    
+    function loadControlsForApp(theSpecs) {
+        var dfd = jQuery.Deferred();
+        var tmpDefs = [];
+       
+        
+        if( !(theSpecs && theSpecs.controlMap)){
+            resolve(true);
+        } else {
+            
+            //var tmpBaseURL = theSpecs.baseURL || '/controls';
+        
+            for( var aPath in theSpecs.controlMap){
+                var tmpCtlName = theSpecs.controlMap[aPath];
+                tmpDefs.push(
+                    me.loadAppControl(aPath)
+                );
+            }
+        }
+
+        // for (var index = 0; index < theObjectsArray.length; index++) {
+        //     var tmpCtlName = theObjectsArray[index];
+        //     if( tmpCtlName ){
+        //         tmpDefs.push(
+        //             me.loadAppControl(tmpCtlName, theBaseURL)
+        //         );
+        //     }
+        // }
+        $.whenAll(tmpDefs).then(
+            function(){
+                dfd.resolve(true);
+            }
+        )
+        return dfd.promise();
+
+    }
+
+    me.initControls = function (theSpecs, theOptions) {
+        var dfd = jQuery.Deferred();
+        console.log( 'initControls', theSpecs);
+        this.controlSpecs = {};
+        var tmpOptions = theOptions || {};
+        //--- if no templates to process, no prob, return now
+        if (!(theSpecs && theSpecs.controlMap)) {
+            dfd.resolve(true);
+            return dfd.promise();
+        }
+
+        var tmpCtls = [];
+        for (var aName in theSpecs.controlMap) {
+            tmpCtls.push(aName);
+        }
+        this.controlSpecs = theSpecs;
+        
+        // var tmpBaseURL = theSpecs.baseURL || '/controls';
+        // console.log( 'tmpCtls', tmpCtls, tmpBaseURL);
+        loadControlsForApp(this.controlSpecs).then(function(){
+            dfd.resolve(true);
+        })
+        
+        //--- This is needed because this changes inside the promise due to 
+        //    not .bind(this) in the function, the temp reference is quicker, same result
+        var tmpThis = this;
+        // ThisApp.om.getObjects('[html]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
+        //     for (var aKey in theDocs) {
+        //         var tmpTplName = theSpecs.controlMap[aKey];
+        //         if (tmpTplName) {
+        //             var tmpHTML = theDocs[aKey];
+        //             if (tmpOptions && tmpOptions.pageNamespace) {
+        //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.pageNamespace)
+        //             }
+        //             ThisApp.addTemplate(tmpTplName, tmpHTML);
+        //         }
+        //     }
+        //     dfd.resolve(true);
+        // });
+        
+        return dfd.promise();
+
+    }
+    
 
     me.initTemplates = function (theTemplateSpecs, theOptions) {
         var dfd = jQuery.Deferred();
@@ -1689,14 +1836,23 @@ var ActionAppCore = {};
         me.forms = me.getComponent("plugin:Forms");
         me.controls = me.getComponent("plugin:Controls");
 
+        var tmpPromTpl = true;
         if (theAppConfig && theAppConfig.appTemplates) {
-            me.initTemplates(theAppConfig.appTemplates).then(function () {
-                //--- do the rest of the app load
-                dfd.resolve(true);
-            })
-        } else {
-            dfd.resolve(true);
+            tmpPromTpl = me.initTemplates(theAppConfig.appTemplates).then(function () {})
         };
+        
+        var tmpPromCtl = true;
+        if (theAppConfig && theAppConfig.appControls) {
+            
+            tmpPromCtl = me.initControls(theAppConfig.appControls).then(function () {})
+        };
+
+        $.when(tmpPromCtl,tmpPromTpl).then(function(){
+            //--- do the rest of the app load
+            dfd.resolve(true);
+        })
+
+
         return dfd;
 
     }
@@ -2232,16 +2388,16 @@ License: MIT
             return dfd.promise();
         }
 
-        var tmpTpls = [];
+        var tmpCtls = [];
         for (var aName in theSpecs.controlsMap) {
-            tmpTpls.push(aName);
+            tmpCtls.push(aName);
         }
         var tmpBaseURL = theSpecs.baseURL || '/controls/';
 
         //--- This is needed because this changes inside the promise due to 
         //    not .bind(this) in the function, the temp reference is quicker, same result
         var tmpThis = this;
-        ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpTpls).then(function (theDocs) {
+        ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
             for (var aKey in theDocs) {
                 var tmpName = theSpecs.controlsMap[aKey];
                 if (tmpName) {
@@ -6675,19 +6831,6 @@ License: MIT
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 Author: Joseph Francis
 License: MIT
@@ -7193,3 +7336,4 @@ License: MIT
     return me;
 
 })(ActionAppCore, $);
+

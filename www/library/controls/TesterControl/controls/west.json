@@ -1,0 +1,91 @@
+{
+	"options": {
+		"padding": false
+	},
+	"content": [
+		{
+			"ctl": "tabs",
+			"name": "controls-tabs",
+			"tabs": [
+				{
+					"label": "Catalog",
+					"name": "catalog-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "tabs",
+							"name": "catalog-tabs",
+							"color": "purple",
+							"tabs": [
+								{
+									"label": "Available",
+									"name": "catalog-tab-list-tab",
+									"ctl": "tab",
+									"content": [
+										{
+											"ctl": "button",
+											"color": "purple",											
+											"attr": {
+												"pageaction": "runTest",
+												"testname":"hello"
+											},
+											"text": "Say Hello"
+										},
+										{
+											"ctl": "button",
+											"color": "purple",											
+											"attr": {
+												"pageaction": "runTest",
+												"testname":"spots"
+											},
+											"text": "Fun with spots"
+										},
+										{
+											"ctl": "button",
+											"color": "blue",											
+											"attr": {
+												"pageaction": "runTest",
+												"testname":"test2"
+											},
+											"text": "Test 2"
+										},
+										{
+											"ctl": "pagespot",
+											"name": "catalog-tab-list"
+										}
+									]
+								},
+								{
+									"label": "Loaded",
+									"name": "catalog-tab-loaded-tab",
+									"ctl": "tab",
+									"content": [
+										{
+											"ctl": "pagespot",
+											"name": "catalog-tab-loaded"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"label": "Clipboard",
+					"name": "controls-clipboard-tab",
+					"ctl": "tab",
+					"content": [
+						{
+							"ctl": "pagespot",
+							"name": "controls-clipboard"
+						},
+						{
+							"ctl": "pagespot",
+							"name": "hello-area"
+						}
+					]
+				}
+			]
+		}
+	]
+}

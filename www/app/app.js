@@ -20,6 +20,28 @@
         }
       };
 
+      var tmpAppControlSpecs = {
+        // jsonURL: 'app/controls/json',
+        // jsonMap: {
+        //   "showfor.json": "showFor",
+        //   "cardsdemo.json": "cardsdemo"
+        // },
+        baseURL: 'app/controls',
+        controlMap: {
+          "TesterControl": "TesterControl"
+        }
+      };
+      var tmpAppPanelSpecs = {
+        baseURL: 'app/panels',
+        panelMap: {
+          "TesterControl": "TesterControl"
+        }
+      };
+
+
+      var tmpLibrarySpecs = {
+        baseURL: '/library'
+      };
 
       /* ****************************************
       //------------ This App Config
@@ -46,7 +68,7 @@
       var tmpHidePages = (tmpAppCompsToInit.length < 2)
 
 
-      ThisApp.init({ hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
+      ThisApp.init({ appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages, appTemplates: tmpTplSpecs }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {
@@ -58,7 +80,7 @@
 
         //--- Extend common with your app specific stuff
         $.extend(ThisApp.common, {
-          controlsBaseURL: '/app/controls/',
+          samplesBaseURL: '/library/controls/samples/',
           yourStuff: function () {
 
           }
