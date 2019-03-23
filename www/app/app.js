@@ -26,7 +26,7 @@
             // ,"forms/TesterFormControl": "TesterFormControl"
           }
         },
-        "rem_snippets": {
+        "rem_html": {
           baseURL: 'app/app-tpl',
           map: {
             "about-this-app.html": "app:about-this-app-snippet",

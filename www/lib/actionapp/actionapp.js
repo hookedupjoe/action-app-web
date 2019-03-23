@@ -216,7 +216,7 @@ var ActionAppCore = {};
         me.res = {
             "panels": {},
             "controls": {},
-            "snippets": {}
+            "html": {}
         };
 
         //me.panelIndex = {};
@@ -441,11 +441,11 @@ console.info( 'Loaded Resources ', tmpThis.res);
         return dfd;
     }
 
-    //--- theType: (controls, panels, snippets or templates)
+    //--- theType: (controls, panels, html or templates)
     me.initResourceType = function (theType, theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
 
-        var tmpCheck = (theType == 'snippets') || (theType == 'controls') || (theType == 'panels') || (theType == 'templates')
+        var tmpCheck = (theType == 'html') || (theType == 'controls') || (theType == 'panels') || (theType == 'templates')
         if( !tmpCheck ){
             console.warn("Asking for unknown resource type " + theType)
             dfd.resolve(true);
@@ -505,8 +505,8 @@ console.info( 'Loaded Resources ', tmpThis.res);
                             console.warn("Could not convert control to object");
                         }
                     }
-                    if( theType == 'snippets' ){
-                     //   console.log( 'snippets', tmpName, tmpResourceData);
+                    if( theType == 'html' ){
+                     //   console.log( 'html', tmpName, tmpResourceData);
                     }
                     tmpThis.addResource(theType, tmpName, tmpResourceData);
                 }
@@ -520,10 +520,8 @@ console.info( 'Loaded Resources ', tmpThis.res);
     me.addResource = function(theType, theName, theResourceData){
         if( theType == 'templates' ){
             //--- Always add templates at the application level
-            console.log( 'ThisApp.addTemplate', theName);
             ThisApp.addTemplate(theName, theResourceData);
         } else {
-            console.log( 'add resource ' + theType, theName);
             this.res[theType] = this.res[theType] || {};
             this.res[theType][theName] = theResourceData;
         }
@@ -2274,9 +2272,9 @@ License: MIT
         this.parts = this.part //longcut - keep typing it wrong, can use either :)
         this.pageActions = {}; //--- A place for actions
         this.pageTitle = this.options.pageTitle || '';
-        this.pageTemplates = this.options.pageTemplates || [];
-        this.pageControls = this.options.pageControls || [];
-        this.pagePanels = this.options.pagePanels || [];
+        this.pageTemplates = this.options.pageTemplates || false;
+        this.pageControls = this.options.pageControls || false;
+        this.pagePanels = this.options.pagePanels || false;
         
         //--deprecated
         // this.panelIndex = {};
@@ -2285,7 +2283,7 @@ License: MIT
         this.res = {
             "panels": {},
             "controls": {},
-            "snippets": {}
+            "html": {}
         };
 
         this.common = {};

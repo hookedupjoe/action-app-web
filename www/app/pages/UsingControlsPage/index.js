@@ -21,46 +21,35 @@ License: MIT
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
     //--- Define page templates that should load when the page is activated
-    thisPageSpecs.pageTemplates = {
-        baseURL: pageBaseURL + 'tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap: {
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body"
+    thisPageSpecs.required = {
+        templates: {
+            baseURL: pageBaseURL + 'tpl',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                "page-body.html": thisPageSpecs.pageNamespace + ":page-body"
+            }
+        },
+        panels: {
+            baseURL: pageBaseURL + 'panels',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                "title.json": "titleBarCtl",
+                "nestedtabs.json": "previewPanelCtl",
+                "showfor.json": "demoFormCtl",
+                "buttonPanel.json": "buttonPanelCtl"
+            }
+        },
+        html: {
+            baseURL: pageBaseURL + 'tpl',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                "page-body.html": "page-body"
+            }
         }
     }
-
-    // thisPageSpecs.pageControls  = {
-    //     baseURL: pageBaseURL + 'controls',
-    //     //-- Page to lookup : name to call it when pulling
-    //     //---  No need to "namespace" your controls, they are page specific
-    //     controlsMap: {
-    //         "title.json": "titleBarCtl",
-    //         "nestedtabs.json": "previewPanelCtl",
-    //         "showfor.json": "demoFormCtl",
-    //         "buttonPanel.json": "buttonPanelCtl"
-    //     }
-    // }
-    
-    thisPageSpecs.pagePanels  = {
-        baseURL: pageBaseURL + 'panels',
-        //-- Page to lookup : name to call it when pulling
-        //---  No need to "namespace" your controls, they are page specific
-        panelMap: {
-            "title.json": "titleBarCtl",
-            "nestedtabs.json": "previewPanelCtl",
-            "showfor.json": "demoFormCtl",
-            "buttonPanel.json": "buttonPanelCtl"
-        }
-    }
-
-    //--- Define this applications layouts
-    //controls:  (use name from thisPageSpecs.pageControls)
-    //   "north": {partname: "pageTitle",control: "titleBar"}
-    //      and use: ThisPage.part.pageTitle to get control
-
-    //-> templates:  (use name from thisPageSpecs.pageTemplates)
-    //  "north": thisPageSpecs.pageNamespace + ":" + "page-north",
 
     
     thisPageSpecs.layoutOptions = {
