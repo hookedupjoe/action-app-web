@@ -211,9 +211,16 @@ var ActionAppCore = {};
         me.actions = me.options.actions || {};
         me.actionsDelegates = me.options.actionsDelegates || {};
 
+        me.components = {};
+
+        me.res = {
+            "panels": {},
+            "controls": {},
+            "snippets": {}
+        };
+
         me.panelIndex = {};
         me.controlIndex = {};
-        me.components = {};
 
         var defaults = {}; //? needed ?
         me.events = $({});
@@ -681,6 +688,7 @@ var ActionAppCore = {};
         }
 
         $.whenAll(tmpDefs).then(function(){
+            console.log( 'laoded ', ThisApp.res);
             dfd.resolve(true);
         })
         return dfd;
@@ -755,14 +763,16 @@ var ActionAppCore = {};
                         }
                     } else if( theType == 'panels' ){
                         try {
-                            var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {parent: this})
+                            var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {parent: tmpThis})
                             // console.log( 'tmpCtl', tmpCtl);
                         } catch (ex) {
                             console.warn("Could not convert control to object");
                             
                         }
                     }
-
+                    if( theType == 'snippets' ){
+                        console.log( 'snippets', tmpName, tmpResourceData);
+                    }
                     tmpThis.addResource(theType, tmpName, tmpResourceData);
                 }
             }
@@ -773,7 +783,17 @@ var ActionAppCore = {};
     }
 
     me.addResource = function(theType, theName, theResourceData){
-        console.log( 'addResource', theType, theName, theResourceData);
+        if( theType == 'templates' ){
+            //--- Always add templates at the application level
+            console.log( 'ThisApp.addTemplate', theName);
+            ThisApp.addTemplate(theName, theResourceData);
+        } else {
+            console.log( 'add resource ' + theType, theName);
+            this.res[theType][theName] = theResourceData;
+        }
+        
+
+        //console.log( 'addResource', theType, theName, theResourceData);
     }
 
     /**

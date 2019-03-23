@@ -97,7 +97,8 @@
       //appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, appTemplates: tmpTplSpecs
       //
       //require: tmpRequired, 
-      ThisApp.init({ required: tmpRequired, appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, appTemplates: tmpTplSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
+      //appTemplates: tmpTplSpecs, 
+      ThisApp.init({ required: tmpRequired, appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {
