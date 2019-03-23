@@ -258,6 +258,7 @@ License: MIT
             if ((tmpObjectName.indexOf('.') == -1)) {
                 tmpObjectName += '.json';
             }
+            console.log( 'tmpObjectName', tmpObjectName);
             var tmpDocsList = [tmpObjectName];
             var tmpLocation = ThisApp.common.samplesBaseURL;
             ThisApp.om.getObjects('[get]:' + tmpLocation, tmpDocsList).then(function (theDocs) {

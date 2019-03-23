@@ -149,8 +149,43 @@ License: MIT
         ,"test2": test2
         ,"test3": test3
         ,"test4": test4
+        ,"test5": test5
         ,"spots": playWithSpots
     }
+
+
+    function test5(theParams){
+        testJSPull();
+    }
+
+    function testJSPull() {
+        
+        //var tmpDocsList = ['_index.json'];
+        var tmpFN = 'test.js';
+        var tmpDocsList = [tmpFN];
+        var tmpLocation = '/app/controls';
+//console.log( 'tmpLocation', tmpLocation);
+        tmpLocation = ThisApp.common.samplesBaseURL
+
+        ThisApp.om.getObjects('[html]:' + tmpLocation, tmpDocsList).then(function (theDocs) {
+          //  console.log( 'theDocs', theDocs);
+            var tmpDoc = theDocs[tmpFN];
+            if (!(tmpDoc)) {
+                alert("Not found " + tmpFN);
+               return false
+            } else {
+                delete (tmpDoc._key);
+                var tmpCtl = eval(tmpDoc);
+                console.log( 'tmpCtl', tmpCtl);
+                tmpCtl.prompt()
+                
+            }
+
+
+        });
+
+    };
+
 
     function test4(theParams){
         // var tmpReady = true;
