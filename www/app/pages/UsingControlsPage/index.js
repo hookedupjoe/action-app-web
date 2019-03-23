@@ -58,8 +58,11 @@ License: MIT
             "east": {partname: "previewPanel", control: "previewPanelCtl"},  
             "west": {partname: "buttonPanel", control: "buttonPanelCtl"}
         },
-        templates: {
+        rem_templates: {
             "center": thisPageSpecs.pageNamespace + ":" + "page-body"
+        },
+        html: {
+            "center": "page-body"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,

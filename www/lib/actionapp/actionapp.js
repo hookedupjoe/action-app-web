@@ -2475,6 +2475,17 @@ License: MIT
             this.loadTemplatesFromMarkup();
         }
 
+        if (this.layoutOptions && this.layoutOptions.html) {
+            var tmpContentItems = this.layoutOptions.html;
+            console.log( 'tmpContentItems', tmpContentItems);
+            for (var aName in tmpContentItems) {
+                var tmpContentName = tmpContentItems[aName];
+                var tmpHTML = this.res.html[tmpContentName];
+                //console.log( 'tmpHTML', tmpHTML);
+               this.loadRegion(aName, tmpHTML || '');
+            }
+        }
+
         if (this.layoutOptions && this.layoutOptions.templates) {
             var tmpLTs = this.layoutOptions.templates;
             var tmpContext = {}
