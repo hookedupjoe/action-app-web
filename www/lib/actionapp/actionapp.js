@@ -2687,40 +2687,7 @@ License: MIT
             };
 
         }
-
-
-
-        //--- Example of how to interact with theApp or ActionAppCore.app
-        /*
-        To register actions not handled by action handler (prefixed:)
-            theApp.registerAction("logs:refreshMessageCenter", refreshMessageCenter);
-            theApp.registerAction("logs:clearMessageCenter", clearMessageCenter);
-
-        To subscribe to application level messages ...
-           theApp.subscribe("message:sent", refreshMessageCenter)
-
-           theApp.subscribe("_app:gotoTab", getAppTabChanged)
-
-        */
-
-
-
-
     }
-
-
-
-    //---- Internal Stuff ---------------------
-    /*
-    function registerPage() {
-        if (typeof (me.options.app) == 'object') {
-            ThisApp = me.options.app;
-            if (me.pageName != '' && ThisApp && ThisApp.registerComponent) {
-                ThisApp.registerComponent("app:" + me.pageName, this);
-            }
-        }
-    }
-     */
 
     function itemClicked(theEvent) {
         var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
@@ -3678,9 +3645,6 @@ License: MIT
 //=== === === === === === === === === === === === === === === === === 
 
 
-
-
-//_tocontrols
 
 /*
 Author: Joseph Francis
