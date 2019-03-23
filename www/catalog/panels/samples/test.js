@@ -1,13 +1,13 @@
 (function (ActionAppCore, $) {
 
-  var ControlName = "TesterControl";
-
   var ControlSpecs = {
       "content": [
           {
               "ctl": "field",
-              "label": "Your Name",
+              "label": "Hello, tell me your name please",
               "size": "huge",
+              "placeholder": "",
+              "default": "Bob",
               "name": "title",
               "text": "Hello World"
           }
