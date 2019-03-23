@@ -2324,6 +2324,10 @@ License: MIT
             }
 
             this.createInstance = function (theControl, theInstanceName) {
+                if( !(theControl) ){
+                    console.error( 'the control is not there to create ', theInstanceName);
+                    throw("Control now found to create " + theInstanceName)
+                }
                 this.parts[theInstanceName] = theControl.create(theInstanceName);
                 return theControl.create(theInstanceName);
             }
@@ -2522,7 +2526,10 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.panels[tmpLTName];
-                tmpCtl.controlConfig.parentRegionName = aName;
+                if (tmpCtl && tmpCtl.controlConfig){
+                    tmpCtl.controlConfig.parentRegionName = aName;    
+                }
+                
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
             }
         }
