@@ -401,161 +401,149 @@ var ActionAppCore = {};
     
     
     
-    me.hasPanel = function(thePanelName){
-        var tmpPanel = this.res.panels[thePanelName];
-        return !(!tmpPanel);
+    me.hasPanel = function(theName){
+        var tmpItem = this.res.panels[theName];
+        return !(!tmpItem);
     }
-    me.registerPanel = function(thePanelName, thePanel){
-        this.res.panels[thePanelName] = thePanel
+    me.registerPanel = function(theName, thePanel){
+        this.res.panels[theName] = thePanel
     }
-    me.getPanel = function(thePanelName){
-        var dfd = jQuery.Deferred();
-
-        try {
-            var tmpPanel = this.res.panels[thePanelName];
-            if( tmpPanel ){
-                dfd.resolve(tmpPanel)
-                return dfd;
-            }
-            this.loadAppPanel(thePanelName).then(function(){
-                tmpPanel = this.res.panels[thePanelName];
-                if( tmpPanel ){
-                    dfd.resolve(tmpPanel);
-                } else {
-                    dfd.reject("Not found " + thePanelName)
-                }
-            })
-
-
-        } catch (ex) {
-            dfd.reject(ex)
-        }
-        
-        
-        return dfd
+    me.getPanel = function(theName){
+        return this.res.panels[theName];
     }
 
 
-    me.hasControl = function(theControlName){
-        var tmpControl = me.controlIndex[theControlName];
-        return !(!tmpControl);
+    me.hasControl = function(theName){
+        var tmpItem = this.res.controls[theName];
+        return !(!tmpItem);
     }
-    me.registerControl = function(theControlName, theControl){
-        this.controlIndex[theControlName] = theControl
+    me.registerControl = function(theName, thePanel){
+        this.res.controls[theName] = thePanel
+    }
+    me.getControl = function(theName){
+        return this.res.controls[theName];
     }
 
-    me.loadControl = function(theControlName, theLocation){
-        var dfd = jQuery.Deferred();
+    // me. = function(theControlName){
+    //     var tmpControl = me.controlIndex[theControlName];
+    //     return !(!tmpControl);
+    // }
+    // me. = function(theControlName, theControl){
+    //     this.controlIndex[theControlName] = theControl
+    // }
+
+    // me.loadControl = function(theControlName, theLocation){
+    //     var dfd = jQuery.Deferred();
        
-        if( this.hasControl(theControlName) ){
-            console.log( 'we have theControlName', theControlName);
-            dfd.resolve(this.getControl(theControlName));
-        } else {
-            console.log( 'no theControlName', theControlName);
-            var tmpLocation = theLocation || '';
-            var tmpName = theControlName || '';
-            if( tmpLocation ){
-                tmpName = tmpLocation + '/' + tmpName;
-            }
-            console.log( 'tmpName', tmpName);
-            me.loadAppControl(tmpName).then(function(){
-                tmpControl = me.controlIndex[theControlName];
-                if( tmpControl ){
-                    dfd.resolve(tmpControl)
-                } else {
-                    theDeferred.reject("Not found " + theControlName)                    
-                }
-            })
-        }
-        return dfd;
-    }
+    //     if( this.hasControl(theControlName) ){
+    //         console.log( 'we have theControlName', theControlName);
+    //         dfd.resolve(this.getControl(theControlName));
+    //     } else {
+    //         console.log( 'no theControlName', theControlName);
+    //         var tmpLocation = theLocation || '';
+    //         var tmpName = theControlName || '';
+    //         if( tmpLocation ){
+    //             tmpName = tmpLocation + '/' + tmpName;
+    //         }
+    //         console.log( 'tmpName', tmpName);
+    //         me.loadAppControl(tmpName).then(function(){
+    //             tmpControl = me.controlIndex[theControlName];
+    //             if( tmpControl ){
+    //                 dfd.resolve(tmpControl)
+    //             } else {
+    //                 theDeferred.reject("Not found " + theControlName)                    
+    //             }
+    //         })
+    //     }
+    //     return dfd;
+    // }
 
-    me.getControl = function(theControlName){
-        try {
-            var tmpControl = me.controlIndex[theControlName];
-            if( tmpControl ){
-                return tmpControl;
-            }
-            console.warn("Attempting to load control " + theControlName + ".  Not loaded yet, use load control or include in startup to initialize a control.")
-        } catch (ex) {
-            console.error("Error loading control " + theControlName + '.  Error: ' + ex)
-        }
-        //ToDo: Update to look for control name in directory to get location
-        return false
-    }
+    // me. = function(theControlName){
+    //     try {
+    //         var tmpControl = me.controlIndex[theControlName];
+    //         if( tmpControl ){
+    //             return tmpControl;
+    //         }
+    //         console.warn("Attempting to load control " + theControlName + ".  Not loaded yet, use load control or include in startup to initialize a control.")
+    //     } catch (ex) {
+    //         console.error("Error loading control " + theControlName + '.  Error: ' + ex)
+    //     }
+    //     //ToDo: Update to look for control name in directory to get location
+    //     return false
+    // }
 
-    me.loadAppControl = function(theControlName){
+    // me.loadAppControl = function(theControlName){
        
-        var dfd = jQuery.Deferred();
-        var tmpBaseURL = '/app/controls';
+    //     var dfd = jQuery.Deferred();
+    //     var tmpBaseURL = '/app/controls';
 
-        var tmpURL = '';
-        //theControlName
-        if( theControlName.indexOf('/') == 0){
-            tmpURL = theControlName.replace(/\./g,'/');
-        } else {
-            tmpURL = tmpBaseURL + "/" + theControlName.replace(/\./g,'/');
-        }
+    //     var tmpURL = '';
+    //     //theControlName
+    //     if( theControlName.indexOf('/') == 0){
+    //         tmpURL = theControlName.replace(/\./g,'/');
+    //     } else {
+    //         tmpURL = tmpBaseURL + "/" + theControlName.replace(/\./g,'/');
+    //     }
         
-        tmpURL += "/index.js";
+    //     tmpURL += "/index.js";
 
-        //--- Get the control, when the control loads - it registers itself
-        //    Once a control is registered in the WebCtlCatalogMod module, 
-        //      it can be created using the me._getNewControl function
-        jQuery.getScript(tmpURL)
-            .done(function () {
-                dfd.resolve(theControlName);    
+    //     //--- Get the control, when the control loads - it registers itself
+    //     //    Once a control is registered in the WebCtlCatalogMod module, 
+    //     //      it can be created using the me._getNewControl function
+    //     jQuery.getScript(tmpURL)
+    //         .done(function () {
+    //             dfd.resolve(theControlName);    
 
-                // Fake delay to show it waits to load
-                /** ThisApp.delay(2000).then(function(){
-                    console.log("ThisApp",ThisApp)
-                    dfd.resolve(theControlName);    
-                })*/
+    //             // Fake delay to show it waits to load
+    //             /** ThisApp.delay(2000).then(function(){
+    //                 console.log("ThisApp",ThisApp)
+    //                 dfd.resolve(theControlName);    
+    //             })*/
                 
-            })
-            .fail(function (theError) {
-                console.error("Error loading script " + theError);
-                dfd.reject(theError);
-            });
+    //         })
+    //         .fail(function (theError) {
+    //             console.error("Error loading script " + theError);
+    //             dfd.reject(theError);
+    //         });
 
-        return dfd;
-    }
+    //     return dfd;
+    // }
     
-    function loadControlsForApp(theSpecs) {
-        var dfd = jQuery.Deferred();
-        var tmpDefs = [];
+    // function loadControlsForApp(theSpecs) {
+    //     var dfd = jQuery.Deferred();
+    //     var tmpDefs = [];
        
         
-        if( !(theSpecs && theSpecs.controlMap)){
-            resolve(true);
-        } else {
+    //     if( !(theSpecs && theSpecs.controlMap)){
+    //         resolve(true);
+    //     } else {
             
-            //var tmpBaseURL = theSpecs.baseURL || '/controls';
+    //         //var tmpBaseURL = theSpecs.baseURL || '/controls';
         
-            for( var aPath in theSpecs.controlMap){
-                var tmpCtlName = theSpecs.controlMap[aPath];
-                tmpDefs.push(
-                    me.loadAppControl(aPath)
-                );
-            }
-        }
+    //         for( var aPath in theSpecs.controlMap){
+    //             var tmpCtlName = theSpecs.controlMap[aPath];
+    //             tmpDefs.push(
+    //                 me.loadAppControl(aPath)
+    //             );
+    //         }
+    //     }
 
-        // for (var index = 0; index < theObjectsArray.length; index++) {
-        //     var tmpCtlName = theObjectsArray[index];
-        //     if( tmpCtlName ){
-        //         tmpDefs.push(
-        //             me.loadAppControl(tmpCtlName, theBaseURL)
-        //         );
-        //     }
-        // }
-        $.whenAll(tmpDefs).then(
-            function(){
-                dfd.resolve(true);
-            }
-        )
-        return dfd.promise();
+    //     // for (var index = 0; index < theObjectsArray.length; index++) {
+    //     //     var tmpCtlName = theObjectsArray[index];
+    //     //     if( tmpCtlName ){
+    //     //         tmpDefs.push(
+    //     //             me.loadAppControl(tmpCtlName, theBaseURL)
+    //     //         );
+    //     //     }
+    //     // }
+    //     $.whenAll(tmpDefs).then(
+    //         function(){
+    //             dfd.resolve(true);
+    //         }
+    //     )
+    //     return dfd.promise();
 
-    }
+    // }
 
     // me.initControls = function (theSpecs, theOptions) {
     //     var dfd = jQuery.Deferred();
@@ -2634,126 +2622,50 @@ License: MIT
     var me = SitePage.prototype;
     //var that = this;
 
-    
-    me.getPanel = function(thePanelName){
-        return this.res.panels[thePanelName];
-    }
-    me.hasPanel = function(thePanelName){
-        var tmpPanel = this.res.panels[thePanelName];
-        return !(!tmpPanel);
-    }
-    me.registerPanel = function(thePanelName, thePanel){
-        this.res.panels[thePanelName] = thePanel
-    }
-
-    
 
     me.addPageWebControl = function (theControlName, theControl) {
         ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
     }
 
-    // me.initControls = function (theSpecs, theOptions) {
-    //     var dfd = jQuery.Deferred();
-    //     //--- if no templates to process, no prob, return now
-    //     if (!(theSpecs && theSpecs.controlsMap)) {
-    //         dfd.resolve(true);
-    //         return dfd.promise();
-    //     }
-
-    //     var tmpCtls = [];
-    //     for (var aName in theSpecs.controlsMap) {
-    //         tmpCtls.push(aName);
-    //     }
-    //     var tmpBaseURL = theSpecs.baseURL || '/controls/';
-
-    //     //--- This is needed because this changes inside the promise due to 
-    //     //    not .bind(this) in the function, the temp reference is quicker, same result
-    //     var tmpThis = this;
-    //     ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
-    //         for (var aKey in theDocs) {
-    //             var tmpName = theSpecs.controlsMap[aKey];
-    //             if (tmpName) {
-    //                 var tmpControlSpecs = theDocs[aKey];
-    //                 var tmpHTML = ThisApp.json(tmpControlSpecs);
-    //                 var tmpPrefix = tmpThis.ns().replace(":", "");
-    //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
-    //                 tmpControlSpecs = ThisApp.json(tmpHTML);
-    //                 tmpThis.controlIndex[tmpName] = ThisApp.controls.newControl(tmpControlSpecs, { parent: tmpThis });
-    //             }
-    //         }
-    //         dfd.resolve(true);
-    //     });
-    //     return dfd.promise();
-    // }
-
 
     me.initOnFirstLoad = function () {
         var dfd = jQuery.Deferred();
         var tmpThis = this;
-        var tmpNS = '';
         this.options = this.options || {};
         me.controls = {};
-        console.log( 'this.options', this.options);
         var tmpThis = this;
 
-        var tmpPromTpl = true;
         if (this.options.pageTemplates) {
             this.options.required = this.options.required || {};
-
             //--- backward compat - deprecated
             this.options.required.templates = this.options.pageTemplates;
             if( !(this.options.required.templates.map) && (this.options.required.templates.templateMap) ){
                 this.options.required.templates.map = this.options.required.templates.templateMap;
             }
-
-            //tmpPromTpl = ThisApp.initTemplates(this.pageTemplates, this.options)
         };
-        
-        // var tmpPromCtl = true;
-        // if (theAppConfig && theAppConfig.appControls) {
-        //     tmpPromCtl = me.initControls(theAppConfig.appControls)
-        // };
-
-        // var tmpPromPanel = true;
-        // if (this.appPanels && this.appPanels.length) {
-        //     var tmpGetPanels = ThisApp.initPanels.bind(this);
-        //     tmpPromPanel = tmpRun(theAppConfig.appPanels)
-        // };
-        var tmpPromPanel = true;
         
         //--- Deprecated, move to required
         if (this.pagePanels) {
-            
             this.options.required = this.options.required || {};
-
             //--- backward compat - deprecated
             this.options.required.panels = this.pagePanels;
             if( !(this.options.required.panels.map) && (this.options.required.panels.panelMap) ){
                 this.options.required.panels.map = this.options.required.panels.panelMap;
             }
-
-            // var tmpInitPanels = ThisApp.initPanels.bind(this);
-            // var tmpIndex = this.panelIndex;
-            // tmpPromPanel = tmpInitPanels(this.pagePanels, {nsParent: this})
         };
 
         var tmpPromRequired = true;
         if (this.options.required){
             var tmpInitReq = ThisApp.initRequired.bind(this);
             tmpPromRequired = tmpInitReq(this.options.required, {nsParent: this})
-            console.log( 'this.options.required', this.options.required);
         }
-        console.log( 'tmpPromRequired', tmpPromRequired);
         
-       
-        $.when(tmpPromRequired, tmpPromPanel).then(function(theReply){
+        $.when(tmpPromRequired).then(function(theReply){
            //--- No async calls, just run it
            tmpThis.initLayout();
            tmpThis.initAppComponents();
            dfd.resolve(true);
         })
-
-     
         
         return dfd.promise();
     }
@@ -2761,7 +2673,6 @@ License: MIT
 
     //--- Usage: <div appuse="template" name="yourns:yourname">Template for {{titie}}</div>
     me.loadTemplatesFromMarkup = function () {
-
 
         var tmpNS = '';
         var tmpOptions = this.options || {};
@@ -2982,8 +2893,26 @@ License: MIT
         }
 
         //--- Grab some common functionality from app ...
-        this.initResourceType = ThisApp.initResourceType.bind(this);
-        this.addResource = ThisApp.addResource.bind(this);
+        var tmpStuffToGrag = ['initResourceType',
+            ,'addResource'
+            ,'hasPanel'
+            ,'registerPanel'
+            ,'getPanel'
+            ,'hasControl'
+            ,'registerControl'
+            ,'getControl'
+        ];
+
+        for (var iStuff = 0; iStuff < tmpStuffToGrag.length; iStuff++) {
+            var tmpFuncName = tmpStuffToGrag[iStuff];
+            var tmpFunc = ThisApp[tmpFuncName];
+            if( ThisApp.util.isFunc(tmpFunc) ){
+                this[tmpFuncName] = tmpFunc.bind(this);
+            }
+        }
+        
+
+        // this.initResourceType = ThisApp.initResourceType.bind(this);
 
         if (typeof (this._onPreInit) == 'function') {
             this._onPreInit(this.app)
