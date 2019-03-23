@@ -6095,9 +6095,11 @@ License: MIT
             return tmpRet;
         },
         getHTML: function (theControlName, theObject, theControlObj) {
-
+console.log( 'theObject', theObject);
             var tmpObject = theObject || {};
             var tmpHTML = [];
+//---> ToDo: Add value and default value to other fields *****
+            var tmpValue = tmpObject.value || tmpObject.default || '';
             var tmpSizeName = '';
             if (tmpObject.size && tmpObject.size > 0 && tmpObject.size < 17) {
                 tmpSizeName = getNumName(tmpObject.size)
@@ -6108,6 +6110,9 @@ License: MIT
                 tmpReq = ' required ';
             }
 
+            if( tmpValue ){
+                tmpValue = ' value="' + tmpValue + '" ';
+            }
             tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpSizeName + tmpReq + ' field">')
             if (theObject.label) {
                 tmpHTML.push('<label>')
@@ -6123,7 +6128,7 @@ License: MIT
                 }
                 tmpPH = ' placeholder="' + tmpPH + ' ';
             }
-            tmpHTML.push('<input controls field name="' + theObject.name + '" ' + tmpPH + '"></input>')
+            tmpHTML.push('<input controls field ' + tmpValue + ' name="' + theObject.name + '" ' + tmpPH + '"></input>')
             tmpHTML.push(getNoteMarkup(theObject));
 
             tmpHTML.push('</div>')
