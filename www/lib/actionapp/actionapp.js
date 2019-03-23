@@ -398,44 +398,44 @@ var ActionAppCore = {};
 
     }
 
-    
-    
-    
-    me.hasPanel = function(theName){
+
+
+
+    me.hasPanel = function (theName) {
         var tmpItem = this.res.panels[theName];
         return !(!tmpItem);
     }
-    me.registerPanel = function(theName, thePanel){
+    me.registerPanel = function (theName, thePanel) {
         this.res.panels[theName] = thePanel
     }
-    me.getPanel = function(theName){
+    me.getPanel = function (theName) {
         return this.res.panels[theName];
     }
 
 
-    me.hasControl = function(theName){
+    me.hasControl = function (theName) {
         var tmpItem = this.res.controls[theName];
         return !(!tmpItem);
     }
-    me.registerControl = function(theName, thePanel){
+    me.registerControl = function (theName, thePanel) {
         this.res.controls[theName] = thePanel
     }
-    me.getControl = function(theName){
+    me.getControl = function (theName) {
         return this.res.controls[theName];
     }
 
     me.initRequired = function (theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
         var tmpDefs = [];
-        for( var aName in theSpecs ){
+        for (var aName in theSpecs) {
             var tmpType = aName;
             var tmpTypeSpecs = theSpecs[aName];
             tmpDefs.push(this.initResourceType(tmpType, tmpTypeSpecs, theOptions))
         }
         var tmpThis = this;
 
-        $.whenAll(tmpDefs).then(function(){
-console.info( 'Loaded Resources ', tmpThis.res);
+        $.whenAll(tmpDefs).then(function () {
+            console.info('Loaded Resources ', tmpThis.res);
             dfd.resolve(true);
         })
         return dfd;
@@ -446,7 +446,7 @@ console.info( 'Loaded Resources ', tmpThis.res);
         var dfd = jQuery.Deferred();
 
         var tmpCheck = (theType == 'html') || (theType == 'controls') || (theType == 'panels') || (theType == 'templates')
-        if( !tmpCheck ){
+        if (!tmpCheck) {
             console.warn("Asking for unknown resource type " + theType)
             dfd.resolve(true);
             return dfd.promise();
@@ -458,19 +458,19 @@ console.info( 'Loaded Resources ', tmpThis.res);
             dfd.resolve(true);
             return dfd.promise();
         }
-    
+
         var tmpMaps = [];
         for (var aName in theSpecs.map) {
             var tmpName = aName;
-            if( theType == 'controls' ){
+            if (theType == 'controls') {
                 tmpName += '';
             }
             tmpMaps.push(tmpName);
         }
         var tmpBaseURL = theSpecs.baseURL || '';
-    
+
         var tmpContentType = 'html';
-        if( theType == 'panels' ){
+        if (theType == 'panels') {
             tmpContentType = 'get';
         }
 
@@ -481,38 +481,38 @@ console.info( 'Loaded Resources ', tmpThis.res);
                 if (tmpName) {
                     var tmpResourceData = theDocs[aKey];
                     var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || '';
-                    if( !tmpNS ){
+                    if (!tmpNS) {
                         //--- Auto sense a namespace function, use it if present
-                        if( ThisApp.util.isFunc(tmpThis.ns)){
+                        if (ThisApp.util.isFunc(tmpThis.ns)) {
                             tmpNS = tmpThis.ns().replace(":", "");
                         }
                     }
                     if (tmpNS) {
-                        if( theType == 'panels' && typeof(tmpResourceData) == 'object' ){
-                            tmpResourceData = ThisApp.json(tmpResourceData,true);
+                        if (theType == 'panels' && typeof (tmpResourceData) == 'object') {
+                            tmpResourceData = ThisApp.json(tmpResourceData, true);
                         }
-                        if( typeof(tmpResourceData) == 'string' ){
+                        if (typeof (tmpResourceData) == 'string') {
                             tmpResourceData = ThisApp.getUpdatedMarkupForNS(tmpResourceData, tmpNS)
                         }
-                        if( theType == 'panels' && typeof(tmpResourceData) == 'string' ){
-                            tmpResourceData = ThisApp.json(tmpResourceData,true);
+                        if (theType == 'panels' && typeof (tmpResourceData) == 'string') {
+                            tmpResourceData = ThisApp.json(tmpResourceData, true);
                         }
                     }
-                    if( theType == 'controls' ){
+                    if (theType == 'controls') {
                         try {
                             var tmpResourceData = eval(tmpResourceData);
                         } catch (ex) {
                             console.warn("Could not convert control to object");
                         }
-                    } else if( theType == 'panels' ){
+                    } else if (theType == 'panels') {
                         try {
-                            var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {parent: tmpThis})
+                            var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, { parent: tmpThis })
                         } catch (ex) {
                             console.warn("Could not convert control to object");
                         }
                     }
-                    if( theType == 'html' ){
-                     //   console.log( 'html', tmpName, tmpResourceData);
+                    if (theType == 'html') {
+                        //   console.log( 'html', tmpName, tmpResourceData);
                     }
                     tmpThis.addResource(theType, tmpName, tmpResourceData);
                 }
@@ -520,11 +520,11 @@ console.info( 'Loaded Resources ', tmpThis.res);
             dfd.resolve(true);
         });
         return dfd.promise();
-    
+
     }
 
-    me.addResource = function(theType, theName, theResourceData){
-        if( theType == 'templates' ){
+    me.addResource = function (theType, theName, theResourceData) {
+        if (theType == 'templates') {
             //--- Always add templates at the application level
             ThisApp.addTemplate(theName, theResourceData);
         } else {
@@ -1802,7 +1802,7 @@ console.info( 'Loaded Resources ', tmpThis.res);
             tmpPromRequired = me.initRequired(theAppConfig.required);
         };
 
-        $.when(tmpPromRequired).then(function(){
+        $.when(tmpPromRequired).then(function () {
             //--- do the rest of the app load
             dfd.resolve(true);
         })
@@ -1811,14 +1811,14 @@ console.info( 'Loaded Resources ', tmpThis.res);
         return dfd;
 
     }
-    
+
     me.init = init;
     var ThisCoreApp = this;
     function init(theAppConfig) {
         var dfd = jQuery.Deferred();
 
         ThisCoreApp = this;
-        
+
         var tmpThis = this;
         me.setup(theAppConfig).then(function (theReply) {
             if (!(theReply)) {
@@ -2281,7 +2281,7 @@ License: MIT
         this.pageTemplates = this.options.pageTemplates || false;
         this.pageControls = this.options.pageControls || false;
         this.pagePanels = this.options.pagePanels || false;
-        
+
         //--deprecated
         // this.panelIndex = {};
         this.controlIndex = {};
@@ -2324,9 +2324,9 @@ License: MIT
             }
 
             this.createInstance = function (theControl, theInstanceName) {
-                if( !(theControl) ){
-                    console.error( 'the control is not there to create ', theInstanceName);
-                    throw("Control now found to create " + theInstanceName)
+                if (!(theControl)) {
+                    console.error('the control is not there to create ', theInstanceName);
+                    throw ("Control now found to create " + theInstanceName)
                 }
                 this.parts[theInstanceName] = theControl.create(theInstanceName);
                 return theControl.create(theInstanceName);
@@ -2371,34 +2371,34 @@ License: MIT
             this.options.required = this.options.required || {};
             //--- backward compat - deprecated
             this.options.required.templates = this.options.pageTemplates;
-            if( !(this.options.required.templates.map) && (this.options.required.templates.templateMap) ){
+            if (!(this.options.required.templates.map) && (this.options.required.templates.templateMap)) {
                 this.options.required.templates.map = this.options.required.templates.templateMap;
             }
         };
-        
+
         //--- Deprecated, move to required
         if (this.pagePanels) {
             this.options.required = this.options.required || {};
             //--- backward compat - deprecated
             this.options.required.panels = this.pagePanels;
-            if( !(this.options.required.panels.map) && (this.options.required.panels.panelMap) ){
+            if (!(this.options.required.panels.map) && (this.options.required.panels.panelMap)) {
                 this.options.required.panels.map = this.options.required.panels.panelMap;
             }
         };
 
         var tmpPromRequired = true;
-        if (this.options.required){
+        if (this.options.required) {
             var tmpInitReq = ThisApp.initRequired.bind(this);
-            tmpPromRequired = tmpInitReq(this.options.required, {nsParent: this})
+            tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         }
-        
-        $.when(tmpPromRequired).then(function(theReply){
-           //--- No async calls, just run it
-           tmpThis.initLayout();
-           tmpThis.initAppComponents();
-           dfd.resolve(true);
+
+        $.when(tmpPromRequired).then(function (theReply) {
+            //--- No async calls, just run it
+            tmpThis.initLayout();
+            tmpThis.initAppComponents();
+            dfd.resolve(true);
         })
-        
+
         return dfd.promise();
     }
 
@@ -2487,12 +2487,10 @@ License: MIT
 
         if (this.layoutOptions && this.layoutOptions.html) {
             var tmpContentItems = this.layoutOptions.html;
-            console.log( 'tmpContentItems', tmpContentItems);
             for (var aName in tmpContentItems) {
                 var tmpContentName = tmpContentItems[aName];
                 var tmpHTML = this.res.html[tmpContentName];
-                //console.log( 'tmpHTML', tmpHTML);
-               this.loadRegion(aName, tmpHTML || '');
+                this.loadRegion(aName, tmpHTML || '');
             }
         }
 
@@ -2526,10 +2524,10 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.panels[tmpLTName];
-                if (tmpCtl && tmpCtl.controlConfig){
-                    tmpCtl.controlConfig.parentRegionName = aName;    
+                if (tmpCtl && tmpCtl.controlConfig) {
+                    tmpCtl.controlConfig.parentRegionName = aName;
                 }
-                
+
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
             }
         }
@@ -2640,19 +2638,19 @@ License: MIT
 
         //--- Grab some common functionality from app ...
         var tmpStuffToGrag = ['initResourceType',
-            ,'addResource'
-            ,'hasPanel'
-            ,'registerPanel'
-            ,'getPanel'
-            ,'hasControl'
-            ,'registerControl'
-            ,'getControl'
+            , 'addResource'
+            , 'hasPanel'
+            , 'registerPanel'
+            , 'getPanel'
+            , 'hasControl'
+            , 'registerControl'
+            , 'getControl'
         ];
 
         for (var iStuff = 0; iStuff < tmpStuffToGrag.length; iStuff++) {
             var tmpFuncName = tmpStuffToGrag[iStuff];
             var tmpFunc = ThisApp[tmpFuncName];
-            if( ThisApp.util.isFunc(tmpFunc) ){
+            if (ThisApp.util.isFunc(tmpFunc)) {
                 this[tmpFuncName] = tmpFunc.bind(this);
             }
         }
@@ -4125,7 +4123,7 @@ License: MIT
         tmpOptions.parent = tmpOptions.parent || this.controlConfig.parent
         tmpOptions.proto = tmpOptions.proto || this.controlConfig.proto || false;
         var tmpObj = new ControlInstance(this, theControlName, tmpOptions);
-        if( tmpOptions.proto ){
+        if (tmpOptions.proto) {
             tmpObj.extend(tmpOptions.proto);
         }
         return tmpObj
@@ -4133,8 +4131,8 @@ License: MIT
 
     meControl.prompt = function (theOptions) {
         var dfd = jQuery.Deferred();
-        
-        
+
+
         var tmpOptions = theOptions || {};
         var tmpConfig = this.controlConfig;
         var tmpCaption = tmpOptions.defaultCaption || tmpConfig.defaultCaption || "Save Changes";
@@ -4176,20 +4174,20 @@ License: MIT
             $.extend(tmpPromptOptions, tmpExtraOptions)
         }
 
-        ThisApp.prompter.prompt(tmpPromptOptions).then(function(theReply, theControl){
+        ThisApp.prompter.prompt(tmpPromptOptions).then(function (theReply, theControl) {
             var tmpData = {};
-            if( theReply && theControl && isFunc(theControl.getData) ){
+            if (theReply && theControl && isFunc(theControl.getData)) {
                 tmpData = theControl.getData();
             }
-            if( theControl && theControl.destroy ){
+            if (theControl && theControl.destroy) {
                 theControl.destroy();
                 delete theControl;
             }
             dfd.resolve(theReply, tmpData)
         })
 
-        
-        
+
+
         return dfd;
     }
 
@@ -4400,7 +4398,7 @@ License: MIT
         var tmpEl = this.getElByName$(theItemName, 'item')
         if (!(tmpEl)) { return false }
         var tmpSpecs = this.getItemSpecs(theItemName);
-        
+
         return {
             el: tmpEl,
             specs: tmpSpecs
@@ -4530,20 +4528,20 @@ License: MIT
         var tmpItem = this.getItem(theName);
         var tmpEl = tmpItem.el;
         var tmpSpecs = tmpItem.specs;
-        
+
         if (tmpSpecs) {
             var tmpCtl = tmpSpecs.ctl || 'field';
             var tmpControl = me.webControls.get(tmpCtl);
-            if( tmpControl && tmpControl.actions && tmpControl.actions[theActionName]){
+            if (tmpControl && tmpControl.actions && tmpControl.actions[theActionName]) {
                 var tmpFunc = tmpControl.actions[theActionName];
-                if( isFunc(tmpFunc) ){
+                if (isFunc(tmpFunc)) {
                     tmpFunc = tmpFunc.bind(this);
-                    if( theOptionalParams ){
-                        tmpFunc( theOptionalParams );
+                    if (theOptionalParams) {
+                        tmpFunc(theOptionalParams);
                     } else {
                         tmpFunc('', tmpEl);
                     }
-                    
+
                 }
             }
         } else {
@@ -4552,7 +4550,7 @@ License: MIT
 
 
     }
-    
+
     meInstance.getItemDisplay = function (theName) {
         return me.getItemDisplay(this.getEl(), theName)
     }
@@ -4940,7 +4938,7 @@ License: MIT
 
     meInstance.loadToElement = function (theEl, theOptions) {
         this.parentEl = ThisApp.asSpot(theEl);
-        
+
         var tmpHTML = this.getHTML();
         this.parentEl.html(tmpHTML);
         this.parentEl.on('change', this.onFieldChange.bind(this))
@@ -5908,7 +5906,7 @@ License: MIT
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
-//---> ToDo: Add value and default value to other fields *****
+            //---> ToDo: Add value and default value to other fields *****
             var tmpValue = tmpObject.value || tmpObject.default || '';
             var tmpSizeName = '';
             if (tmpObject.size && tmpObject.size > 0 && tmpObject.size < 17) {
@@ -5920,7 +5918,7 @@ License: MIT
                 tmpReq = ' required ';
             }
 
-            if( tmpValue ){
+            if (tmpValue) {
                 tmpValue = ' value="' + tmpValue + '" ';
             }
             tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpSizeName + tmpReq + ' field">')
@@ -6272,9 +6270,9 @@ License: MIT
                 var tmpValue = theParams.text || '';
                 var tmpHide = !(tmpValue);
                 var tmpItem = this.getItem('topHeader');
-                if( tmpItem && tmpItem.el ){
+                if (tmpItem && tmpItem.el) {
                     tmpItem.el.html(tmpValue)
-                    this.setItemDisplay('topHeaderArea',!tmpHide)
+                    this.setItemDisplay('topHeaderArea', !tmpHide)
                 }
             }
         },
@@ -6290,17 +6288,17 @@ License: MIT
             };
 
             tmpRet.actions.setTopHeader = {
-                name: 'setTopHeader', 
+                name: 'setTopHeader',
                 label: "Set Top Header",
                 notes: "Sets the top header of the card, blank hides it",
                 properties: {
                     text: {
-                        name: 'text', 
+                        name: 'text',
                         label: 'Text for header'
                     }
                 }
             }
-            
+
 
             tmpProps.topHeader = {
                 name: "topHeader",
@@ -6354,7 +6352,7 @@ License: MIT
         },
         //---ToDo: Change this to always create every element and apply hidden later
         //---     this is so we get pull the spec off anytime ????
-        getCustomContent: function(theControlName, theObject, theControlObj){
+        getCustomContent: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpNewContent = [];
 
@@ -6374,7 +6372,7 @@ License: MIT
                         "ctl": "title",
                         "name": "topHeader",
                         "text": tmpTopHeaderText
-                        
+
                     }
                 ]
             })
@@ -6469,7 +6467,7 @@ License: MIT
         isField: false
 
     }
-    
+
     me.getControlType = function (theControlName) {
         var tmpControl = me.getWebControl(theControlName)
         if (tmpControl && tmpControl.isField === true) {
