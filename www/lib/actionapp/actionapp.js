@@ -481,6 +481,12 @@ console.info( 'Loaded Resources ', tmpThis.res);
                 if (tmpName) {
                     var tmpResourceData = theDocs[aKey];
                     var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || '';
+                    if( !tmpNS ){
+                        //--- Auto sense a namespace function, use it if present
+                        if( ThisApp.util.isFunc(tmpThis.ns)){
+                            tmpNS = tmpThis.ns().replace(":", "");
+                        }
+                    }
                     if (tmpNS) {
                         if( theType == 'panels' && typeof(tmpResourceData) == 'object' ){
                             tmpResourceData = ThisApp.json(tmpResourceData,true);
