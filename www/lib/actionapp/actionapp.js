@@ -212,9 +212,10 @@ var ActionAppCore = {};
         me.actionsDelegates = me.options.actionsDelegates || {};
 
         me.panelIndex = {};
-        me.ctlIndex = {};
+        me.controlIndex = {};
+        me.components = {};
 
-        var defaults = {};
+        var defaults = {}; //? needed ?
         me.events = $({});
         me.$window = $(window);
         me.$document = $(document);
@@ -429,11 +430,11 @@ var ActionAppCore = {};
 
 
     me.hasControl = function(theControlName){
-        var tmpControl = me.ctlIndex[theControlName];
+        var tmpControl = me.controlIndex[theControlName];
         return !(!tmpControl);
     }
     me.registerControl = function(theControlName, theControl){
-        this.ctlIndex[theControlName] = theControl
+        this.controlIndex[theControlName] = theControl
     }
 
     me.loadControl = function(theControlName, theLocation){
@@ -451,7 +452,7 @@ var ActionAppCore = {};
             }
             console.log( 'tmpName', tmpName);
             me.loadAppControl(tmpName).then(function(){
-                tmpControl = me.ctlIndex[theControlName];
+                tmpControl = me.controlIndex[theControlName];
                 if( tmpControl ){
                     dfd.resolve(tmpControl)
                 } else {
@@ -464,7 +465,7 @@ var ActionAppCore = {};
 
     me.getControl = function(theControlName){
         try {
-            var tmpControl = me.ctlIndex[theControlName];
+            var tmpControl = me.controlIndex[theControlName];
             if( tmpControl ){
                 return tmpControl;
             }
@@ -666,7 +667,114 @@ var ActionAppCore = {};
 
     }
 
-    me.components = {};
+    me.initRequired = function (theSpecs, theOptions) {
+        var dfd = jQuery.Deferred();
+        var tmpDefs = [];
+
+       // console.log( 'initRequired', theSpecs);
+        for( var aName in theSpecs ){
+            var tmpType = aName;
+            var tmpTypeSpecs = theSpecs[aName];
+            // console.log( 'tmpTypeSpecs ' + aName, tmpTypeSpecs);
+            tmpDefs.push(this.initResourceType(tmpType, tmpTypeSpecs, theOptions))
+           // console.log( 'pushed tmpTypeSpecs ' + tmpType, tmpTypeSpecs);
+        }
+
+        $.whenAll(tmpDefs).then(function(){
+            dfd.resolve(true);
+        })
+        return dfd;
+    }
+
+    //--- theType: (controls, panels, snippets or templates)
+    me.initResourceType = function (theType, theSpecs, theOptions) {
+        var dfd = jQuery.Deferred();
+
+        var tmpCheck = (theType == 'snippets') || (theType == 'controls') || (theType == 'panels') || (theType == 'templates')
+        if( !tmpCheck ){
+            console.warn("Asking for unknown resource type " + theType)
+            dfd.resolve(true);
+            return dfd.promise();
+        }
+        // console.log( 'initResourceType', theType, theSpecs);
+        var tmpOptions = theOptions || {};
+        //--- if no templates to process, no prob, return now
+        if (!(theSpecs && theSpecs.map)) {
+            dfd.resolve(true);
+            return dfd.promise();
+        }
+    
+        var tmpMaps = [];
+        for (var aName in theSpecs.map) {
+            var tmpName = aName;
+            if( theType == 'controls' ){
+                tmpName += '';
+            }
+            tmpMaps.push(tmpName);
+        }
+        var tmpBaseURL = theSpecs.baseURL || '';
+    
+        var tmpContentType = 'html';
+        if( theType == 'panels' ){
+            tmpContentType = 'get';
+        }
+        // console.log( 'tmpMaps ' + theType, tmpBaseURL, tmpMaps);
+//console.log( 'tmpContentType', tmpContentType);
+        //--- This is bound to object that will have the resources added
+        var tmpThis = this;
+        ThisApp.om.getObjects('[' + tmpContentType + ']:' + tmpBaseURL, tmpMaps).then(function (theDocs) {
+           // console.log( 'theDocs', theDocs);
+            for (var aKey in theDocs) {
+                var tmpName = theSpecs.map[aKey];
+               
+                
+                if (tmpName) {
+                    // console.log( 'tmpName aKey', tmpName, aKey);
+                    var tmpResourceData = theDocs[aKey];
+
+                    var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || '';
+                    if (tmpNS) {
+                        if( theType == 'panels' && typeof(tmpResourceData) == 'object' ){
+                            tmpResourceData = ThisApp.json(tmpResourceData,true);
+                        }
+                        if( typeof(tmpResourceData) == 'string' ){
+                            tmpResourceData = ThisApp.getUpdatedMarkupForNS(tmpResourceData, tmpNS)
+                        }
+                        if( theType == 'panels' && typeof(tmpResourceData) == 'string' ){
+                            tmpResourceData = ThisApp.json(tmpResourceData,true);
+                        }
+                    }
+                    // console.log( 'theType, tmpResourceData', theType, tmpResourceData);
+                    if( theType == 'controls' ){
+                        try {
+                            var tmpResourceData = eval(tmpResourceData);
+                            // console.log( 'tmpCtl', tmpCtl);
+                        } catch (ex) {
+                            console.warn("Could not convert control to object");
+                            
+                        }
+                    } else if( theType == 'panels' ){
+                        try {
+                            var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {parent: this})
+                            // console.log( 'tmpCtl', tmpCtl);
+                        } catch (ex) {
+                            console.warn("Could not convert control to object");
+                            
+                        }
+                    }
+
+                    tmpThis.addResource(theType, tmpName, tmpResourceData);
+                }
+            }
+            dfd.resolve(true);
+        });
+        return dfd.promise();
+    
+    }
+
+    me.addResource = function(theType, theName, theResourceData){
+        console.log( 'addResource', theType, theName, theResourceData);
+    }
 
     /**
        * getUpdatedMarkupForNS
@@ -1933,6 +2041,12 @@ var ActionAppCore = {};
         me.forms = me.getComponent("plugin:Forms");
         me.controls = me.getComponent("plugin:Controls");
 
+        var tmpPromRequired = true;
+        if (theAppConfig && theAppConfig.required) {
+            //for page, do ghis ... var tmpInitReq = ThisApp.initRequired.bind(this);
+            tmpPromRequired = me.initRequired(theAppConfig.required);
+        };
+
         var tmpPromTpl = true;
         if (theAppConfig && theAppConfig.appTemplates) {
             tmpPromTpl = me.initTemplates(theAppConfig.appTemplates)
@@ -2424,7 +2538,7 @@ License: MIT
         this.pagePanels = this.options.pagePanels || [];
         
         this.panelIndex = {};
-        this.ctlIndex = {};
+        this.controlIndex = {};
 
         this.scope = {};
 
@@ -6095,7 +6209,6 @@ License: MIT
             return tmpRet;
         },
         getHTML: function (theControlName, theObject, theControlObj) {
-console.log( 'theObject', theObject);
             var tmpObject = theObject || {};
             var tmpHTML = [];
 //---> ToDo: Add value and default value to other fields *****

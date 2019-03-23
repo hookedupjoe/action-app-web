@@ -15,20 +15,27 @@
       var tmpRequired = {
         "panels": {
           baseURL: 'app/panels',
-          panelMap: {
+          map: {
             "showfor.json": "frmShowFor"
           }
         },
         "controls": {
           baseURL: 'app/controls',
-          controlMap: {
-            "TesterControl": "TesterControl"
+          map: {
+            "NewTestControl/index.js": "NewTestControl"
             // ,"forms/TesterFormControl": "TesterFormControl"
+          }
+        },
+        "snippets": {
+          baseURL: 'app/app-tpl',
+          map: {
+            "about-this-app.html": "app:about-this-app-snippet",
+            "page-loading-spinner.html": "app:page-loading-spinner-snippet"
           }
         },
         "templates": {
           baseURL: 'app/app-tpl',
-          templateMap: {
+          map: {
             "about-this-app.html": "app:about-this-app",
             "page-loading-spinner.html": "app:page-loading-spinner"
           }
@@ -90,7 +97,7 @@
       //appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, appTemplates: tmpTplSpecs
       //
       //require: tmpRequired, 
-      ThisApp.init({ appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, appTemplates: tmpTplSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
+      ThisApp.init({ required: tmpRequired, appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, appTemplates: tmpTplSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {
