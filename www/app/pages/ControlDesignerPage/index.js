@@ -188,45 +188,45 @@ License: MIT
 
 
     function test4(theParams){
-        // var tmpReady = true;
-        // if( !(ThisPage.scope.test3Control) ){
-        //     tmpReady = test3();
-        // }
-        // $.when(tmpReady).then(function(){
-        //     ThisPage.scope.test3Control.sayHello();
-        // })
+        // // var tmpReady = true;
+        // // if( !(ThisPage.scope.test3Control) ){
+        // //     tmpReady = test3();
+        // // }
+        // // $.when(tmpReady).then(function(){
+        // //     ThisPage.scope.test3Control.sayHello();
+        // // })
 
-        ThisApp.loadControl('TesterControl', '/app/pages/ControlDesignerPage/controls').then(function(theControl){
-            theControl.prompt().then(function(theReply, theData){
-                console.log( 'theData', theData);
-            });
-        })
+        // ThisApp.loadControl('TesterControl', '/app/pages/ControlDesignerPage/controls').then(function(theControl){
+        //     theControl.prompt().then(function(theReply, theData){
+        //         console.log( 'theData', theData);
+        //     });
+        // })
         
         
     }
     function test3(theParams){
-        var dfd = jQuery.Deferred();
-        ThisApp.loadControl('TesterFormControl', 'forms').then(function(theControl){
-            console.log( 'theControl', theControl);
-            var tmpTargetName = 'preview-props';
-//            ThisPage.loadSpot(tmpTargetName, 'got a control');
-            if( ThisPage.scope.test3Control ){
-                delete(ThisPage.scope.test3Control);
-            }
-            ThisPage.scope.test3Control = theControl.create(tmpTargetName + '-ctl');
-            ThisPage.scope.test3Control.loadToElement(ThisPage.spot(tmpTargetName))
-            ThisPage.parts.east.gotoItem(tmpTargetName);
+//         var dfd = jQuery.Deferred();
+//         ThisApp.loadControl('TesterFormControl', 'forms').then(function(theControl){
+//             console.log( 'theControl', theControl);
+//             var tmpTargetName = 'preview-props';
+// //            ThisPage.loadSpot(tmpTargetName, 'got a control');
+//             if( ThisPage.scope.test3Control ){
+//                 delete(ThisPage.scope.test3Control);
+//             }
+//             ThisPage.scope.test3Control = theControl.create(tmpTargetName + '-ctl');
+//             ThisPage.scope.test3Control.loadToElement(ThisPage.spot(tmpTargetName))
+//             ThisPage.parts.east.gotoItem(tmpTargetName);
 
-            ThisPage.scope.test3Control.sayHello("You just created")
-            dfd.resolve(theControl);
-            // theControl.prompt().then(function(theReply, theData){
-            //     if( theReply ){
-            //         alert("got theData");
-            //         console.log( 'theData', theData);
-            //     }
-            // })
-        })
-        return dfd;
+//             ThisPage.scope.test3Control.sayHello("You just created")
+//             dfd.resolve(theControl);
+//             // theControl.prompt().then(function(theReply, theData){
+//             //     if( theReply ){
+//             //         alert("got theData");
+//             //         console.log( 'theData', theData);
+//             //     }
+//             // })
+//         })
+//         return dfd;
     }
     
     var tmpTest2Counter = 0;

@@ -1,10 +1,10 @@
 /*
 Author: Joseph Francis
 License: MIT
+
+Create a control .. a panel with a brain
 */
 (function (ActionAppCore, $) {
-
-    var ControlName = "TesterControl";
 
     var ControlSpecs = {
         "content": [
@@ -48,7 +48,8 @@ License: MIT
     }
 
     
-
+    //--- Create a new control with the specs ..
+    //--- Each instance of the control will have the prototype provided
     var ThisControl = ThisApp.controls.newControl(ControlSpecs, { proto: ControlCode, parent: ThisApp } )
     //--- Anything else?
     return ThisControl;

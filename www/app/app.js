@@ -13,20 +13,20 @@
 
       //--- Items to load when the application loads
       var tmpRequired = {
-        "panels": {
+        "rem_panels": {
           baseURL: 'app/panels',
           map: {
             "showfor.json": "frmShowFor"
           }
         },
-        "controls": {
+        "rem_controls": {
           baseURL: 'app/controls',
           map: {
             "NewTestControl/index.js": "NewTestControl"
             // ,"forms/TesterFormControl": "TesterFormControl"
           }
         },
-        "snippets": {
+        "rem_snippets": {
           baseURL: 'app/app-tpl',
           map: {
             "about-this-app.html": "app:about-this-app-snippet",
@@ -50,13 +50,13 @@
         }
       };
 
-      var tmpAppControlSpecs = {
-        baseURL: 'app/controls',
-        controlMap: {
-          "TesterControl": "TesterControl"
-          // ,"forms/TesterFormControl": "TesterFormControl"
-        }
-      };
+      // var tmpAppControlSpecs = {
+      //   baseURL: 'app/controls',
+      //   controlMap: {
+      //     "TesterControl": "TesterControl"
+      //     // ,"forms/TesterFormControl": "TesterFormControl"
+      //   }
+      // };
       var tmpAppPanelSpecs = {
         baseURL: 'app/panels',
         panelMap: {
@@ -98,7 +98,8 @@
       //
       //require: tmpRequired, 
       //appTemplates: tmpTplSpecs, 
-      ThisApp.init({ required: tmpRequired, appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
+      //appControls: tmpAppControlSpecs, 
+      ThisApp.init({ required: tmpRequired, appPanels: tmpAppPanelSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {
