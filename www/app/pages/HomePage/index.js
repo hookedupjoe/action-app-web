@@ -20,26 +20,30 @@ License: MIT
         appModule: AppModule
     };
 
+    var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
+
     //--- Define page templates that should load when the page is activated
-    thisPageSpecs.pageTemplates = {
-        baseURL: 'app/pages/HomePage/tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap: {
-            "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-            "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            "page-footer.html": thisPageSpecs.pageNamespace + ":page-footer"
+    thisPageSpecs.required = {
+        html: {
+            baseURL:  pageBaseURL + 'html',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                "page-header.html": "page-header",
+                "page-east.html": "page-east",
+                "page-body.html": "page-body",
+                "page-footer.html": "page-footer"
+            }
         }
     }
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
-        templates: {
-            "east": thisPageSpecs.pageNamespace + ":" + "page-east",
-            "north": thisPageSpecs.pageNamespace + ":" + "page-header",
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body",
-            "south": thisPageSpecs.pageNamespace + ":" + "page-footer"
+        html: {
+            "east": "page-east",
+            "north": "page-header",
+            "center": "page-body",
+            "south": "page-footer"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: false,

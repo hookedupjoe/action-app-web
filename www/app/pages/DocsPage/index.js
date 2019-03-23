@@ -19,30 +19,39 @@ License: MIT
         appModule: AppModule
     };
 
+
+    var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
     var docsBaseURL =  'app/pages/DocsPage/docs';
 
     //--- Define page templates that should load when the page is activated
-    thisPageSpecs.pageTemplates = {
-        baseURL: 'app/pages/DocsPage/tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap: {
-            "cat-document.html": thisPageSpecs.pageNamespace + ":cat-document",
-            "cat-contents.html": thisPageSpecs.pageNamespace + ":cat-contents",
-            "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-            "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            "page-west.html": thisPageSpecs.pageNamespace + ":page-west"
+    thisPageSpecs.required = {
+        templates: {
+            baseURL: pageBaseURL + 'tpl',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                "cat-document.html": thisPageSpecs.pageNamespace + ":cat-document",
+                "cat-contents.html": thisPageSpecs.pageNamespace + ":cat-contents"
+            }
+        },
+        html: {
+            baseURL: pageBaseURL + 'html',
+            map: {
+                "page-header.html": "page-header",
+                "page-east.html": "page-east",
+                "page-body.html": "page-body",
+                "page-west.html": "page-west"
+            }
         }
     }
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
-        templates: {
-            "east": thisPageSpecs.pageNamespace + ":" + "page-east",
-            "north": thisPageSpecs.pageNamespace + ":" + "page-header",
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body",
-            "west": thisPageSpecs.pageNamespace + ":" + "page-west"
+        html: {
+            "east": "page-east",
+            "north": "page-header",
+            "center": "page-body",
+            "west": "page-west"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,
@@ -214,6 +223,7 @@ License: MIT
             var tmpEl = $(theTarget)
             tmpTabName = tmpEl.attr('tab') || tmpTabName;
         }
+        console.log( 'tmpTabName theTarget ', tmpTabName, theTarget);
         if (!tmpTabName) {
             return;
         }
