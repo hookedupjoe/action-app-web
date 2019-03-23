@@ -424,260 +424,18 @@ var ActionAppCore = {};
         return this.res.controls[theName];
     }
 
-    // me. = function(theControlName){
-    //     var tmpControl = me.controlIndex[theControlName];
-    //     return !(!tmpControl);
-    // }
-    // me. = function(theControlName, theControl){
-    //     this.controlIndex[theControlName] = theControl
-    // }
-
-    // me.loadControl = function(theControlName, theLocation){
-    //     var dfd = jQuery.Deferred();
-       
-    //     if( this.hasControl(theControlName) ){
-    //         console.log( 'we have theControlName', theControlName);
-    //         dfd.resolve(this.getControl(theControlName));
-    //     } else {
-    //         console.log( 'no theControlName', theControlName);
-    //         var tmpLocation = theLocation || '';
-    //         var tmpName = theControlName || '';
-    //         if( tmpLocation ){
-    //             tmpName = tmpLocation + '/' + tmpName;
-    //         }
-    //         console.log( 'tmpName', tmpName);
-    //         me.loadAppControl(tmpName).then(function(){
-    //             tmpControl = me.controlIndex[theControlName];
-    //             if( tmpControl ){
-    //                 dfd.resolve(tmpControl)
-    //             } else {
-    //                 theDeferred.reject("Not found " + theControlName)                    
-    //             }
-    //         })
-    //     }
-    //     return dfd;
-    // }
-
-    // me. = function(theControlName){
-    //     try {
-    //         var tmpControl = me.controlIndex[theControlName];
-    //         if( tmpControl ){
-    //             return tmpControl;
-    //         }
-    //         console.warn("Attempting to load control " + theControlName + ".  Not loaded yet, use load control or include in startup to initialize a control.")
-    //     } catch (ex) {
-    //         console.error("Error loading control " + theControlName + '.  Error: ' + ex)
-    //     }
-    //     //ToDo: Update to look for control name in directory to get location
-    //     return false
-    // }
-
-    // me.loadAppControl = function(theControlName){
-       
-    //     var dfd = jQuery.Deferred();
-    //     var tmpBaseURL = '/app/controls';
-
-    //     var tmpURL = '';
-    //     //theControlName
-    //     if( theControlName.indexOf('/') == 0){
-    //         tmpURL = theControlName.replace(/\./g,'/');
-    //     } else {
-    //         tmpURL = tmpBaseURL + "/" + theControlName.replace(/\./g,'/');
-    //     }
-        
-    //     tmpURL += "/index.js";
-
-    //     //--- Get the control, when the control loads - it registers itself
-    //     //    Once a control is registered in the WebCtlCatalogMod module, 
-    //     //      it can be created using the me._getNewControl function
-    //     jQuery.getScript(tmpURL)
-    //         .done(function () {
-    //             dfd.resolve(theControlName);    
-
-    //             // Fake delay to show it waits to load
-    //             /** ThisApp.delay(2000).then(function(){
-    //                 console.log("ThisApp",ThisApp)
-    //                 dfd.resolve(theControlName);    
-    //             })*/
-                
-    //         })
-    //         .fail(function (theError) {
-    //             console.error("Error loading script " + theError);
-    //             dfd.reject(theError);
-    //         });
-
-    //     return dfd;
-    // }
-    
-    // function loadControlsForApp(theSpecs) {
-    //     var dfd = jQuery.Deferred();
-    //     var tmpDefs = [];
-       
-        
-    //     if( !(theSpecs && theSpecs.controlMap)){
-    //         resolve(true);
-    //     } else {
-            
-    //         //var tmpBaseURL = theSpecs.baseURL || '/controls';
-        
-    //         for( var aPath in theSpecs.controlMap){
-    //             var tmpCtlName = theSpecs.controlMap[aPath];
-    //             tmpDefs.push(
-    //                 me.loadAppControl(aPath)
-    //             );
-    //         }
-    //     }
-
-    //     // for (var index = 0; index < theObjectsArray.length; index++) {
-    //     //     var tmpCtlName = theObjectsArray[index];
-    //     //     if( tmpCtlName ){
-    //     //         tmpDefs.push(
-    //     //             me.loadAppControl(tmpCtlName, theBaseURL)
-    //     //         );
-    //     //     }
-    //     // }
-    //     $.whenAll(tmpDefs).then(
-    //         function(){
-    //             dfd.resolve(true);
-    //         }
-    //     )
-    //     return dfd.promise();
-
-    // }
-
-    // me.initControls = function (theSpecs, theOptions) {
-    //     var dfd = jQuery.Deferred();
-    //     this.controlSpecs = {};
-    //     var tmpOptions = theOptions || {};
-    //     //--- if no templates to process, no prob, return now
-    //     if (!(theSpecs && theSpecs.controlMap)) {
-    //         dfd.resolve(true);
-    //         return dfd.promise();
-    //     }
-
-    //     var tmpCtls = [];
-    //     for (var aName in theSpecs.controlMap) {
-    //         tmpCtls.push(aName);
-    //     }
-    //     this.controlSpecs = theSpecs;
-        
-    //     // var tmpBaseURL = theSpecs.baseURL || '/controls';
-    //     loadControlsForApp(this.controlSpecs).then(function(){
-    //         dfd.resolve(true);
-    //     })
-        
-    //     //--- This is needed because this changes inside the promise due to 
-    //     //    not .bind(this) in the function, the temp reference is quicker, same result
-    //     var tmpThis = this;
-    //     // ThisApp.om.getObjects('[html]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
-    //     //     for (var aKey in theDocs) {
-    //     //         var tmpTplName = theSpecs.controlMap[aKey];
-    //     //         if (tmpTplName) {
-    //     //             var tmpHTML = theDocs[aKey];
-    //     //             if (tmpOptions && tmpOptions.pageNamespace) {
-    //     //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.pageNamespace)
-    //     //             }
-    //     //             ThisApp.addTemplate(tmpTplName, tmpHTML);
-    //     //         }
-    //     //     }
-    //     //     dfd.resolve(true);
-    //     // });
-        
-    //     return dfd.promise();
-
-    // }
-    
-    // me.initPanels = function (theSpecs, theOptions) {
-    //     var tmpOptions = theOptions || {};
-        
-    //     var dfd = jQuery.Deferred();
-    //     //--- if no templates to process, no prob, return now
-    //     if (!(theSpecs && theSpecs.panelMap)) {
-    //         dfd.resolve(true);
-    //         return dfd.promise();
-    //     }
-
-    //     var tmpCtls = [];
-    //     for (var aName in theSpecs.panelMap) {
-    //         tmpCtls.push(aName);
-    //     }
-    //     var tmpBaseURL = theSpecs.baseURL || '/panels';
-
-    //     //--- This is needed because this changes inside the promise due to 
-    //     //    not .bind(this) in the function, the temp reference is quicker, same result
-    //     var tmpThis = this;
-    //     ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
-    //         for (var aKey in theDocs) {
-    //             var tmpName = theSpecs.panelMap[aKey];
-    //             if (tmpName) {
-    //                 var tmpEntrySpecs = theDocs[aKey];
-    //                 var tmpHTML = ThisApp.json(tmpEntrySpecs);
-    //                 var tmpNSParent = tmpOptions.nsParent || false;
-    //                 var tmpPrefix = '';
-    //                 if (tmpNSParent){
-    //                     tmpPrefix = tmpNSParent.ns().replace(":", "");
-    //                 }
-    //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
-    //                 tmpEntrySpecs = ThisApp.json(tmpHTML);
-    //                 tmpThis.registerPanel(tmpName, ThisApp.controls.newControl(tmpEntrySpecs, { parent: tmpThis }));
-    //             }
-    //         }
-    //         dfd.resolve(true);
-    //     });
-    //     return dfd.promise();
-    // }
-
-    // me.initTemplates = function (theTemplateSpecs, theOptions) {
-    //     var dfd = jQuery.Deferred();
-    //     var tmpOptions = theOptions || {};
-    //     //--- if no templates to process, no prob, return now
-    //     if (!(theTemplateSpecs && theTemplateSpecs.templateMap)) {
-    //         dfd.resolve(true);
-    //         return dfd.promise();
-    //     }
-
-    //     var tmpTpls = [];
-    //     for (var aName in theTemplateSpecs.templateMap) {
-    //         tmpTpls.push(aName);
-    //     }
-    //     var tmpBaseURL = theTemplateSpecs.baseURL || 'app/app-tpl/';
-
-    //     //--- This is needed because this changes inside the promise due to 
-    //     //    not .bind(this) in the function, the temp reference is quicker, same result
-    //     var tmpThis = this;
-    //     ThisApp.om.getObjects('[html]:' + tmpBaseURL, tmpTpls).then(function (theDocs) {
-    //         for (var aKey in theDocs) {
-    //             var tmpTplName = theTemplateSpecs.templateMap[aKey];
-    //             if (tmpTplName) {
-    //                 var tmpHTML = theDocs[aKey];
-    //                 if (tmpOptions && tmpOptions.pageNamespace) {
-    //                     tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.pageNamespace)
-    //                 }
-    //                 ThisApp.addTemplate(tmpTplName, tmpHTML);
-    //             }
-    //         }
-    //         dfd.resolve(true);
-    //     });
-    //     return dfd.promise();
-
-    // }
-
     me.initRequired = function (theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
         var tmpDefs = [];
-console.log( 'theSpecs', theSpecs);
-       // console.log( 'initRequired', theSpecs);
         for( var aName in theSpecs ){
             var tmpType = aName;
             var tmpTypeSpecs = theSpecs[aName];
-            // console.log( 'tmpTypeSpecs ' + aName, tmpTypeSpecs);
             tmpDefs.push(this.initResourceType(tmpType, tmpTypeSpecs, theOptions))
-           // console.log( 'pushed tmpTypeSpecs ' + tmpType, tmpTypeSpecs);
         }
         var tmpThis = this;
 
         $.whenAll(tmpDefs).then(function(){
-            console.log( 'laoded ', tmpThis.res);
+console.info( 'Loaded Resources ', tmpThis.res);
             dfd.resolve(true);
         })
         return dfd;
@@ -715,20 +473,13 @@ console.log( 'theSpecs', theSpecs);
         if( theType == 'panels' ){
             tmpContentType = 'get';
         }
-        // console.log( 'tmpMaps ' + theType, tmpBaseURL, tmpMaps);
-//console.log( 'tmpContentType', tmpContentType);
-        //--- This is bound to object that will have the resources added
+
         var tmpThis = this;
         ThisApp.om.getObjects('[' + tmpContentType + ']:' + tmpBaseURL, tmpMaps).then(function (theDocs) {
-           // console.log( 'theDocs', theDocs);
             for (var aKey in theDocs) {
                 var tmpName = theSpecs.map[aKey];
-               
-                
                 if (tmpName) {
-                    // console.log( 'tmpName aKey', tmpName, aKey);
                     var tmpResourceData = theDocs[aKey];
-
                     var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || '';
                     if (tmpNS) {
                         if( theType == 'panels' && typeof(tmpResourceData) == 'object' ){
@@ -741,22 +492,17 @@ console.log( 'theSpecs', theSpecs);
                             tmpResourceData = ThisApp.json(tmpResourceData,true);
                         }
                     }
-                    // console.log( 'theType, tmpResourceData', theType, tmpResourceData);
                     if( theType == 'controls' ){
                         try {
                             var tmpResourceData = eval(tmpResourceData);
-                            // console.log( 'tmpCtl', tmpCtl);
                         } catch (ex) {
                             console.warn("Could not convert control to object");
-                            
                         }
                     } else if( theType == 'panels' ){
                         try {
                             var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {parent: tmpThis})
-                            // console.log( 'tmpCtl', tmpCtl);
                         } catch (ex) {
                             console.warn("Could not convert control to object");
-                            
                         }
                     }
                     if( theType == 'snippets' ){
@@ -781,9 +527,6 @@ console.log( 'theSpecs', theSpecs);
             this.res[theType] = this.res[theType] || {};
             this.res[theType][theName] = theResourceData;
         }
-        
-
-        //console.log( 'addResource', theType, theName, theResourceData);
     }
 
     /**
@@ -836,7 +579,6 @@ console.log( 'theSpecs', theSpecs);
        */
     me.loadSpot = function (theName, theContent, theOptionalTemplateName, theOptionalParent$, theOptionalTagName) {
         var tmpTagName = theOptionalTagName || 'spot';
-        var tmpSelector = '[' + tmpTagName + '="' + theName + '"]';
         var tmpContent = theContent || '';
         if (theOptionalTemplateName) {
             tmpContent = me.getTemplatedContent(theOptionalTemplateName, tmpContent);
@@ -1689,7 +1431,6 @@ console.log( 'theSpecs', theSpecs);
         me._templates[theKey] = Handlebars.compile(theHTML);
     }
 
-    //me.htmlHandlebars = {};
     me._templates = {};
     me.renderTemplate = function (theName, theContext) {
         try {
@@ -1948,7 +1689,7 @@ console.log( 'theSpecs', theSpecs);
         }
     }
 
-    //=== CRAPPY ASS POPUP FUNCTIONALITY -- REMOVE IT???
+    //=== NOT SO GREAT - POPUP FUNCTIONALITY -- REMOVE IT???
     me.clearActivePopup = clearActivePopup;
     function clearActivePopup() {
         if (!ThisApp.activePopup) {
@@ -2056,21 +1797,6 @@ console.log( 'theSpecs', theSpecs);
             //for page, do ghis ... var tmpInitReq = ThisApp.initRequired.bind(this);
             tmpPromRequired = me.initRequired(theAppConfig.required);
         };
-
-        // var tmpPromTpl = true;
-        // if (theAppConfig && theAppConfig.appTemplates) {
-        //     tmpPromTpl = me.initTemplates(theAppConfig.appTemplates)
-        // };
-        
-        // var tmpPromCtl = true;
-        // if (theAppConfig && theAppConfig.appControls) {
-        //     tmpPromCtl = me.initControls(theAppConfig.appControls)
-        // };
-
-        // var tmpPromPanel = true;
-        // if (theAppConfig && theAppConfig.appPanels) {
-        //     tmpPromPanel = me.initPanels(theAppConfig.appPanels)
-        // };
 
         $.when(tmpPromRequired).then(function(){
             //--- do the rest of the app load
@@ -2570,17 +2296,15 @@ License: MIT
 
         this.navOptions = this.navOptions || this.options.navOptions || {};
         this._activatedFlag = false;
-        //this.pageTemplate = this.options.pageTemplate || '';
         this.layoutOptions = this.options.layoutOptions || false;
 
-        //!this.pageTemplate || 
         if (this.layoutOptions) {
             this.layoutOptions = this.layoutOptions || {};
             this.layoutConfig = $.extend({}, defaultLayoutOptions, (this.options.layoutConfig || {}));
 
             //--- Use standard border layout template if none provided
             this.layoutOptions.spotPrefix = this.layoutOptions.spotPrefix || this.pageName;
-            //this.pageTemplate = this.pageTemplate || 'tpl-border-layout';
+
             this.layoutConfig.onresize = (
                 function (thePane, theElement, theState, theOptions, theName) {
                     if (typeof (this._onResizeLayout) == 'function') {
@@ -2910,7 +2634,7 @@ License: MIT
                 this[tmpFuncName] = tmpFunc.bind(this);
             }
         }
-        
+
 
         // this.initResourceType = ThisApp.initResourceType.bind(this);
 
