@@ -435,7 +435,9 @@ var ActionAppCore = {};
         var tmpThis = this;
 
         $.whenAll(tmpDefs).then(function () {
-            console.info('Loaded Resources ', tmpThis.res);
+            //console.info('Loaded Resources ', tmpThis.res);
+//            ThisApp.appMessage("Loaded Resources", true, {show: false, title:"Details", data:ThisApp.json(tmpThis.res,true)});
+
             dfd.resolve(true);
         })
         return dfd;

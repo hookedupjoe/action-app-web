@@ -8,7 +8,7 @@ License: MIT
 
     var SiteMod = ActionAppCore.module("site");
     var AppModule = ActionAppCore.module("app");
-
+    
     var thisPageSpecs = {
         pageName:"LogsPage", 
         pageTitle: "Logs", 
@@ -22,13 +22,18 @@ License: MIT
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
     thisPageSpecs.required = {
+        templates: {
+            baseURL: pageBaseURL + 'tpl',
+            map:{
+                "msg-ctr-item.html": thisPageSpecs.pageNamespace + ":msg-ctr-item"
+            }
+        },
         html: {
             baseURL: pageBaseURL + 'html',
             map:{
                 "page-header.html":"page-header",
                 "page-body.html":"page-body",
-                "page-footer.html":"page-footer",
-                "msg-ctr-item.html":"msg-ctr-item"
+                "page-footer.html":"page-footer"
             }
         }
     }
