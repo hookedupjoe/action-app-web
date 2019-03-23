@@ -20,20 +20,22 @@ License: MIT
         appModule:AppModule
     };
 
-    thisPageSpecs.pageTemplates = {
-        baseURL: 'app/pages/DataTablesPage/tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap:{
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            "page-footer.html": thisPageSpecs.pageNamespace + ":page-footer"
+    var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
+
+    thisPageSpecs.required = {
+        html: {
+            baseURL: pageBaseURL + 'html',
+            map:{
+                "page-body.html": "page-body",
+                "page-footer.html": "page-footer"
+            }
         }
     }
 
     thisPageSpecs.layoutOptions = {
-        templates: {
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body",
-            "south": thisPageSpecs.pageNamespace + ":" + "page-footer"
+        html: {
+            "center":"page-body",
+            "south": "page-footer"
         },  
         spotPrefix: thisPageSpecs.pageNamespace,
         north: false,

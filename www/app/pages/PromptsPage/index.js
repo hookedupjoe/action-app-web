@@ -21,24 +21,32 @@ License: MIT
 
     var docsBaseURL = 'app/pages/PromptsPage/docs';
 
-    //--- Define page templates that should load when the page is activated
-    thisPageSpecs.pageTemplates = {
-        baseURL: 'app/pages/PromptsPage/tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap: {
-            "cat-document.html": thisPageSpecs.pageNamespace + ":cat-document",
-            "cat-contents.html": thisPageSpecs.pageNamespace + ":cat-contents",
-            "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-            "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            "page-west.html": thisPageSpecs.pageNamespace + ":page-west"
+    thisPageSpecs.required = {
+        templates: {
+            baseURL: 'app/pages/PromptsPage/tpl',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                "cat-document.html": thisPageSpecs.pageNamespace + ":cat-document",
+                "cat-contents.html": thisPageSpecs.pageNamespace + ":cat-contents",
+                }
+        },
+        html: {
+            baseURL: 'app/pages/PromptsPage/tpl',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
+                "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
+                "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
+                "page-west.html": thisPageSpecs.pageNamespace + ":page-west"
+            }
         }
     }
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
-        templates: {
+        html: {
             "east": thisPageSpecs.pageNamespace + ":" + "page-east",
             "north": thisPageSpecs.pageNamespace + ":" + "page-header",
             "center": thisPageSpecs.pageNamespace + ":" + "page-body",

@@ -19,28 +19,28 @@ License: MIT
         appModule: AppModule
     };
 
-    var docsBaseURL = 'app/pages/JsonPage/docs';
+    var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
     //--- Define page templates that should load when the page is activated
-    thisPageSpecs.pageTemplates = {
-        baseURL: 'app/pages/JsonPage/tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap: {
-            "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-            "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            "page-west.html": thisPageSpecs.pageNamespace + ":page-west"
+    thisPageSpecs.required = {
+        html: {
+            baseURL: pageBaseURL + 'html',
+            map: {
+                "page-header.html": "page-header",
+                "page-east.html": "page-east",
+                "page-body.html": "page-body",
+                "page-west.html": "page-west"
+            }
         }
     }
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
-        templates: {
-            "east": thisPageSpecs.pageNamespace + ":" + "page-east",
-            "north": thisPageSpecs.pageNamespace + ":" + "page-header",
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body",
-            "west": thisPageSpecs.pageNamespace + ":" + "page-west"
+        html: {
+            "east": "page-east",
+            "north": "page-header",
+            "center": "page-body",
+            "west": "page-west"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,

@@ -19,24 +19,25 @@ License: MIT
         },
         appModule:AppModule
     };
+    var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    thisPageSpecs.pageTemplates = {
-        baseURL: 'app/pages/LogsPage/tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap:{
-            "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-            "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            "page-footer.html": thisPageSpecs.pageNamespace + ":page-footer",
-            "msg-ctr-item.html": thisPageSpecs.pageNamespace + ":msg-ctr-item"
+    thisPageSpecs.required = {
+        html: {
+            baseURL: pageBaseURL + 'html',
+            map:{
+                "page-header.html":"page-header",
+                "page-body.html":"page-body",
+                "page-footer.html":"page-footer",
+                "msg-ctr-item.html":"msg-ctr-item"
+            }
         }
     }
 
     thisPageSpecs.layoutOptions = {
-        templates: {
-            "north": thisPageSpecs.pageNamespace + ":" + "page-header",
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body",
-            "south": thisPageSpecs.pageNamespace + ":" + "page-footer"
+        html: {
+            "north":"page-header",
+            "center":"page-body",
+            "south":"page-footer"
         },  
         spotPrefix: thisPageSpecs.pageNamespace,
         north: true,
