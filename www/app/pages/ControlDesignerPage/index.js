@@ -21,23 +21,17 @@ License: MIT
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
 
-    //--- Define page templates that should load when the page is activated
-    thisPageSpecs.pageTemplates = {
-        baseURL: pageBaseURL + 'tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap: {
-        }
-    }
 
-    thisPageSpecs.pagePanels = {
-        baseURL: pageBaseURL + 'panels',
-        panelMap: {
-            "body.json": "bodyCtl",
-            "header.json": "headerCtl",
-            "footer.json": "footerCtl",
-            "east.json": "eastCtl",
-            "west.json": "westCtl"
+    thisPageSpecs.required = {
+        panels: {
+            baseURL: pageBaseURL + 'panels',
+            map: {
+                "body.json": "bodyCtl",
+                "header.json": "headerCtl",
+                "footer.json": "footerCtl",
+                "east.json": "eastCtl",
+                "west.json": "westCtl"
+            }
         }
     }
 

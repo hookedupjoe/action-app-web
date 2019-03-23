@@ -42,28 +42,6 @@
         }
       }
 
-      var tmpTplSpecs = {
-        baseURL: 'app/app-tpl',
-        templateMap: {
-          "about-this-app.html": "app:about-this-app",
-          "page-loading-spinner.html": "app:page-loading-spinner"
-        }
-      };
-
-      // var tmpAppControlSpecs = {
-      //   baseURL: 'app/controls',
-      //   controlMap: {
-      //     "TesterControl": "TesterControl"
-      //     // ,"forms/TesterFormControl": "TesterFormControl"
-      //   }
-      // };
-      var tmpAppPanelSpecs = {
-        baseURL: 'app/panels',
-        panelMap: {
-          "showfor.json": "frmShowFor"
-        }
-      };
-
 
       var tmpLibrarySpecs = {
         baseURL: '/library'
@@ -93,13 +71,7 @@
 
       var tmpHidePages = (tmpAppCompsToInit.length < 2)
 
-
-      //appPanels: tmpAppPanelSpecs, appControls: tmpAppControlSpecs, appTemplates: tmpTplSpecs
-      //
-      //require: tmpRequired, 
-      //appTemplates: tmpTplSpecs, 
-      //appControls: tmpAppControlSpecs, 
-      ThisApp.init({ required: tmpRequired, appPanels: tmpAppPanelSpecs, librarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
+      ThisApp.init({ required: tmpRequired, alibrarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {

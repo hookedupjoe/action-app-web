@@ -22,30 +22,33 @@ License: MIT
 
 
     //--- Define page templates that should load when the page is activated
-    thisPageSpecs.pageTemplates = {
-        baseURL: pageBaseURL + 'tpl',
-        //-- Page to lookup : name to call it when pulling
-        //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        templateMap: {
-            // "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-            // "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
-            // "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-            // "page-footer.html": thisPageSpecs.pageNamespace + ":page-footer"
+    thisPageSpecs.required = {
+        html = {
+            baseURL: pageBaseURL + 'html',
+            //-- Page to lookup : name to call it when pulling
+            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+            map: {
+                // "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
+                // "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
+                // "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
+                // "page-footer.html": thisPageSpecs.pageNamespace + ":page-footer"
+            }
+        },
+        panels = {
+            baseURL: pageBaseURL + 'panels',
+            //-- Page to lookup : name to call it when pulling
+            //---  No need to "namespace" your controls, they are page specific
+            map: {
+                "body.json": "bodyCtl",
+                "header.json": "headerCtl",
+                "footer.json": "footerCtl",
+                "east.json": "eastCtl",
+                "west.json": "westCtl"
+            }
         }
     }
 
-    thisPageSpecs.pageControls = {
-        baseURL: pageBaseURL + 'controls',
-        //-- Page to lookup : name to call it when pulling
-        //---  No need to "namespace" your controls, they are page specific
-        controlsMap: {
-            "body.json": "bodyCtl",
-            "header.json": "headerCtl",
-            "footer.json": "footerCtl",
-            "east.json": "eastCtl",
-            "west.json": "westCtl"
-        }
-    }
+    
 
 
     //--- Define this applications layouts
@@ -57,7 +60,7 @@ License: MIT
     //  "north": thisPageSpecs.pageNamespace + ":" + "page-north",
 
     thisPageSpecs.layoutOptions = {
-        controls: {
+        panels: {
             "center": { partname: "body", control: "bodyCtl" },
             "north": { partname: "header", control: "headerCtl" },
             "south": { partname: "footer", control: "footerCtl" },
