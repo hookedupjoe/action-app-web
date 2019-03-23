@@ -4,13 +4,12 @@ License: MIT
 */
 (function (ActionAppCore, $) {
 
-    var ControlName = "MySpecialTesterControl";
+    var ControlName = "TesterFormControl";
 
     var ControlSpecs = {
         "content": [
             {
                 "ctl": "field",
-                "label": "Your Name",
                 "size": "huge",
                 "name": "title",
                 "text": "Hello World"
@@ -33,7 +32,7 @@ License: MIT
             if (this.helloCounter % 2 == 0){
                 tmpColor = "orange";    
             }
-            tmpMsg = 'Tester - Hello ' + this.helloCounter + ' times.'
+            tmpMsg = 'Hello World ' + this.helloCounter + ' times.'
         }
         
 
