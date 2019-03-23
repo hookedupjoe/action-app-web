@@ -81,7 +81,7 @@
 
         //--- Extend common with your app specific stuff
         $.extend(ThisApp.common, {
-          samplesBaseURL: '/library/controls/samples/',
+          samplesBaseURL: '/catalog/panels/samples/',
           yourStuff: function () {
 
           }
