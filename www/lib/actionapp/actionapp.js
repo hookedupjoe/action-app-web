@@ -219,7 +219,7 @@ var ActionAppCore = {};
             "snippets": {}
         };
 
-        me.panelIndex = {};
+        //me.panelIndex = {};
         me.controlIndex = {};
 
         var defaults = {}; //? needed ?
@@ -402,23 +402,23 @@ var ActionAppCore = {};
     
     
     me.hasPanel = function(thePanelName){
-        var tmpPanel = this.panelIndex(thePanelName);
+        var tmpPanel = this.res.panels[thePanelName];
         return !(!tmpPanel);
     }
     me.registerPanel = function(thePanelName, thePanel){
-        this.panelIndex[thePanelName] = thePanel
+        this.res.panels[thePanelName] = thePanel
     }
     me.getPanel = function(thePanelName){
         var dfd = jQuery.Deferred();
 
         try {
-            var tmpPanel = this.panelIndex[thePanelName];
+            var tmpPanel = this.res.panels[thePanelName];
             if( tmpPanel ){
                 dfd.resolve(tmpPanel)
                 return dfd;
             }
             this.loadAppPanel(thePanelName).then(function(){
-                tmpPanel = this.panelIndex[thePanelName];
+                tmpPanel = this.res.panels[thePanelName];
                 if( tmpPanel ){
                     dfd.resolve(tmpPanel);
                 } else {
@@ -557,127 +557,127 @@ var ActionAppCore = {};
 
     }
 
-    me.initControls = function (theSpecs, theOptions) {
-        var dfd = jQuery.Deferred();
-        this.controlSpecs = {};
-        var tmpOptions = theOptions || {};
-        //--- if no templates to process, no prob, return now
-        if (!(theSpecs && theSpecs.controlMap)) {
-            dfd.resolve(true);
-            return dfd.promise();
-        }
+    // me.initControls = function (theSpecs, theOptions) {
+    //     var dfd = jQuery.Deferred();
+    //     this.controlSpecs = {};
+    //     var tmpOptions = theOptions || {};
+    //     //--- if no templates to process, no prob, return now
+    //     if (!(theSpecs && theSpecs.controlMap)) {
+    //         dfd.resolve(true);
+    //         return dfd.promise();
+    //     }
 
-        var tmpCtls = [];
-        for (var aName in theSpecs.controlMap) {
-            tmpCtls.push(aName);
-        }
-        this.controlSpecs = theSpecs;
+    //     var tmpCtls = [];
+    //     for (var aName in theSpecs.controlMap) {
+    //         tmpCtls.push(aName);
+    //     }
+    //     this.controlSpecs = theSpecs;
         
-        // var tmpBaseURL = theSpecs.baseURL || '/controls';
-        loadControlsForApp(this.controlSpecs).then(function(){
-            dfd.resolve(true);
-        })
+    //     // var tmpBaseURL = theSpecs.baseURL || '/controls';
+    //     loadControlsForApp(this.controlSpecs).then(function(){
+    //         dfd.resolve(true);
+    //     })
         
-        //--- This is needed because this changes inside the promise due to 
-        //    not .bind(this) in the function, the temp reference is quicker, same result
-        var tmpThis = this;
-        // ThisApp.om.getObjects('[html]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
-        //     for (var aKey in theDocs) {
-        //         var tmpTplName = theSpecs.controlMap[aKey];
-        //         if (tmpTplName) {
-        //             var tmpHTML = theDocs[aKey];
-        //             if (tmpOptions && tmpOptions.pageNamespace) {
-        //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.pageNamespace)
-        //             }
-        //             ThisApp.addTemplate(tmpTplName, tmpHTML);
-        //         }
-        //     }
-        //     dfd.resolve(true);
-        // });
+    //     //--- This is needed because this changes inside the promise due to 
+    //     //    not .bind(this) in the function, the temp reference is quicker, same result
+    //     var tmpThis = this;
+    //     // ThisApp.om.getObjects('[html]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
+    //     //     for (var aKey in theDocs) {
+    //     //         var tmpTplName = theSpecs.controlMap[aKey];
+    //     //         if (tmpTplName) {
+    //     //             var tmpHTML = theDocs[aKey];
+    //     //             if (tmpOptions && tmpOptions.pageNamespace) {
+    //     //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.pageNamespace)
+    //     //             }
+    //     //             ThisApp.addTemplate(tmpTplName, tmpHTML);
+    //     //         }
+    //     //     }
+    //     //     dfd.resolve(true);
+    //     // });
         
-        return dfd.promise();
+    //     return dfd.promise();
 
-    }
+    // }
     
-    me.initPanels = function (theSpecs, theOptions) {
-        var tmpOptions = theOptions || {};
+    // me.initPanels = function (theSpecs, theOptions) {
+    //     var tmpOptions = theOptions || {};
         
-        var dfd = jQuery.Deferred();
-        //--- if no templates to process, no prob, return now
-        if (!(theSpecs && theSpecs.panelMap)) {
-            dfd.resolve(true);
-            return dfd.promise();
-        }
+    //     var dfd = jQuery.Deferred();
+    //     //--- if no templates to process, no prob, return now
+    //     if (!(theSpecs && theSpecs.panelMap)) {
+    //         dfd.resolve(true);
+    //         return dfd.promise();
+    //     }
 
-        var tmpCtls = [];
-        for (var aName in theSpecs.panelMap) {
-            tmpCtls.push(aName);
-        }
-        var tmpBaseURL = theSpecs.baseURL || '/panels';
+    //     var tmpCtls = [];
+    //     for (var aName in theSpecs.panelMap) {
+    //         tmpCtls.push(aName);
+    //     }
+    //     var tmpBaseURL = theSpecs.baseURL || '/panels';
 
-        //--- This is needed because this changes inside the promise due to 
-        //    not .bind(this) in the function, the temp reference is quicker, same result
-        var tmpThis = this;
-        ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
-            for (var aKey in theDocs) {
-                var tmpName = theSpecs.panelMap[aKey];
-                if (tmpName) {
-                    var tmpEntrySpecs = theDocs[aKey];
-                    var tmpHTML = ThisApp.json(tmpEntrySpecs);
-                    var tmpNSParent = tmpOptions.nsParent || false;
-                    var tmpPrefix = '';
-                    if (tmpNSParent){
-                        tmpPrefix = tmpNSParent.ns().replace(":", "");
-                    }
-                    tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
-                    tmpEntrySpecs = ThisApp.json(tmpHTML);
-                    tmpThis.registerPanel(tmpName, ThisApp.controls.newControl(tmpEntrySpecs, { parent: tmpThis }));
-                }
-            }
-            dfd.resolve(true);
-        });
-        return dfd.promise();
-    }
+    //     //--- This is needed because this changes inside the promise due to 
+    //     //    not .bind(this) in the function, the temp reference is quicker, same result
+    //     var tmpThis = this;
+    //     ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
+    //         for (var aKey in theDocs) {
+    //             var tmpName = theSpecs.panelMap[aKey];
+    //             if (tmpName) {
+    //                 var tmpEntrySpecs = theDocs[aKey];
+    //                 var tmpHTML = ThisApp.json(tmpEntrySpecs);
+    //                 var tmpNSParent = tmpOptions.nsParent || false;
+    //                 var tmpPrefix = '';
+    //                 if (tmpNSParent){
+    //                     tmpPrefix = tmpNSParent.ns().replace(":", "");
+    //                 }
+    //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
+    //                 tmpEntrySpecs = ThisApp.json(tmpHTML);
+    //                 tmpThis.registerPanel(tmpName, ThisApp.controls.newControl(tmpEntrySpecs, { parent: tmpThis }));
+    //             }
+    //         }
+    //         dfd.resolve(true);
+    //     });
+    //     return dfd.promise();
+    // }
 
-    me.initTemplates = function (theTemplateSpecs, theOptions) {
-        var dfd = jQuery.Deferred();
-        var tmpOptions = theOptions || {};
-        //--- if no templates to process, no prob, return now
-        if (!(theTemplateSpecs && theTemplateSpecs.templateMap)) {
-            dfd.resolve(true);
-            return dfd.promise();
-        }
+    // me.initTemplates = function (theTemplateSpecs, theOptions) {
+    //     var dfd = jQuery.Deferred();
+    //     var tmpOptions = theOptions || {};
+    //     //--- if no templates to process, no prob, return now
+    //     if (!(theTemplateSpecs && theTemplateSpecs.templateMap)) {
+    //         dfd.resolve(true);
+    //         return dfd.promise();
+    //     }
 
-        var tmpTpls = [];
-        for (var aName in theTemplateSpecs.templateMap) {
-            tmpTpls.push(aName);
-        }
-        var tmpBaseURL = theTemplateSpecs.baseURL || 'app/app-tpl/';
+    //     var tmpTpls = [];
+    //     for (var aName in theTemplateSpecs.templateMap) {
+    //         tmpTpls.push(aName);
+    //     }
+    //     var tmpBaseURL = theTemplateSpecs.baseURL || 'app/app-tpl/';
 
-        //--- This is needed because this changes inside the promise due to 
-        //    not .bind(this) in the function, the temp reference is quicker, same result
-        var tmpThis = this;
-        ThisApp.om.getObjects('[html]:' + tmpBaseURL, tmpTpls).then(function (theDocs) {
-            for (var aKey in theDocs) {
-                var tmpTplName = theTemplateSpecs.templateMap[aKey];
-                if (tmpTplName) {
-                    var tmpHTML = theDocs[aKey];
-                    if (tmpOptions && tmpOptions.pageNamespace) {
-                        tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.pageNamespace)
-                    }
-                    ThisApp.addTemplate(tmpTplName, tmpHTML);
-                }
-            }
-            dfd.resolve(true);
-        });
-        return dfd.promise();
+    //     //--- This is needed because this changes inside the promise due to 
+    //     //    not .bind(this) in the function, the temp reference is quicker, same result
+    //     var tmpThis = this;
+    //     ThisApp.om.getObjects('[html]:' + tmpBaseURL, tmpTpls).then(function (theDocs) {
+    //         for (var aKey in theDocs) {
+    //             var tmpTplName = theTemplateSpecs.templateMap[aKey];
+    //             if (tmpTplName) {
+    //                 var tmpHTML = theDocs[aKey];
+    //                 if (tmpOptions && tmpOptions.pageNamespace) {
+    //                     tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpOptions.pageNamespace)
+    //                 }
+    //                 ThisApp.addTemplate(tmpTplName, tmpHTML);
+    //             }
+    //         }
+    //         dfd.resolve(true);
+    //     });
+    //     return dfd.promise();
 
-    }
+    // }
 
     me.initRequired = function (theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
         var tmpDefs = [];
-
+console.log( 'theSpecs', theSpecs);
        // console.log( 'initRequired', theSpecs);
         for( var aName in theSpecs ){
             var tmpType = aName;
@@ -686,9 +686,10 @@ var ActionAppCore = {};
             tmpDefs.push(this.initResourceType(tmpType, tmpTypeSpecs, theOptions))
            // console.log( 'pushed tmpTypeSpecs ' + tmpType, tmpTypeSpecs);
         }
+        var tmpThis = this;
 
         $.whenAll(tmpDefs).then(function(){
-            console.log( 'laoded ', ThisApp.res);
+            console.log( 'laoded ', tmpThis.res);
             dfd.resolve(true);
         })
         return dfd;
@@ -771,7 +772,7 @@ var ActionAppCore = {};
                         }
                     }
                     if( theType == 'snippets' ){
-                        console.log( 'snippets', tmpName, tmpResourceData);
+                     //   console.log( 'snippets', tmpName, tmpResourceData);
                     }
                     tmpThis.addResource(theType, tmpName, tmpResourceData);
                 }
@@ -789,6 +790,7 @@ var ActionAppCore = {};
             ThisApp.addTemplate(theName, theResourceData);
         } else {
             console.log( 'add resource ' + theType, theName);
+            this.res[theType] = this.res[theType] || {};
             this.res[theType][theName] = theResourceData;
         }
         
@@ -2067,22 +2069,22 @@ var ActionAppCore = {};
             tmpPromRequired = me.initRequired(theAppConfig.required);
         };
 
-        var tmpPromTpl = true;
-        if (theAppConfig && theAppConfig.appTemplates) {
-            tmpPromTpl = me.initTemplates(theAppConfig.appTemplates)
-        };
+        // var tmpPromTpl = true;
+        // if (theAppConfig && theAppConfig.appTemplates) {
+        //     tmpPromTpl = me.initTemplates(theAppConfig.appTemplates)
+        // };
         
-        var tmpPromCtl = true;
-        if (theAppConfig && theAppConfig.appControls) {
-            tmpPromCtl = me.initControls(theAppConfig.appControls)
-        };
+        // var tmpPromCtl = true;
+        // if (theAppConfig && theAppConfig.appControls) {
+        //     tmpPromCtl = me.initControls(theAppConfig.appControls)
+        // };
 
-        var tmpPromPanel = true;
-        if (theAppConfig && theAppConfig.appPanels) {
-            tmpPromPanel = me.initPanels(theAppConfig.appPanels)
-        };
+        // var tmpPromPanel = true;
+        // if (theAppConfig && theAppConfig.appPanels) {
+        //     tmpPromPanel = me.initPanels(theAppConfig.appPanels)
+        // };
 
-        $.when(tmpPromCtl,tmpPromTpl, tmpPromPanel).then(function(){
+        $.when(tmpPromRequired).then(function(){
             //--- do the rest of the app load
             dfd.resolve(true);
         })
@@ -2091,12 +2093,14 @@ var ActionAppCore = {};
         return dfd;
 
     }
+    
     me.init = init;
     var ThisCoreApp = this;
     function init(theAppConfig) {
         var dfd = jQuery.Deferred();
 
         ThisCoreApp = this;
+        
         var tmpThis = this;
         me.setup(theAppConfig).then(function (theReply) {
             if (!(theReply)) {
@@ -2119,6 +2123,9 @@ var ActionAppCore = {};
 
         //--- Put your stuff here
         this.common = {};
+
+        //--- Application level scope, another place to put stuff
+        this.scope = {};
 
         //--- ToDo: Support options in theAppConfig to control this        
         me.siteLayout = $('body').layout({
@@ -2557,10 +2564,19 @@ License: MIT
         this.pageControls = this.options.pageControls || [];
         this.pagePanels = this.options.pagePanels || [];
         
-        this.panelIndex = {};
+        //--deprecated
+        // this.panelIndex = {};
         this.controlIndex = {};
 
+        this.res = {
+            "panels": {},
+            "controls": {},
+            "snippets": {}
+        };
+
+        this.common = {};
         this.scope = {};
+
 
         this.layoutTemplates = this.options.layoutTemplates || false;
 
@@ -2620,14 +2636,14 @@ License: MIT
 
     
     me.getPanel = function(thePanelName){
-        return this.panelIndex[thePanelName];
+        return this.res.panels[thePanelName];
     }
     me.hasPanel = function(thePanelName){
-        var tmpPanel = this.panelIndex[thePanelName];
+        var tmpPanel = this.res.panels[thePanelName];
         return !(!tmpPanel);
     }
     me.registerPanel = function(thePanelName, thePanel){
-        this.panelIndex[thePanelName] = thePanel
+        this.res.panels[thePanelName] = thePanel
     }
 
     
@@ -2636,39 +2652,39 @@ License: MIT
         ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
     }
 
-    me.initControls = function (theSpecs, theOptions) {
-        var dfd = jQuery.Deferred();
-        //--- if no templates to process, no prob, return now
-        if (!(theSpecs && theSpecs.controlsMap)) {
-            dfd.resolve(true);
-            return dfd.promise();
-        }
+    // me.initControls = function (theSpecs, theOptions) {
+    //     var dfd = jQuery.Deferred();
+    //     //--- if no templates to process, no prob, return now
+    //     if (!(theSpecs && theSpecs.controlsMap)) {
+    //         dfd.resolve(true);
+    //         return dfd.promise();
+    //     }
 
-        var tmpCtls = [];
-        for (var aName in theSpecs.controlsMap) {
-            tmpCtls.push(aName);
-        }
-        var tmpBaseURL = theSpecs.baseURL || '/controls/';
+    //     var tmpCtls = [];
+    //     for (var aName in theSpecs.controlsMap) {
+    //         tmpCtls.push(aName);
+    //     }
+    //     var tmpBaseURL = theSpecs.baseURL || '/controls/';
 
-        //--- This is needed because this changes inside the promise due to 
-        //    not .bind(this) in the function, the temp reference is quicker, same result
-        var tmpThis = this;
-        ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
-            for (var aKey in theDocs) {
-                var tmpName = theSpecs.controlsMap[aKey];
-                if (tmpName) {
-                    var tmpControlSpecs = theDocs[aKey];
-                    var tmpHTML = ThisApp.json(tmpControlSpecs);
-                    var tmpPrefix = tmpThis.ns().replace(":", "");
-                    tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
-                    tmpControlSpecs = ThisApp.json(tmpHTML);
-                    tmpThis.controlIndex[tmpName] = ThisApp.controls.newControl(tmpControlSpecs, { parent: tmpThis });
-                }
-            }
-            dfd.resolve(true);
-        });
-        return dfd.promise();
-    }
+    //     //--- This is needed because this changes inside the promise due to 
+    //     //    not .bind(this) in the function, the temp reference is quicker, same result
+    //     var tmpThis = this;
+    //     ThisApp.om.getObjects('[get]:' + tmpBaseURL, tmpCtls).then(function (theDocs) {
+    //         for (var aKey in theDocs) {
+    //             var tmpName = theSpecs.controlsMap[aKey];
+    //             if (tmpName) {
+    //                 var tmpControlSpecs = theDocs[aKey];
+    //                 var tmpHTML = ThisApp.json(tmpControlSpecs);
+    //                 var tmpPrefix = tmpThis.ns().replace(":", "");
+    //                 tmpHTML = ThisApp.getUpdatedMarkupForNS(tmpHTML, tmpPrefix);
+    //                 tmpControlSpecs = ThisApp.json(tmpHTML);
+    //                 tmpThis.controlIndex[tmpName] = ThisApp.controls.newControl(tmpControlSpecs, { parent: tmpThis });
+    //             }
+    //         }
+    //         dfd.resolve(true);
+    //     });
+    //     return dfd.promise();
+    // }
 
 
     me.initOnFirstLoad = function () {
@@ -2677,12 +2693,20 @@ License: MIT
         var tmpNS = '';
         this.options = this.options || {};
         me.controls = {};
-        
+        console.log( 'this.options', this.options);
         var tmpThis = this;
 
         var tmpPromTpl = true;
-        if (this.pageTemplates && this.pageTemplates.length) {
-            tmpPromTpl = ThisApp.initTemplates(this.pageTemplates, this.options)
+        if (this.options.pageTemplates) {
+            this.options.required = this.options.required || {};
+
+            //--- backward compat - deprecated
+            this.options.required.templates = this.options.pageTemplates;
+            if( !(this.options.required.templates.map) && (this.options.required.templates.templateMap) ){
+                this.options.required.templates.map = this.options.required.templates.templateMap;
+            }
+
+            //tmpPromTpl = ThisApp.initTemplates(this.pageTemplates, this.options)
         };
         
         // var tmpPromCtl = true;
@@ -2697,28 +2721,36 @@ License: MIT
         // };
         var tmpPromPanel = true;
         
-
+        //--- Deprecated, move to required
         if (this.pagePanels) {
-            var tmpInitPanels = ThisApp.initPanels.bind(this);
-            var tmpIndex = this.panelIndex;
-            tmpPromPanel = tmpInitPanels(this.pagePanels, {nsParent: this})
+            
+            this.options.required = this.options.required || {};
+
+            //--- backward compat - deprecated
+            this.options.required.panels = this.pagePanels;
+            if( !(this.options.required.panels.map) && (this.options.required.panels.panelMap) ){
+                this.options.required.panels.map = this.options.required.panels.panelMap;
+            }
+
+            // var tmpInitPanels = ThisApp.initPanels.bind(this);
+            // var tmpIndex = this.panelIndex;
+            // tmpPromPanel = tmpInitPanels(this.pagePanels, {nsParent: this})
         };
+
+        var tmpPromRequired = true;
+        if (this.options.required){
+            var tmpInitReq = ThisApp.initRequired.bind(this);
+            tmpPromRequired = tmpInitReq(this.options.required, {nsParent: this})
+            console.log( 'this.options.required', this.options.required);
+        }
+        console.log( 'tmpPromRequired', tmpPromRequired);
         
        
-        $.when(tmpPromPanel).then(function(theReply){
-            ThisApp.initTemplates(tmpThis.pageTemplates, tmpThis.options).then(
-                function () {
-                    tmpThis.initControls(tmpThis.pageControls, tmpThis.options).then(
-                        function () {
-                            //--- No async calls, just run it
-                            tmpThis.initLayout();
-                            tmpThis.initAppComponents();
-                            dfd.resolve(true);
-                        }
-                    )
-                }
-            );
-            
+        $.when(tmpPromRequired, tmpPromPanel).then(function(theReply){
+           //--- No async calls, just run it
+           tmpThis.initLayout();
+           tmpThis.initAppComponents();
+           dfd.resolve(true);
         })
 
      
@@ -2839,7 +2871,7 @@ License: MIT
                     tmpLTName = tmpLT.control;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
-                var tmpCtl = this.panelIndex[tmpLTName];
+                var tmpCtl = this.res.panels[tmpLTName];
                 tmpCtl.controlConfig.parentRegionName = aName;
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
             }
@@ -2949,6 +2981,10 @@ License: MIT
             this.app = theApp;
         }
 
+        //--- Grab some common functionality from app ...
+        this.initResourceType = ThisApp.initResourceType.bind(this);
+        this.addResource = ThisApp.addResource.bind(this);
+
         if (typeof (this._onPreInit) == 'function') {
             this._onPreInit(this.app)
         }
@@ -2998,6 +3034,8 @@ License: MIT
             };
 
         }
+
+
 
         //--- Example of how to interact with theApp or ActionAppCore.app
         /*
