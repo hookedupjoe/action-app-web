@@ -1,4 +1,21 @@
-{
+{	"required": {
+	"panels": {
+		"location": "page:panels",
+		"map": {
+			"body.json": "bodyCtl",
+			"header.json": "headerCtl",
+			"footer.json": "footerCtl",
+			"east.json": "eastCtl",
+			"west.json": "westCtl"
+		}
+	},
+	"controls": {
+		"baseURL": "lib:controls.tests",
+		"map": {
+			"TesterControl/index.js": "testerCtl"
+		}
+	}
+},
 	"content": [
 		{
 			"ctl": "cards",
@@ -8,7 +25,7 @@
 			"content": [
 				{
 					"ctl": "cardfull"
-					,"classes":"orange raised tall"
+					,"classes":"red raised tall"
 					,"attr": {
 						"pageaction": "runTest",
 						"testname": "matthew-full"

@@ -32,7 +32,14 @@ License: MIT
                 "east.json": "eastCtl",
                 "west.json": "westCtl"
             }
+        },
+        controls: {
+            baseURL: pageBaseURL + 'controls',
+            map: {
+                "TesterControl/index.js": "testerCtl"
+            }
         }
+
     }
 
 
@@ -48,9 +55,12 @@ License: MIT
         panels: {
             "center": { partname: "body", control: "bodyCtl" },
             "north": { partname: "header", control: "headerCtl" },
-            "south": { partname: "footer", control: "footerCtl" },
+            // "south": { partname: "footer", control: "footerCtl" },
             "east": { partname: "east", control: "eastCtl" },
             "west": { partname: "west", control: "westCtl" }
+        },
+        controls: {
+           "south": { partname: "footer", control: "testerCtl" },
         },
         templates: {
         },
@@ -182,6 +192,8 @@ License: MIT
 
 
     function test4(theParams){
+        var testerCtl = ThisPage.getControl('testerCtl');
+        testerCtl.prompt()
         // // var tmpReady = true;
         // // if( !(ThisPage.scope.test3Control) ){
         // //     tmpReady = test3();
@@ -199,28 +211,8 @@ License: MIT
         
     }
     function test3(theParams){
-//         var dfd = jQuery.Deferred();
-//         ThisApp.loadControl('TesterFormControl', 'forms').then(function(theControl){
-//             console.log( 'theControl', theControl);
-//             var tmpTargetName = 'preview-props';
-// //            ThisPage.loadSpot(tmpTargetName, 'got a control');
-//             if( ThisPage.scope.test3Control ){
-//                 delete(ThisPage.scope.test3Control);
-//             }
-//             ThisPage.scope.test3Control = theControl.create(tmpTargetName + '-ctl');
-//             ThisPage.scope.test3Control.loadToElement(ThisPage.spot(tmpTargetName))
-//             ThisPage.parts.east.gotoItem(tmpTargetName);
 
-//             ThisPage.scope.test3Control.sayHello("You just created")
-//             dfd.resolve(theControl);
-//             // theControl.prompt().then(function(theReply, theData){
-//             //     if( theReply ){
-//             //         alert("got theData");
-//             //         console.log( 'theData', theData);
-//             //     }
-//             // })
-//         })
-//         return dfd;
+        ThisPage.getControl('testerCtl').prompt();
     }
     
     var tmpTest2Counter = 0;

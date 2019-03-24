@@ -2534,6 +2534,29 @@ License: MIT
             }
         }
 
+        if (this.layoutOptions && this.layoutOptions.controls) {
+            var tmpLTs = this.layoutOptions.controls;
+            var tmpContext = {}
+
+            for (var aName in tmpLTs) {
+                var tmpInstanceName = aName;
+                var tmpLT = tmpLTs[aName];
+                var tmpLTName = '';
+                if (typeof (tmpLT) == 'string') {
+                    tmpLTName = tmpLT;
+                } else {
+                    tmpLTName = tmpLT.control;
+                    tmpInstanceName = tmpLT.partname || tmpLT.name;
+                }
+                var tmpCtl = this.res.controls[tmpLTName];
+                if (tmpCtl && tmpCtl.controlConfig) {
+                    tmpCtl.controlConfig.parentRegionName = aName;
+                }
+
+                this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
+            }
+        }
+
         //--- This resizes the layouts with the new content loaded from templates
         if (typeof (ThisApp.refreshLayouts) == 'function') {
             ThisApp.refreshLayouts();
