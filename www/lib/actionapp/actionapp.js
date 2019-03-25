@@ -3004,6 +3004,9 @@ License: MIT
 
         //--- Grab some common functionality from app ...
         var tmpStuffToGrag = ['initResourceType',
+            , 'getResourceURIsForType'
+            , 'addResourceFromContent', 
+            , 'loadResources',
             , 'addResource'
             , 'hasPanel'
             , 'registerPanel'

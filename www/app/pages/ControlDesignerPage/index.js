@@ -159,8 +159,59 @@ License: MIT
 
 
     function test5(theParams){
-        testJSPull();
-        console.log(typeof("".endsWith))
+        //testJSPull();
+        
+        var tmpRequiredSpecs = {
+            "controls": {
+              baseURL: 'app/controls/special',
+              list: [
+                'NewTestControl',
+                'more/NewTestControl2'
+              ],
+              map: {
+                "NewTestControl": "MainControl"
+                // ,"forms/TesterFormControl": "TesterFormControl"
+              }
+            },
+            "html": {
+              baseURL: 'app/app-tpl',
+              map: {
+                "about-this-app": "app:about-this-app-snippet",
+                "page-loading-spinner": "app:page-loading-spinner-snippet"
+              }
+            },
+            "templates": {
+              baseURL: 'app/app-tpl',
+              map: {
+                "about-this-app": "app:about-this-app",
+                "page-loading-spinner": "app:page-loading-spinner"
+              }
+            },
+            "panels": [
+              'library/common/panels/forms/title',
+              'library/common/panels/status/status-bar',
+              {
+                baseURL: 'library/panels/demos',
+                list: [
+                  'cardsdemo',
+                  'showfor'
+                ]
+              },
+              {
+                baseURL: 'app/panels',
+                map: {
+                  "showfor": "frmShowFor"
+                }
+              }
+            ]
+          }
+          var tmpThis = this;
+         
+          ThisPage.loadResources(tmpRequiredSpecs).then(function () {
+            console.log('PAGE loadResources done', ThisPage.res);
+            // console.log( 'tmpThis', tmpThis);
+          })
+
     }
 
     function testJSPull() {
