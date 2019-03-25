@@ -168,6 +168,13 @@ var ActionAppCore = {};
 
         me.components = {};
 
+        //--- Full Path Index
+        me.resCache = {
+            "panels": {},
+            "controls": {},
+            "html": {}
+        };
+
         me.res = {
             "panels": {},
             "controls": {},
@@ -421,16 +428,27 @@ var ActionAppCore = {};
            
             //** if already loaded or in current list - SKIP
 
-            var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
+            var tmpExists = false;
+        
+            if ( ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri] ){
+                tmpExists = true;
+            } 
 
-            tmpRequests.push(tmpURI);
-            tmpDefs.push(
-                $.ajax({
-                    url: tmpURL,
-                    method: 'GET',
-                    dataType: 'html'
-                })
-            );
+            if( !(tmpExists) ){
+                var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
+                //console.log( 'Pulling resource for ', tmpURI.uri);
+                tmpRequests.push(tmpURI);
+                tmpDefs.push(
+                    $.ajax({
+                        url: tmpURL,
+                        method: 'GET',
+                        dataType: 'html'
+                    })
+                );
+            } else {
+                //console.log( '* skipping resource for ', tmpURI.uri);
+            }
+            
 
             // if (!(tmpIndex[tmpURL])) {
             //     tmpIndex[tmpURL] = true;
@@ -492,7 +510,14 @@ var ActionAppCore = {};
                 console.warn("Could not convert control to object");
             }
         }
-        tmpThis.addResource(theType, tmpName, tmpResourceData);
+
+        var tmpExists = false;
+        
+        if ( ThisApp.resCache[theType] && ThisApp.resCache[theType][theFullPath] ){
+            tmpExists = true;
+        } 
+        console.log( 'theFullPath exists?', tmpExists, theType, theFullPath);
+        tmpThis.addResource(theType, tmpName, theFullPath, tmpResourceData);
     }
 
     //--- theType: (controls, panels, html or templates)
@@ -544,14 +569,16 @@ var ActionAppCore = {};
         }
         return tmpRet;
     }
-    
 
-    me.addResource = function (theType, theName, theResourceData) {
+    me.addResource = function (theType, theName, theFullPath, theResourceData) {
         if (theType == 'templates') {
             //--- Always add templates at the application level
             ThisApp.addTemplate(theName, theResourceData);
         } else {
             this.res[theType] = this.res[theType] || {};
+            ThisApp.resCache[theType] = ThisApp.resCache[theType] || {};
+
+            ThisApp.resCache[theType][theFullPath] = theResourceData;
             this.res[theType][theName] = theResourceData;
         }
     }
