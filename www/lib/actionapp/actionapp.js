@@ -8,54 +8,9 @@ License: MIT
  *   About ActionAppCore
  *   
 
-What is an Action?
- - An action is a registered function with a name that sends to calling object
-   - the calling object contains the params needed for the function
 
- - Once an action is registered, there are lots of ways to call it.
+ *** See updated documentation at the CDN site and by running this code
 
-   The primary way to call an action is to add an attribute to any element with the name "action" 
-    ... such as ... <div action="doSomethingCool">Do it!</div>, when clicked, something cool will happen.
-  
-    How? You create a function called doSomethingCool and do cool stuf there..
-
-    Example:
-    ==================
-    In the HTML you have ... 
-    <button action="doSomethingCool" group="coolStuff" item="fred">Show Fred</button>
-
-    In your page, you add this ...
-    ThisPage.doSomethingCool = function (theAction, theTarget) {
-        var tmpParams = ThisApp.getAttrs(theTarget, ['group', 'item']);
-        //--- returns {group:"coolStuff", item:"fred"}
-        ThisPage.doSomethingElseWithThisAsParams(tmpParams);    
-    }
-
-    Done.
-
-
-Key features: 
-  - Action based, which means "actions" are at the core of most "actions"
-  - Simple, all the source code for the base system is a single, small file (this one).
-  - Modular, so that all components are in their own function bubble yet can still communicate with each other easily
-  - Repeatable, programming by exception, just start with a working, responsive application frame and go
-  - Template based, making it easy to create dynamic content, but templating is not required
-  - Comes with tons of libraries to make getting started easy
-
-Key concepts / features the application framework provides:
-  - Common / responsive navigational components such as primary pages and sub-tabs
-    * Navigation areas can be included in the top menu and/or the sidebar
-  - Common way to add a special "action" attribute to any element and have it trigger a common or custom function
-    * So there is no need to have onclick events or other bindings
-  - Application Actions use attributes on the target element to look for related parameters, such as the ID of the selected item
-    * So there is no need to specify a bunch of parameters in function calls
-  - Custom application modules and plugins use the concept of namespaces to assure uniqueness
-  - Common subscribe / public service available
-  - Common component repository allows for components and modules to register and hence be retrieved and communcated with directly
-  - Common messages methodology with toaster option to pop them up and ways to clear / retrieve them easily
-  - Common way to find and update DOM elements using attributes, used extensively for it's simplicity and power
-  - Common concept of a "spot", which simply any element with a spot="area:item", allowing for simple content targeting
-  - Plugin modules provide extended common and custom functionatlity that can be used across other modules
 */
 
 //--- Global Entry Point
@@ -444,7 +399,6 @@ var ActionAppCore = {};
     }
 
     me.loadResources = function (theSpecs, theOptions) {
-        console.log( 'loadResources');
         var dfd = jQuery.Deferred();
         var tmpThis = this;
         var tmpURIs = [];
@@ -468,12 +422,8 @@ var ActionAppCore = {};
             //** if already loaded or in current list - SKIP
 
             var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
-            if( tmpURI.type == 'templates'){
-                console.log( 'tmpURI.type tmpURL',tmpURL, tmpURI.type);
-            }
 
             tmpRequests.push(tmpURI);
-            // console.log( 'tmpURL', tmpURL);
             tmpDefs.push(
                 $.ajax({
                     url: tmpURL,
@@ -494,12 +444,6 @@ var ActionAppCore = {};
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
-                // console.log( 'tmpRequest.type', tmpRequest.type);
-                if( tmpRequest.type == 'templates'){
-                    console.log( 'addResourceFromContent for tmpRequest.name ', tmpRequest.name);
-                    console.log( 'addResourceFromContent for tmpRequest.uri ', tmpRequest.uri);
-                }
-                console.log( 'addResourceFromContent tmpRequest.type', tmpRequest.type);
                 tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse[0], tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
@@ -548,10 +492,6 @@ var ActionAppCore = {};
                 console.warn("Could not convert control to object");
             }
         }
-        if (theType == 'html') {
-            //   console.log( 'html', tmpName, tmpResourceData);
-        }
-        // console.log( 'addResource 1 addResourceFromContent');
         tmpThis.addResource(theType, tmpName, tmpResourceData);
     }
 
@@ -2474,7 +2414,6 @@ License: MIT
 
         var tmpPromRequired = true;
         if (this.options.required) {
-            console.log( 'PAGE CALLING INIT');
             var tmpInitReq = ThisApp.loadResources.bind(this);
             tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         }
