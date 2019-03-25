@@ -75,9 +75,20 @@
 											"text": "Test 5"
 										},
 										{
+											"ctl": "divider",
+											"label": "About You",
+											"color": "blue"
+										},
+										{
 											"ctl": "field",
 											"name": "yourname",
 											"label": "Your Name"
+										},
+										{
+											"ctl": "button",
+											"pageaction": "helloFromName",
+											"color": "orange",
+											"text": "Say Hello"
 										},
 										{
 											"ctl": "pagespot",

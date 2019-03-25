@@ -154,10 +154,16 @@ License: MIT
         ,"test3": test3
         ,"test4": test4
         ,"test5": test5
+        ,"helloFromName": helloFromName
         ,"spots": playWithSpots
     }
     
     
+    actions.helloFromName = helloFromName;
+    function helloFromName(){
+        var tmpName = ThisPage.parts.west.getFieldValue('yourname');
+        ThisPage.parts.body.parts.control1.sayHello(tmpName)
+    };
     function test5(theParams){
         var tmpName = ThisPage.parts.west.getFieldValue('yourname');
         ThisPage.parts.body.parts.control1.sayHello(tmpName)
