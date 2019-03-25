@@ -26,17 +26,17 @@ License: MIT
         panels: {
             baseURL: pageBaseURL + 'panels',
             map: {
-                "body.json": "bodyCtl",
-                "header.json": "headerCtl",
-                "footer.json": "footerCtl",
-                "east.json": "eastCtl",
-                "west.json": "westCtl"
+                "body": "bodyCtl",
+                "header": "headerCtl",
+                "footer": "footerCtl",
+                "east": "eastCtl",
+                "west": "westCtl"
             }
         },
         controls: {
             baseURL: pageBaseURL + 'controls',
             map: {
-                "TesterControl/index.js": "testerCtl"
+                "TesterControl": "testerCtl"
             }
         }
 
@@ -66,7 +66,7 @@ License: MIT
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,
-        south: true,
+        south: false,
         west: true,
         east: true
     }
@@ -165,8 +165,7 @@ License: MIT
         ThisPage.parts.body.parts.control1.sayHello(tmpName)
     };
     function test5(theParams){
-        var tmpName = ThisPage.parts.west.getFieldValue('yourname');
-        ThisPage.parts.body.parts.control1.sayHello(tmpName)
+        demoPullingNewResources()
     }
 
     function getControlAndCreateInstanceInASpot(theParams){
@@ -231,7 +230,7 @@ License: MIT
           }
           var tmpThis = this;
          
-          ThisPage.loadResources(tmpRequiredSpecs).then(function () {
+          ThisPage.initResources(tmpRequiredSpecs).then(function () {
             console.log('PAGE loadResources done', ThisPage.res);
             // console.log( 'tmpThis', tmpThis);
           })

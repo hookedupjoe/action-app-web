@@ -427,15 +427,14 @@ var ActionAppCore = {};
     me.initRequired = function (theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
         var tmpThis = this;
-
-
-
-
+        var tmpSpecs = theSpecs;
+        //--- Change to array if not   one, can pass an array, so assume we are using one
+      
 
         var tmpDefs = [];
-        for (var aName in theSpecs) {
+        for (var aName in tmpSpecs) {
             var tmpType = aName;
-            var tmpTypeSpecs = theSpecs[aName];
+            var tmpTypeSpecs = tmpSpecs[aName];
             tmpDefs.push(this.initResourceType(tmpType, tmpTypeSpecs, theOptions))
         }
 
@@ -467,7 +466,9 @@ var ActionAppCore = {};
         }
         return '.html';
     }
+
     me.loadResources = function (theSpecs, theOptions) {
+        console.log( 'loadResources');
         var dfd = jQuery.Deferred();
         var tmpThis = this;
         var tmpURIs = [];
@@ -491,6 +492,7 @@ var ActionAppCore = {};
             if (!(tmpIndex[tmpURL])) {
                 tmpIndex[tmpURL] = true;
                 tmpRequests.push(tmpURI);
+                console.log( 'tmpURL', tmpURL);
                 tmpDefs.push(
                     $.ajax({
                         url: tmpURL,
@@ -507,7 +509,7 @@ var ActionAppCore = {};
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
-                tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse[0], theOptions);
+                tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse[0], tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
         })
@@ -518,7 +520,7 @@ var ActionAppCore = {};
 
 
 
-    me.addResourceFromContent = function (theType, theName, theContent, theOptions) {
+    me.addResourceFromContent = function (theType, theName, theContent, theFullPath, theOptions) {
         var tmpOptions = theOptions || {};
         var tmpThis = this;
         var tmpResourceData = theContent;
@@ -558,6 +560,7 @@ var ActionAppCore = {};
         if (theType == 'html') {
             //   console.log( 'html', tmpName, tmpResourceData);
         }
+        console.log( 'addResource 1 addResourceFromContent');
         tmpThis.addResource(theType, tmpName, tmpResourceData);
     }
 
@@ -681,13 +684,13 @@ var ActionAppCore = {};
                     if (theType == 'html') {
                         //   console.log( 'html', tmpName, tmpResourceData);
                     }
+                    console.log( 'addResource 2 initResourceType');
                     tmpThis.addResource(theType, tmpName, tmpResourceData);
                 }
             }
             dfd.resolve(true);
         });
         return dfd.promise();
-
     }
 
     me.addResource = function (theType, theName, theResourceData) {
@@ -1966,7 +1969,9 @@ var ActionAppCore = {};
         var tmpPromRequired = true;
         if (theAppConfig && theAppConfig.required) {
             //for page, do ghis ... var tmpInitReq = ThisApp.initRequired.bind(this);
-            tmpPromRequired = me.initRequired(theAppConfig.required);
+            //xxxxxxx       
+            console.log( 'initRequired', theAppConfig.required);                 
+            tmpPromRequired = me.loadResources(theAppConfig.required);
         };
 
         $.when(tmpPromRequired).then(function () {
@@ -2559,7 +2564,8 @@ License: MIT
 
         var tmpPromRequired = true;
         if (this.options.required) {
-            var tmpInitReq = ThisApp.initRequired.bind(this);
+            console.log( 'PAGE CALLING INIT');
+            var tmpInitReq = ThisApp.loadResources.bind(this);
             tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         }
 

@@ -91,9 +91,9 @@
           }
         ]
       }
-      ThisApp.loadResources(tmpRequiredSpecs).then(function () {
-        console.log('loadResources done', ThisApp.res);
-      })
+      // ThisApp.loadResources(tmpRequiredSpecs).then(function () {
+      //   console.log('loadResources done', ThisApp.res);
+      // })
       //--- Items to load when the application loads
       var tmpRequired = {
         // "rem_panels": {
@@ -158,7 +158,7 @@
 
       var tmpHidePages = (tmpAppCompsToInit.length < 2)
 
-      ThisApp.init({ required: tmpRequired, alibrarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
+      ThisApp.init({ required: tmpRequiredSpecs, alibrarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {

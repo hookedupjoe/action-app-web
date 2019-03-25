@@ -22,23 +22,15 @@ License: MIT
 
     //--- Define page templates that should load when the page is activated
     thisPageSpecs.required = {
-        templates: {
-            baseURL: pageBaseURL + 'tpl',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-            map: {
-                "page-body.html": thisPageSpecs.pageNamespace + ":page-body"
-            }
-        },
         panels: {
             baseURL: pageBaseURL + 'panels',
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
-                "title.json": "titleBarCtl",
-                "nestedtabs.json": "previewPanelCtl",
-                "showfor.json": "demoFormCtl",
-                "buttonPanel.json": "buttonPanelCtl"
+                "title": "titleBarCtl",
+                "nestedtabs": "previewPanelCtl",
+                "showfor": "demoFormCtl",
+                "buttonPanel": "buttonPanelCtl"
             }
         },
         html: {
@@ -46,7 +38,7 @@ License: MIT
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
-                "page-body.html": "page-body"
+                "page-body": "page-body"
             }
         }
     }
@@ -57,9 +49,6 @@ License: MIT
             "north": {partname: "pageTitle", control: "titleBarCtl"},
             "east": {partname: "previewPanel", control: "previewPanelCtl"},  
             "west": {partname: "buttonPanel", control: "buttonPanelCtl"}
-        },
-        rem_templates: {
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body"
         },
         html: {
             "center": "page-body"
