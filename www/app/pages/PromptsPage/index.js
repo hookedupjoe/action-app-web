@@ -27,8 +27,8 @@ License: MIT
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
-                "cat-document.html": thisPageSpecs.pageNamespace + ":cat-document",
-                "cat-contents.html": thisPageSpecs.pageNamespace + ":cat-contents",
+                "cat-document": thisPageSpecs.pageNamespace + ":cat-document",
+                "cat-contents": thisPageSpecs.pageNamespace + ":cat-contents",
                 }
         },
         html: {
@@ -36,10 +36,10 @@ License: MIT
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
-                "page-header.html": thisPageSpecs.pageNamespace + ":page-header",
-                "page-east.html": thisPageSpecs.pageNamespace + ":page-east",
-                "page-body.html": thisPageSpecs.pageNamespace + ":page-body",
-                "page-west.html": thisPageSpecs.pageNamespace + ":page-west"
+                "page-header": thisPageSpecs.pageNamespace + ":page-header",
+                "page-east": thisPageSpecs.pageNamespace + ":page-east",
+                "page-body": thisPageSpecs.pageNamespace + ":page-body",
+                "page-west": thisPageSpecs.pageNamespace + ":page-west"
             }
         }
     }
@@ -238,7 +238,7 @@ License: MIT
         var tmpName = theContentName || 'default-content';
         var tmpContenttEl = ThisPage.getByAttr$({ appuse: 'page-content', name: tmpName })
         if (tmpContenttEl && tmpContenttEl.length > 0) {
-            ThisPage.loadPageSpot('preview-area', tmpContenttEl.html())
+            ThisPage.loadPageSpot('preview-area', tmpContenttEl())
         }
     }
 

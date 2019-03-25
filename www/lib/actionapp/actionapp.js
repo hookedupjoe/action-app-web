@@ -477,30 +477,39 @@ var ActionAppCore = {};
         var tmpDefs = [];
         for (var aName in theSpecs) {
             var tmpType = aName;
+            
             var tmpTypeSpecs = theSpecs[aName];
             tmpURIs = tmpURIs.concat(
                 this.getResourceURIsForType(tmpType, tmpTypeSpecs, theOptions)
             )
+            
         }
         var tmpRequests = [];
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
 
+           
             //** if already loaded or in current list - SKIP
 
             var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
-            if (!(tmpIndex[tmpURL])) {
-                tmpIndex[tmpURL] = true;
-                tmpRequests.push(tmpURI);
-                console.log( 'tmpURL', tmpURL);
-                tmpDefs.push(
-                    $.ajax({
-                        url: tmpURL,
-                        method: 'GET',
-                        dataType: 'html'
-                    })
-                );
+            if( tmpURI.type == 'templates'){
+                console.log( 'tmpURI.type tmpURL',tmpURL, tmpURI.type);
             }
+
+            tmpRequests.push(tmpURI);
+            // console.log( 'tmpURL', tmpURL);
+            tmpDefs.push(
+                $.ajax({
+                    url: tmpURL,
+                    method: 'GET',
+                    dataType: 'html'
+                })
+            );
+
+            // if (!(tmpIndex[tmpURL])) {
+            //     tmpIndex[tmpURL] = true;
+               
+            // }
 
         }
 
@@ -509,6 +518,12 @@ var ActionAppCore = {};
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
+                // console.log( 'tmpRequest.type', tmpRequest.type);
+                if( tmpRequest.type == 'templates'){
+                    console.log( 'addResourceFromContent for tmpRequest.name ', tmpRequest.name);
+                    console.log( 'addResourceFromContent for tmpRequest.uri ', tmpRequest.uri);
+                }
+                console.log( 'addResourceFromContent tmpRequest.type', tmpRequest.type);
                 tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse[0], tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
@@ -560,17 +575,20 @@ var ActionAppCore = {};
         if (theType == 'html') {
             //   console.log( 'html', tmpName, tmpResourceData);
         }
-        console.log( 'addResource 1 addResourceFromContent');
+        // console.log( 'addResource 1 addResourceFromContent');
         tmpThis.addResource(theType, tmpName, tmpResourceData);
     }
 
     //--- theType: (controls, panels, html or templates)
     me.getResourceURIsForType = function (theType, theSpecs) {
+        
         var tmpRet = [];
         var tmpSpecs = theSpecs;
         if (!(Array.isArray(tmpSpecs))) {
             tmpSpecs = [tmpSpecs];
         }
+
+
         //--- start with an array, even if single item passed
         for (var iSpec = 0; iSpec < tmpSpecs.length; iSpec++) {
             var tmpSpec = tmpSpecs[iSpec];
@@ -597,6 +615,8 @@ var ActionAppCore = {};
                 if (isObj(tmpSpec.map)) {
                     for (var aURI in tmpSpec.map) {
                         var tmpEntryName = tmpSpec.map[aURI];
+                        
+
                         if (tmpBaseURL) {
                             aURI = tmpBaseURL + aURI;
                         }
@@ -1969,7 +1989,6 @@ var ActionAppCore = {};
         var tmpPromRequired = true;
         if (theAppConfig && theAppConfig.required) {
             //for page, do ghis ... var tmpInitReq = ThisApp.initRequired.bind(this);
-            //xxxxxxx       
             console.log( 'initRequired', theAppConfig.required);                 
             tmpPromRequired = me.loadResources(theAppConfig.required);
         };

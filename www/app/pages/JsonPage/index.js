@@ -26,10 +26,10 @@ License: MIT
         html: {
             baseURL: pageBaseURL + 'html',
             map: {
-                "page-header.html": "page-header",
-                "page-east.html": "page-east",
-                "page-body.html": "page-body",
-                "page-west.html": "page-west"
+                "page-header": "page-header",
+                "page-east": "page-east",
+                "page-body": "page-body",
+                "page-west": "page-west"
             }
         }
     }

@@ -29,10 +29,10 @@ License: MIT
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
-                "page-header.html": "page-header",
-                "page-east.html": "page-east",
-                "page-body.html": "page-body",
-                "page-footer.html": "page-footer"
+                "page-header": "page-header",
+                "page-east": "page-east",
+                "page-body": "page-body",
+                "page-footer": "page-footer"
             }
         }
     }
@@ -170,8 +170,8 @@ License: MIT
 
     function showContentInPreviewPane(theContentName) {
         var tmpName = theContentName || 'default-content';
-        var tmpContenttEl = ThisPage.getByAttr$({appuse:'page-content', name: tmpName})
-        if( tmpContenttEl && tmpContenttEl.length > 0){
+        var tmpContenttEl = ThisPage.getByAttr$({ appuse: 'page-content', name: tmpName })
+        if (tmpContenttEl && tmpContenttEl.length > 0) {
             ThisPage.loadPageSpot('preview-area', tmpContenttEl.html())
         }
     }

@@ -30,17 +30,17 @@ License: MIT
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
-                "cat-document.html": thisPageSpecs.pageNamespace + ":cat-document",
-                "cat-contents.html": thisPageSpecs.pageNamespace + ":cat-contents"
+                "cat-document": thisPageSpecs.pageNamespace + ":cat-document",
+                "cat-contents": thisPageSpecs.pageNamespace + ":cat-contents"
             }
         },
         html: {
             baseURL: pageBaseURL + 'html',
             map: {
-                "page-header.html": "page-header",
-                "page-east.html": "page-east",
-                "page-body.html": "page-body",
-                "page-west.html": "page-west"
+                "page-header": "page-header",
+                "page-east": "page-east",
+                "page-body": "page-body",
+                "page-west": "page-west"
             }
         }
     }

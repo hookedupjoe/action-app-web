@@ -26,8 +26,8 @@ License: MIT
         html: {
             baseURL: pageBaseURL + 'html',
             map:{
-                "page-body.html": "page-body",
-                "page-footer.html": "page-footer"
+                "page-body": "page-body",
+                "page-footer": "page-footer"
             }
         }
     }

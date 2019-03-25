@@ -230,7 +230,7 @@ License: MIT
           }
           var tmpThis = this;
          
-          ThisPage.initResources(tmpRequiredSpecs).then(function () {
+          ThisPage.loadResources(tmpRequiredSpecs).then(function () {
             console.log('PAGE loadResources done', ThisPage.res);
             // console.log( 'tmpThis', tmpThis);
           })

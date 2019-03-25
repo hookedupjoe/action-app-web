@@ -25,15 +25,15 @@ License: MIT
         templates: {
             baseURL: pageBaseURL + 'tpl',
             map:{
-                "msg-ctr-item.html": thisPageSpecs.pageNamespace + ":msg-ctr-item"
+                "msg-ctr-item": thisPageSpecs.pageNamespace + ":msg-ctr-item"
             }
         },
         html: {
             baseURL: pageBaseURL + 'html',
             map:{
-                "page-header.html":"page-header",
-                "page-body.html":"page-body",
-                "page-footer.html":"page-footer"
+                "page-header":"page-header",
+                "page-body":"page-body",
+                "page-footer":"page-footer"
             }
         }
     }
