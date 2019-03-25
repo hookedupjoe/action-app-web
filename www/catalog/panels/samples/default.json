@@ -6,12 +6,12 @@
 		},
 		{
 			"ctl": "control",
-			"controlname": "testerCtl",
+			"controlname": "app/pages/ControlDesignerPage/controls/TesterControl",
 			"name": "control1"
 		},
 		{
 			"ctl": "panel",
-			"controlname": "eastCtl",
+			"controlname": "catalog/panels/common/east",
 			"name": "panel1"
 		},		
 		{

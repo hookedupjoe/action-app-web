@@ -367,11 +367,10 @@ var ActionAppCore = {};
         var tmpItem = this.res.panels[theName];
         return !(!tmpItem);
     }
-    me.registerPanel = function (theName, thePanel) {
-        this.res.panels[theName] = thePanel
-    }
+  
     me.getPanel = function (theName) {
-        return this.res.panels[theName];
+        return this.getResourceForType('panels',theName);
+        // return this.res.panels[theName];
     }
 
 
@@ -382,8 +381,29 @@ var ActionAppCore = {};
     me.registerControl = function (theName, thePanel) {
         this.res.controls[theName] = thePanel
     }
+
+    me.getResourceForType = function (theType, theName) {
+        var tmpType = theType || 'controls';
+        var tmpResource = this.res[tmpType][theName];
+        if( !(tmpResource) ){
+            if ( this.parentControl && isFunc( this.parentControl.getResourceForType ) ){
+                tmpResource = this.parentControl.getResourceForType(theName)
+                if( tmpResource ){
+                    console.log( 'tmpResource was found from parent chain', tmpResource);
+                }
+            }
+            if( !(tmpResource) ){
+                tmpResource = ThisApp.resCache[tmpType][theName];
+                if( tmpResource ){
+                    console.log( 'tmpResource was found from cache', tmpResource);
+                }
+            }
+
+        }
+        return tmpResource;
+    }
     me.getControl = function (theName) {
-        return this.res.controls[theName];
+        return this.getResourceForType('controls',theName);
     }
 
     me.getExtnForType = function (theType) {
@@ -454,7 +474,14 @@ var ActionAppCore = {};
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
-                tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse[0], tmpRequest.uri, theOptions);
+                tmpResponse = tmpResponse[0];
+                if( tmpRequest.type == 'panels'  ){
+                    if( isStr(tmpResponse) ) {
+                        tmpResponse = ThisApp.json(tmpResponse,true);
+                    }
+                }
+                // console.log( ' tmpRequest.uri',  tmpRequest.uri);
+                tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse, tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
         })
@@ -502,12 +529,6 @@ var ActionAppCore = {};
                 console.warn("Could not convert control to object");
             }
         }
-
-        var tmpExists = false;
-        
-        if ( ThisApp.resCache[theType] && ThisApp.resCache[theType][theFullPath] ){
-            tmpExists = true;
-        } 
         tmpThis.addResource(theType, tmpName, theFullPath, tmpResourceData);
     }
 
@@ -2722,11 +2743,11 @@ License: MIT
             , 'loadResources',
             , 'addResource'
             , 'hasPanel'
-            , 'registerPanel'
             , 'getPanel'
             , 'hasControl'
             , 'registerControl'
             , 'getControl'
+            , 'getResourceForType'
         ];
 
         for (var iStuff = 0; iStuff < tmpStuffToPullIn.length; iStuff++) {

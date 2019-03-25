@@ -74,6 +74,7 @@
           }
         },
         "panels": [
+          'catalog/panels/common/east',
           'library/common/panels/forms/title',
           'library/common/panels/status/status-bar',
           {
