@@ -4382,7 +4382,7 @@ License: MIT
             var tmpEl = $(tmpEls[0]);
             if (tmpEl.attr('type') == 'hidden') {
                 //--- Dropdown compoennt
-                var tmpControl = tmpEl.closest('[appcomp]');
+                var tmpControl = tmpEl.closest('[ctlcomp]');
                 if (tmpControl && tmpControl.dropdown) {
                     tmpControl.dropdown('show');
                 }
@@ -5345,6 +5345,51 @@ License: MIT
 
     }
 
+    meInstance.destroy = function(){
+        this.parentEl.off('change');
+        this.parentEl.off('click');
+
+        if( this.liveIndex ){
+            if( this.liveIndex.dropdown ){
+                this.liveIndex.dropdown.dropdown('destroy');
+            }
+            if( this.liveIndex.checkbox ){
+                this.liveIndex.checkbox.checkbox('destroy');
+            }
+        }
+    }
+
+    meInstance.initComponents = function () {
+
+        var tmpEl = this.parentEl;
+
+        this.liveIndex = {};
+
+        
+        var tmpDDs = ThisApp.getByAttr$({ ctlcomp: 'dropdown' }, tmpEl);
+
+        if( tmpDDs.length ){
+            this.liveIndex.dropdown = tmpDDs;
+            tmpDDs.dropdown({
+                showOnFocus: false
+            })
+            .attr('ctlcomp', '')
+            .attr('appcomp', '');
+        }
+
+        var tmpCBs = ThisApp.getByAttr$({ ctlcomp: 'checkbox' }, tmpEl);
+
+        if( tmpCBs.length ){
+            this.liveIndex.checkbox = tmpCBs;
+            tmpCBs.checkbox()
+            .attr('ctlcomp', '')
+            .attr('appcomp', '');
+        }
+
+
+
+    }
+
     meInstance.loadToElement = function (theEl, theOptions) {
         this.parentEl = ThisApp.asSpot(theEl);
 
@@ -5353,7 +5398,12 @@ License: MIT
         this.parentEl.on('change', this.onFieldChange.bind(this))
         this.parentEl.on('click', this.onItemClick.bind(this))
 
-        ThisApp.initAppComponents(this.parentEl)
+        this.initComponents();
+
+        //ThisApp.initAppComponents(this.parentEl);
+
+
+        
         this.refreshControl();
         return this;
 
@@ -6457,7 +6507,7 @@ License: MIT
             }
             //--- Add field specific content here
 
-            tmpHTML.push('\n            <div appcomp="dropdown" class="ui selection ' + tmpMulti + ' dropdown">')
+            tmpHTML.push('\n            <div ctlcomp="dropdown" class="ui selection ' + tmpMulti + ' dropdown">')
             tmpHTML.push('\n                <div class="default text">Select one</div>')
             tmpHTML.push('\n                <i class="dropdown icon"></i>')
             tmpHTML.push('\n                <input controls field type="hidden" name="' + theObject.name + '" >')
@@ -6498,7 +6548,7 @@ License: MIT
             return '';
         },
         setFieldValue: function (theFieldEl, theValue, theFieldSpecs) {
-            var tmpCtlEl = theFieldEl.closest('[appcomp]');
+            var tmpCtlEl = theFieldEl.closest('[ctlcomp]');
             if (theFieldSpecs.multi === true) {
                 var tmpValues = theValue || '';
                 if (isStr(tmpValues)) {
