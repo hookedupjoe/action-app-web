@@ -516,7 +516,6 @@ var ActionAppCore = {};
         if ( ThisApp.resCache[theType] && ThisApp.resCache[theType][theFullPath] ){
             tmpExists = true;
         } 
-        console.log( 'theFullPath exists?', tmpExists, theType, theFullPath);
         tmpThis.addResource(theType, tmpName, theFullPath, tmpResourceData);
     }
 
