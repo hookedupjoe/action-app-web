@@ -386,14 +386,6 @@ var ActionAppCore = {};
         return this.res.controls[theName];
     }
 
-    me.assureLoaded = function (theListOfResources, theOptions) {
-        var dfd = jQuery.Deferred();
-
-        dfd.resolve(true)
-
-        return dfd;
-    }
-
     me.getExtnForType = function (theType) {
         var tmpType = theType.toLowerCase();
         if (tmpType == 'panels' || tmpType == 'panel') {
