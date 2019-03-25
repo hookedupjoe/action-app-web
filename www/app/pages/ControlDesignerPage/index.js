@@ -156,10 +156,22 @@ License: MIT
         ,"test5": test5
         ,"spots": playWithSpots
     }
-
-
+    
     function test5(theParams){
-        //testJSPull();
+        var tmpTargetItem = ThisPage.parts.body.getItem('control1');
+        var tmpEl = tmpTargetItem.el;
+        console.log( 'tmpEl', tmpEl);
+        var tmpCtl = ThisPage.res.controls['testerCtl'];
+        console.log( 'tmpCtl', tmpCtl);
+        var tmpPart = tmpCtl.create('body-control1');
+        console.log( 'tmpPart', tmpPart);
+        tmpPart.loadToElement(tmpEl);
+        tmpPart.sayHello('Dynamic Dan')
+
+    }
+
+    //---- DEMOs
+    function demoPullingNewResources(theParams){
         
         var tmpRequiredSpecs = {
             "controls": {
@@ -214,17 +226,15 @@ License: MIT
 
     }
 
+    //---- DEMO - See how to pull text content and eval into a live object
     function testJSPull() {
         
-        //var tmpDocsList = ['_index.json'];
         var tmpFN = 'test.js';
         var tmpDocsList = [tmpFN];
         var tmpLocation = '/app/controls';
-//console.log( 'tmpLocation', tmpLocation);
         tmpLocation = ThisApp.common.samplesBaseURL
 
         ThisApp.om.getObjects('[html]:' + tmpLocation, tmpDocsList).then(function (theDocs) {
-          //  console.log( 'theDocs', theDocs);
             var tmpDoc = theDocs[tmpFN];
             if (!(tmpDoc)) {
                 alert("Not found " + tmpFN);
@@ -234,10 +244,7 @@ License: MIT
                 var tmpCtl = eval(tmpDoc);
                 console.log( 'tmpCtl', tmpCtl);
                 tmpCtl.prompt()
-                
             }
-
-
         });
 
     };

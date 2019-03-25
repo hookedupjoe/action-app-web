@@ -5,6 +5,11 @@
 			"name": "body"
 		},
 		{
+			"ctl": "control",
+			"control": "testerCtl",
+			"name": "control1"
+		},
+		{
 			"ctl": "cardfull",
 			"classes": "orange raised tall",
 			"name": "card-full-matt",

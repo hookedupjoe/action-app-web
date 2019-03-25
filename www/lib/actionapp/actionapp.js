@@ -2576,6 +2576,13 @@ var ActionAppCore = {};
 
 
 
+
+
+
+
+
+
+
 /*
 Author: Joseph Francis
 License: MIT
@@ -2621,12 +2628,7 @@ License: MIT
         this.parts = this.part //longcut - keep typing it wrong, can use either :)
         this.pageActions = {}; //--- A place for actions
         this.pageTitle = this.options.pageTitle || '';
-        this.pageTemplates = this.options.pageTemplates || false;
-        this.pageControls = this.options.pageControls || false;
-        this.pagePanels = this.options.pagePanels || false;
 
-        //--deprecated
-        // this.panelIndex = {};
         this.controlIndex = {};
 
         this.res = {
@@ -2710,6 +2712,8 @@ License: MIT
         me.controls = {};
         var tmpThis = this;
 
+
+        //--- Deprecated - backward compat functionality until apps are upgraded
         if (this.options.pageTemplates) {
             this.options.required = this.options.required || {};
             //--- backward compat - deprecated
@@ -2719,15 +2723,15 @@ License: MIT
             }
         };
 
-        //--- Deprecated, move to required
-        if (this.pagePanels) {
+        if (this.options.pagePanels) {
             this.options.required = this.options.required || {};
             //--- backward compat - deprecated
-            this.options.required.panels = this.pagePanels;
+            this.options.required.panels = this.options.pagePanels;
             if (!(this.options.required.panels.map) && (this.options.required.panels.panelMap)) {
                 this.options.required.panels.map = this.options.required.panels.panelMap;
             }
         };
+        //--- EMD ====> Deprecated - backward compat functionality until apps are upgraded
 
         var tmpPromRequired = true;
         if (this.options.required) {
@@ -3003,7 +3007,7 @@ License: MIT
         }
 
         //--- Grab some common functionality from app ...
-        var tmpStuffToGrag = ['initResourceType',
+        var tmpStuffToPullIn = ['initResourceType',
             , 'getResourceURIsForType'
             , 'addResourceFromContent', 
             , 'loadResources',
@@ -3016,8 +3020,8 @@ License: MIT
             , 'getControl'
         ];
 
-        for (var iStuff = 0; iStuff < tmpStuffToGrag.length; iStuff++) {
-            var tmpFuncName = tmpStuffToGrag[iStuff];
+        for (var iStuff = 0; iStuff < tmpStuffToPullIn.length; iStuff++) {
+            var tmpFuncName = tmpStuffToPullIn[iStuff];
             var tmpFunc = ThisApp[tmpFuncName];
             if (ThisApp.util.isFunc(tmpFunc)) {
                 this[tmpFuncName] = tmpFunc.bind(this);
@@ -3129,6 +3133,42 @@ License: MIT
     return me;
 
 })(ActionAppCore, $);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //==== BUILT IN PLUGINS - PART OF STANDARD BASE
@@ -6157,6 +6197,57 @@ License: MIT
     }
 
 
+
+    //--- Create a spot for this live element
+    me.ControlPanelAndControl = {
+        getInfo: function (theControlName) {
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpTitle = 'Control Object';
+            var tmpNotes = 'Add a live Control to the page'
+
+            tmpProps.control = {
+                name: "control",
+                label: "Control Name",
+                type: "string",
+                notes: "The name of the the control to create"
+            }
+
+            var tmpRet = {
+                name: theControlName,
+                title: tmpTitle,
+                category: "Common Items",
+                notes: tmpNotes,
+                properties: tmpProps
+            };
+            return tmpRet;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpName = tmpObject.name || tmpObject.control || 'control-spot';
+            var tmpControl = tmpObject.control ||  tmpObject.name || '';
+
+            if ( !(tmpControl) ){
+                console.warn( "Could not create control, no control name or name. ", theControlName, theObject)
+                return '';
+            }
+            var tmpClasses = tmpObject.class || tmpObject.classes || '';
+            var tmpStyles = tmpObject.style || tmpObject.styles || '';
+            var tmpHTML = [];
+
+            var tmpAppComp = 'control'
+            if (theControlName == 'panel') {
+                tmpAppComp = 'panel'
+            }
+            var tmpMyAttr = ' name="' + tmpName + '" ctluse="' + tmpAppComp + '" ' + tmpAppComp + 'name="' + tmpControl + '" '
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpMyAttr + '></div>')
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
     me.ControlSpot = {
         getInfo: function (theControlName) {
 
@@ -6928,6 +7019,9 @@ License: MIT
 
 
     //=== Root Common Web Controls ..
+    me.webControls.add('control', me.ControlPanelAndControl);
+    me.webControls.add('panel', me.ControlPanelAndControl);
+
     me.webControls.add('pagespot', me.ControlSpot);
     me.webControls.add('spot', me.ControlSpot);
 

@@ -5,12 +5,12 @@ License: MIT
 (function (ActionAppCore, $) {
 
     var ControlSpecs = {
-        "content": [
+        "content":  [
             {
-                "ctl": "sep",
-                "size": "small",
-                "color": "green",
-                "text": "Footer"
+                "ctl": "field",
+                "size": "huge",
+                "name": "title",
+                "text": "Hello World"
             }
         ]
     }
