@@ -157,7 +157,13 @@ License: MIT
         ,"spots": playWithSpots
     }
     
+    
     function test5(theParams){
+        //control1
+        ThisPage.parts.body.parts.control1.sayHello("Way over here Wayne")
+    }
+
+    function getControlAndCreateInstanceInASpot(theParams){
         var tmpTargetItem = ThisPage.parts.body.getItem('control1');
         var tmpEl = tmpTargetItem.el;
         console.log( 'tmpEl', tmpEl);

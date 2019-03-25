@@ -2674,7 +2674,7 @@ License: MIT
                     throw ("Control now found to create " + theInstanceName)
                 }
                 this.parts[theInstanceName] = theControl.create(theInstanceName);
-                return theControl.create(theInstanceName);
+                return this.parts[theInstanceName];
             }
 
             this.loadLayoutControl = function (theRegion, theControl, theInstanceName) {
@@ -4677,6 +4677,10 @@ License: MIT
 
         this.controlName = theControlName;
         this.actions = new Index();
+
+        this.liveIndex = {};
+        this.parts = {};
+        
         this.initPubSub();
     }
 
@@ -5361,6 +5365,7 @@ License: MIT
         this.parentEl.off('change');
         this.parentEl.off('click');
 
+        //--- ToDo: Destory panel and control objects
         if (this.liveIndex) {
             if (this.liveIndex.dropdown) {
                 this.liveIndex.dropdown.dropdown('destroy');
@@ -5375,24 +5380,17 @@ License: MIT
 
         var tmpEl = this.parentEl;
 
-        this.liveIndex = {};
-        this.parts = this.part = {};
+        if( this.controlName == 'body'){
+            console.log( 'body is ', this);
+        }
+        
 
         var tmpControls = ThisApp.getByAttr$({ ctlcomp: 'control' }, tmpEl);
-
-
-
-
-        var tmpThis = this;
         if (tmpControls.length) {
-            var tmpParentControl = this.parentControl || false;
-
             for (var iControl = 0; iControl < tmpControls.length; iControl++) {
 
                 var tmpControlEl = $(tmpControls[iControl]);
                 var tmpControlName = tmpControlEl.attr('controlname');
-
-                var tmpContainer = false;
 
                 var tmpPartName = tmpControlEl.attr('partname') || tmpControlEl.attr('name') || tmpControlName;
                 if( tmpControlName && tmpPartName ){
@@ -5404,12 +5402,41 @@ License: MIT
                     }
                     var tmpPart = tmpCtl.create(tmpPartName);
                     this.parts[tmpPartName] = tmpPart;
-                    console.log( 'tmpPart loaded as ' + tmpPartName, tmpPart);
+                    console.log( 'Control part loaded as ' + tmpPartName, tmpPart);
+                    tmpPart.loadToElement(tmpControlEl);   
+                }
+
+            }
+        }
+
+        
+
+
+        var tmpPanels = ThisApp.getByAttr$({ ctlcomp: 'panel' }, tmpEl);
+        if (tmpPanels.length) {
+            for (var iControl = 0; iControl < tmpPanels.length; iControl++) {
+
+                var tmpControlEl = $(tmpPanels[iControl]);
+                var tmpControlName = tmpControlEl.attr('controlname');
+
+                var tmpPartName = tmpControlEl.attr('partname') || tmpControlEl.attr('name') || tmpControlName;
+                if( tmpControlName && tmpPartName ){
+
+                    var tmpCtl = this.parentControl.getPanel(tmpControlName);
+                    if( !(tmpCtl) ){
+                        console.warn("Could not find parent control " + tmpControlName)
+                        return false;
+                    }
+                    var tmpPart = tmpCtl.create(tmpPartName);
+                    this.parts[tmpPartName] = tmpPart;
+                    console.log( 'Panel part loaded as ' + tmpPartName, tmpPart);
                     tmpPart.loadToElement(tmpControlEl);                
                 }
 
             }
         }
+
+        
 
 
 
@@ -5447,6 +5474,13 @@ License: MIT
         this.parentEl.on('click', this.onItemClick.bind(this))
 
         this.initControlComponents();
+        if( this.parts && this.parts.control1 ){
+            console.log( 'this.parts', this.parts, this);
+            var tmpParentBody = this.parentControl.parts.body;
+            console.log( 'tmpParentBody', tmpParentBody);
+            //console.log( 'this.parentControl.parts', this.parentControl.parts);
+        }
+        
 
         //ThisApp.initAppComponents(this.parentEl);
 
@@ -6323,9 +6357,9 @@ License: MIT
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpName = tmpObject.name || tmpObject.control || 'control-spot';
-            var tmpControl = tmpObject.control || tmpObject.name || '';
+            var tmpControlName = tmpObject.controlname || tmpObject.name || '';
 
-            if (!(tmpControl)) {
+            if (!(tmpControlName)) {
                 console.warn("Could not create control, no control name or name. ", theControlName, theObject)
                 return '';
             }
@@ -6337,7 +6371,7 @@ License: MIT
             if (theControlName == 'panel') {
                 tmpAppComp = 'panel'
             }
-            var tmpMyAttr = ' name="' + tmpName + '" ctlcomp="' + tmpAppComp + '" ' + tmpAppComp + 'name="' + tmpControl + '" '
+            var tmpMyAttr = ' name="' + tmpName + '" ctlcomp="' + tmpAppComp + '" ' + 'controlname="' + tmpControlName + '" '
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpMyAttr + '></div>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
@@ -7140,7 +7174,6 @@ License: MIT
     me.webControls.add('button', me.ControlButton);
     me.webControls.add('segment', me.ControlPanel);
     me.webControls.add('segments', me.ControlPanel);
-    me.webControls.add('panel', me.ControlPanel);
     me.webControls.add('image', me.ControlImage);
     me.webControls.add('element', me.ControlElement);
     me.webControls.add('card', me.ControlElement);

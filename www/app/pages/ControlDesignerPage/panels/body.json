@@ -6,9 +6,14 @@
 		},
 		{
 			"ctl": "control",
-			"control": "testerCtl",
+			"controlname": "testerCtl",
 			"name": "control1"
 		},
+		{
+			"ctl": "panel",
+			"controlname": "eastCtl",
+			"name": "panel1"
+		},		
 		{
 			"ctl": "cardfull",
 			"classes": "orange raised tall",
