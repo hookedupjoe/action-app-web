@@ -503,7 +503,7 @@ var ActionAppCore = {};
 
         }
         // console.log( 'tmpRequests', tmpRequests);
-        
+
         $.whenAll(tmpDefs).then(function (theResults) {
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
@@ -2816,6 +2816,18 @@ License: MIT
         return ThisApp.getUpdatedMarkupForNS(this.ns());
     }
 
+    me.getResource = function (theType, theName) {
+        var tmpRes = this.res[theType];
+        if (!(tmpRes)) {
+            return false;
+        }
+        tmpRes = tmpRes[theName];
+        if (!(tmpRes)) {
+            return false;
+        }
+        return tmpRes
+    }
+
     me.initLayout = function () {
 
         if (this.layoutOptions && this.layoutOptions.content) {
@@ -3009,7 +3021,7 @@ License: MIT
         //--- Grab some common functionality from app ...
         var tmpStuffToPullIn = ['initResourceType',
             , 'getResourceURIsForType'
-            , 'addResourceFromContent', 
+            , 'addResourceFromContent',
             , 'loadResources',
             , 'addResource'
             , 'hasPanel'
@@ -5345,45 +5357,81 @@ License: MIT
 
     }
 
-    meInstance.destroy = function(){
+    meInstance.destroy = function () {
         this.parentEl.off('change');
         this.parentEl.off('click');
 
-        if( this.liveIndex ){
-            if( this.liveIndex.dropdown ){
+        if (this.liveIndex) {
+            if (this.liveIndex.dropdown) {
                 this.liveIndex.dropdown.dropdown('destroy');
             }
-            if( this.liveIndex.checkbox ){
+            if (this.liveIndex.checkbox) {
                 this.liveIndex.checkbox.checkbox('destroy');
             }
         }
     }
 
-    meInstance.initComponents = function () {
+    meInstance.initControlComponents = function () {
 
         var tmpEl = this.parentEl;
 
         this.liveIndex = {};
+        this.parts = this.part = {};
 
-        
+        var tmpControls = ThisApp.getByAttr$({ ctlcomp: 'control' }, tmpEl);
+
+
+
+
+        var tmpThis = this;
+        if (tmpControls.length) {
+            var tmpParentControl = this.parentControl || false;
+
+            for (var iControl = 0; iControl < tmpControls.length; iControl++) {
+
+                var tmpControlEl = $(tmpControls[iControl]);
+                var tmpControlName = tmpControlEl.attr('controlname');
+
+                var tmpContainer = false;
+
+                var tmpPartName = tmpControlEl.attr('partname') || tmpControlEl.attr('name') || tmpControlName;
+                if( tmpControlName && tmpPartName ){
+
+                    var tmpCtl = this.parentControl.getControl(tmpControlName);
+                    if( !(tmpCtl) ){
+                        console.warn("Could not find parent control " + tmpControlName)
+                        return false;
+                    }
+                    var tmpPart = tmpCtl.create(tmpPartName);
+                    this.parts[tmpPartName] = tmpPart;
+                    console.log( 'tmpPart loaded as ' + tmpPartName, tmpPart);
+                    tmpPart.loadToElement(tmpControlEl);                
+                }
+
+            }
+        }
+
+
+
+
         var tmpDDs = ThisApp.getByAttr$({ ctlcomp: 'dropdown' }, tmpEl);
 
-        if( tmpDDs.length ){
+        if (tmpDDs.length) {
             this.liveIndex.dropdown = tmpDDs;
             tmpDDs.dropdown({
                 showOnFocus: false
             })
-            .attr('ctlcomp', '')
-            .attr('appcomp', '');
+                .attr('ctlcomp', '')
+                .attr('appcomp', '');
         }
 
         var tmpCBs = ThisApp.getByAttr$({ ctlcomp: 'checkbox' }, tmpEl);
 
-        if( tmpCBs.length ){
+        if (tmpCBs.length) {
             this.liveIndex.checkbox = tmpCBs;
             tmpCBs.checkbox()
-            .attr('ctlcomp', '')
-            .attr('appcomp', '');
+                .attr('ctlcomp', '')
+                .attr('appcomp', '');
         }
 
 
@@ -5398,12 +5446,12 @@ License: MIT
         this.parentEl.on('change', this.onFieldChange.bind(this))
         this.parentEl.on('click', this.onItemClick.bind(this))
 
-        this.initComponents();
+        this.initControlComponents();
 
         //ThisApp.initAppComponents(this.parentEl);
 
 
-        
+
         this.refreshControl();
         return this;
 
@@ -6275,10 +6323,10 @@ License: MIT
         getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpName = tmpObject.name || tmpObject.control || 'control-spot';
-            var tmpControl = tmpObject.control ||  tmpObject.name || '';
+            var tmpControl = tmpObject.control || tmpObject.name || '';
 
-            if ( !(tmpControl) ){
-                console.warn( "Could not create control, no control name or name. ", theControlName, theObject)
+            if (!(tmpControl)) {
+                console.warn("Could not create control, no control name or name. ", theControlName, theObject)
                 return '';
             }
             var tmpClasses = tmpObject.class || tmpObject.classes || '';
@@ -6289,7 +6337,7 @@ License: MIT
             if (theControlName == 'panel') {
                 tmpAppComp = 'panel'
             }
-            var tmpMyAttr = ' name="' + tmpName + '" ctluse="' + tmpAppComp + '" ' + tmpAppComp + 'name="' + tmpControl + '" '
+            var tmpMyAttr = ' name="' + tmpName + '" ctlcomp="' + tmpAppComp + '" ' + tmpAppComp + 'name="' + tmpControl + '" '
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpMyAttr + '></div>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
