@@ -388,20 +388,14 @@ var ActionAppCore = {};
         if( !(tmpResource) ){
             if ( this.parentControl && isFunc( this.parentControl.getResourceForType ) ){
                 tmpResource = this.parentControl.getResourceForType(theName)
-                if( tmpResource ){
-                    console.log( 'tmpResource was found from parent chain', tmpResource);
-                }
             }
             if( !(tmpResource) ){
                 tmpResource = ThisApp.resCache[tmpType][theName];
-                if( tmpResource ){
-                    console.log( 'tmpResource was found from cache', tmpResource);
-                }
             }
-
         }
         return tmpResource;
     }
+    
     me.getControl = function (theName) {
         return this.getResourceForType('controls',theName);
     }
@@ -480,7 +474,6 @@ var ActionAppCore = {};
                         tmpResponse = ThisApp.json(tmpResponse,true);
                     }
                 }
-                // console.log( ' tmpRequest.uri',  tmpRequest.uri);
                 tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse, tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
