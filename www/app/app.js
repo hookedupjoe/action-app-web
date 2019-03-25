@@ -12,13 +12,99 @@
       ThisApp = new siteMod.CoreApp();
 
       //--- Items to load when the application loads
-      var tmpRequired = {
-        "rem_panels": {
-          baseURL: 'app/panels',
+      //--- Options for creatinga  rquired list
+      // If one entry, it is just the one entries
+      // 
+
+      //--- Get URLs ...
+      /*
+      end result .. getRequiredURIs(theRequiredSpecs)
+      //--- if name blank, use full as name
+      //--- Index of all the files we are to request with the type
+      {
+        "library/common/panels/forms/title": {type:"panel",  name: ""}
+        ,"library/common/panels/status/status-bar": {type:"panel",  name: ""}
+        ,"library/panels/demos/cardsdemo": {type:"panel",  name: ""}
+        ,"library/panels/demos/showfor": {type:"panel",  name: ""}
+        ,"app/panels/showfor": {type:"panel",  name: "frmShowFor"}
+      }
+      
+      //-------
+      Then check to see if cached at ThisApp.controlCache["library/panels/demos/cardsdemo"]
+      //  if so -> return true
+      //  if not
+           -> add the needed file extension (i.e. .json for panels)
+           -> request the resource, and return a promise
+             -> when get back resource, store in ThisApp.res.type.fullname
+             -> If we also have a name, also store as this.res.type.name (alias)
+             
+      //  ** Either way the $.when(theTrueReply,thePromise,...) all work the same
+
+      Note: The name is used to store the resource at the local level by name that is easier to reference later
+            The resource is really saved in the full URI location and a reference also saved with an alias name in thise case
+
+      
+
+      */
+      var tmpRequiredSpecs = {
+        "controls": {
+          baseURL: 'app/controls/special',
+          list: [
+            'NewTestControl',
+            'more/NewTestControl2'
+          ],
           map: {
-            "showfor.json": "frmShowFor"
+            "NewTestControl": "MainControl"
+            // ,"forms/TesterFormControl": "TesterFormControl"
           }
         },
+        "html": {
+          baseURL: 'app/app-tpl',
+          map: {
+            "about-this-app": "app:about-this-app-snippet",
+            "page-loading-spinner": "app:page-loading-spinner-snippet"
+          }
+        },
+        "templates": {
+          baseURL: 'app/app-tpl',
+          map: {
+            "about-this-app": "app:about-this-app",
+            "page-loading-spinner": "app:page-loading-spinner"
+          }
+        },
+        "panels": [
+          'library/common/panels/forms/title',
+          'library/common/panels/status/status-bar',
+          {
+            baseURL: 'library/panels/demos',
+            list: [
+              'cardsdemo',
+              'showfor'
+            ]
+          },
+          {
+            baseURL: 'app/panels',
+            map: {
+              "showfor": "frmShowFor"
+            }
+          }
+        ]
+      }
+      ThisApp.loadResources(tmpRequiredSpecs).then(function () {
+        console.log('loadResources done', ThisApp.res);
+      })
+      //--- Items to load when the application loads
+      var tmpRequired = {
+        // "rem_panels": {
+        //   baseURL: 'app/panels',
+        //   map: {
+        //     "showfor.json": "frmShowFor"
+        //   }
+        // },
+        "panels": [
+          'library.panels.cardsdemo',
+          'library.panels.showfor'
+        ],
         "rem_controls": {
           baseURL: 'app/controls',
           map: {

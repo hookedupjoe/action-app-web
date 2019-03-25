@@ -160,6 +160,7 @@ License: MIT
 
     function test5(theParams){
         testJSPull();
+        console.log(typeof("".endsWith))
     }
 
     function testJSPull() {
