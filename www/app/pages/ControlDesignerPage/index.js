@@ -159,7 +159,8 @@ License: MIT
     
     
     function test5(theParams){
-        ThisPage.parts.body.parts.control1.sayHello()
+        var tmpName = ThisPage.parts.west.getFieldValue('yourname');
+        ThisPage.parts.body.parts.control1.sayHello(tmpName)
     }
 
     function getControlAndCreateInstanceInASpot(theParams){

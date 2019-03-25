@@ -64,7 +64,8 @@
 												"testname":"test4"
 											},
 											"text": "Test 4"
-										},	{
+										},
+										{
 											"ctl": "button",
 											"color": "red",											
 											"attr": {
@@ -72,6 +73,11 @@
 												"testname":"test5"
 											},
 											"text": "Test 5"
+										},
+										{
+											"ctl": "field",
+											"name": "yourname",
+											"label": "Your Name"
 										},
 										{
 											"ctl": "pagespot",
