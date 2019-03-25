@@ -159,7 +159,6 @@ License: MIT
     
     
     function test5(theParams){
-        //control1
         ThisPage.parts.body.parts.control1.sayHello("Way over here Wayne")
     }
 

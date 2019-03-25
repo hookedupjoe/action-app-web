@@ -481,7 +481,6 @@ var ActionAppCore = {};
                 this.getResourceURIsForType(tmpType, tmpTypeSpecs, theOptions)
             )
         }
-        //console.log('tmpURIs', tmpURIs);
         var tmpRequests = [];
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
@@ -502,31 +501,14 @@ var ActionAppCore = {};
             }
 
         }
-        // console.log( 'tmpRequests', tmpRequests);
 
+        
         $.whenAll(tmpDefs).then(function (theResults) {
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
-                // console.log( 'tmpRequest', tmpRequest);
                 var tmpResponse = theResults[iRequest];
-                // console.log( 'tmpResponse', tmpResponse);
                 tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse[0], theOptions);
             }
-            // console.log('whenAll theResults', theResults);
-            // var tmpResults = [].concat(theResults);
-            // var tmpLen = tmpResults.length;
-            // var tmpReqLen = tmpRequested.length;
-            //  console.log( 'theResults', theResults[2]);
-            // // if( tmpReqLen == tmpLen ){
-            //     for (var iResult = 0; iResult < tmpResults.length; iResult++) {
-            //         var tmpResult = tmpResults[iResult];
-            //         var tmpReqInfo = tmpRequested[iResult]
-            //         // console.log( 'tmpResult', tmpResult);
-            //         // console.log( 'tmpReqInfo', tmpReqInfo);
-            //     }
-            // } else {
-            //     console.error("Did not get expected response getting required details ", theSpecs)
-            // }
             dfd.resolve(true);
         })
         return dfd;
@@ -535,12 +517,6 @@ var ActionAppCore = {};
 
 
 
-
-
-
-
-
-    //==========
 
     me.addResourceFromContent = function (theType, theName, theContent, theOptions) {
         var tmpOptions = theOptions || {};
@@ -598,7 +574,6 @@ var ActionAppCore = {};
 
             //=== if a string, just add it as is, no name
             if (isStr(tmpSpec)) {
-                console.log('tmpSpec', tmpSpec);
                 tmpRet.push({ type: theType, uri: tmpSpec })
             } else if (isObj(tmpSpec)) {
                 var tmpBaseURL = tmpSpec.baseURL || '';
@@ -617,9 +592,6 @@ var ActionAppCore = {};
 
                 }
                 if (isObj(tmpSpec.map)) {
-                    //-- do this for the object entries
-                    //--- name - URL
-                    //--- value = alias
                     for (var aURI in tmpSpec.map) {
                         var tmpEntryName = tmpSpec.map[aURI];
                         if (tmpBaseURL) {
@@ -628,172 +600,24 @@ var ActionAppCore = {};
 
                         tmpRet.push({ type: theType, uri: aURI, name: tmpEntryName })
                     }
-                    // var tmpSpecItems = tmpSpec.list;
-                    // for (var iSpecItem = 0; iSpecItem < tmpSpecItems.length; iSpecItem++) {
-                    //     var tmpSpecItem = tmpSpecItems[iSpecItem];
-                    //     if(tmpBaseURL){
-                    //         tmpSpecItem = tmpBaseURL + tmpSpecItem;
-                    //     }
-                    //     tmpRet.push({type:theType, uri: tmpSpecItem})  
-                    // }
-
                 }
-
             }
-
-
         }
         return tmpRet;
-
-        //--- if no templates to process, no prob, return now
-        if (!(theSpecs && theSpecs.list && theSpecs.list.length)) {
-            return [];
-        }
-
-        var tmpURLs = [];
-
-        var tmpList = theSpecs.list;
-
-        var tmpMaps = [];
-        var tmpBaseURL = theSpecs.baseURL || '';
-        for (var aName in theSpecs.map) {
-            var tmpName = aName;
-            if (theType == 'controls') {
-                tmpName += '';
-            }
-            tmpMaps.push(tmpName);
-        }
-
-
-        var tmpContentType = 'html';
-        if (theType == 'panels') {
-            tmpContentType = 'get';
-        }
     }
-    //--- theType: (controls, panels, html or templates)
-    me.loadResourceType = function (theType, theSpecs, theOptions) {
-        console.log('loadResourceType', theType, theSpecs);
-        var dfd = jQuery.Deferred();
-
-
-        var tmpIsApp = !(isFunc(this.ns));
-        if (tmpIsApp) {
-            if (Array.isArray(theSpecs)) {
-                console.log('initResourceType theType', theType);
-                console.log('theSpecs', theSpecs);
-            }
-        }
-
-        var tmpCheck = (theType == 'html') || (theType == 'controls') || (theType == 'panels') || (theType == 'templates')
-        if (!tmpCheck) {
-            console.warn("Asking for unknown resource type " + theType)
-            dfd.resolve(true);
-            return dfd.promise();
-        }
-        // console.log( 'initResourceType', theType, theSpecs);
-        var tmpOptions = theOptions || {};
-
-
-        dfd.resolve(true);
-        return dfd;
-
-        //--- if no templates to process, no prob, return now
-        if (!(theSpecs && theSpecs.map)) {
-            dfd.resolve(true);
-            return dfd.promise();
-        }
-
-        var tmpMaps = [];
-        var tmpBaseURL = theSpecs.baseURL || '';
-        for (var aName in theSpecs.map) {
-            var tmpName = aName;
-            if (theType == 'controls') {
-                tmpName += '';
-            }
-            tmpMaps.push(tmpName);
-        }
-
-
-        var tmpContentType = 'html';
-        if (theType == 'panels') {
-            tmpContentType = 'get';
-        }
-
-        var tmpThis = this;
-        ThisApp.om.getObjects('[' + tmpContentType + ']:' + tmpBaseURL, tmpMaps).then(function (theDocs) {
-            for (var aKey in theDocs) {
-                var tmpName = theSpecs.map[aKey];
-                if (tmpName) {
-                    var tmpResourceData = theDocs[aKey];
-                    var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || '';
-                    if (!tmpNS) {
-                        //--- Auto sense a namespace function, use it if present
-                        if (ThisApp.util.isFunc(tmpThis.ns)) {
-                            tmpNS = tmpThis.ns().replace(":", "");
-                        }
-                    }
-                    if (tmpNS) {
-                        if (theType == 'panels' && typeof (tmpResourceData) == 'object') {
-                            tmpResourceData = ThisApp.json(tmpResourceData, true);
-                        }
-                        if (typeof (tmpResourceData) == 'string') {
-                            tmpResourceData = ThisApp.getUpdatedMarkupForNS(tmpResourceData, tmpNS)
-                        }
-                        if (theType == 'panels' && typeof (tmpResourceData) == 'string') {
-                            tmpResourceData = ThisApp.json(tmpResourceData, true);
-                        }
-                    }
-                    if (theType == 'controls') {
-                        try {
-                            var tmpResourceData = eval(tmpResourceData);
-                        } catch (ex) {
-                            console.warn("Could not convert control to object");
-                        }
-                    } else if (theType == 'panels') {
-                        try {
-                            var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, { parent: tmpThis })
-                        } catch (ex) {
-                            console.warn("Could not convert control to object");
-                        }
-                    }
-                    if (theType == 'html') {
-                        //   console.log( 'html', tmpName, tmpResourceData);
-                    }
-                    tmpThis.addResource(theType, tmpName, tmpResourceData);
-                }
-            }
-            dfd.resolve(true);
-        });
-        return dfd.promise();
-
-    }
-
-
-
-
-    //=====================
-
+    
 
 
     //--- theType: (controls, panels, html or templates)
     me.initResourceType = function (theType, theSpecs, theOptions) {
         var dfd = jQuery.Deferred();
 
-        var tmpIsApp = !(isFunc(this.ns));
-        if (tmpIsApp) {
-            if (Array.isArray(theSpecs)) {
-                console.log('initResourceType theType', theType);
-                console.log('theSpecs', theSpecs);
-            }
-        }
-
         var tmpCheck = (theType == 'html') || (theType == 'controls') || (theType == 'panels') || (theType == 'templates')
         if (!tmpCheck) {
             console.warn("Asking for unknown resource type " + theType)
             dfd.resolve(true);
             return dfd.promise();
         }
-        // console.log( 'initResourceType', theType, theSpecs);
         var tmpOptions = theOptions || {};
         //--- if no templates to process, no prob, return now
         if (!(theSpecs && theSpecs.map)) {
@@ -5380,11 +5204,6 @@ License: MIT
 
         var tmpEl = this.parentEl;
 
-        if( this.controlName == 'body'){
-            console.log( 'body is ', this);
-        }
-        
-
         var tmpControls = ThisApp.getByAttr$({ ctlcomp: 'control' }, tmpEl);
         if (tmpControls.length) {
             for (var iControl = 0; iControl < tmpControls.length; iControl++) {
@@ -5402,7 +5221,6 @@ License: MIT
                     }
                     var tmpPart = tmpCtl.create(tmpPartName);
                     this.parts[tmpPartName] = tmpPart;
-                    console.log( 'Control part loaded as ' + tmpPartName, tmpPart);
                     tmpPart.loadToElement(tmpControlEl);   
                 }
 
@@ -5429,7 +5247,6 @@ License: MIT
                     }
                     var tmpPart = tmpCtl.create(tmpPartName);
                     this.parts[tmpPartName] = tmpPart;
-                    console.log( 'Panel part loaded as ' + tmpPartName, tmpPart);
                     tmpPart.loadToElement(tmpControlEl);                
                 }
 
@@ -5474,27 +5291,10 @@ License: MIT
         this.parentEl.on('click', this.onItemClick.bind(this))
 
         this.initControlComponents();
-        if( this.parts && this.parts.control1 ){
-            console.log( 'this.parts', this.parts, this);
-            var tmpParentBody = this.parentControl.parts.body;
-            console.log( 'tmpParentBody', tmpParentBody);
-            //console.log( 'this.parentControl.parts', this.parentControl.parts);
-        }
-        
-
-        //ThisApp.initAppComponents(this.parentEl);
-
-
-
         this.refreshControl();
         return this;
 
     }
-
-
-
-
-
 
 
 
