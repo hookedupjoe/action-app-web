@@ -22,23 +22,9 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    //--- Define page templates that should load when the page is activated
-    thisPageSpecs.required = {
-        html: {
-            baseURL:  pageBaseURL + 'html',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-            map: {
-                "page-header": "page-header",
-                "page-east": "page-east",
-                "page-body": "page-body",
-                "page-footer": "page-footer"
-            }
-        }
-    }
-
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
+        baseURL:  pageBaseURL,
         html: {
             "east": "page-east",
             "north": "page-header",

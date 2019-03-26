@@ -18,39 +18,30 @@ License: MIT
         },
         appModule: AppModule
     };
+    var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
     var docsBaseURL = 'app/pages/PromptsPage/docs';
 
     thisPageSpecs.required = {
         templates: {
-            baseURL: 'app/pages/PromptsPage/tpl',
+            baseURL: pageBaseURL + 'tpl',
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
                 "cat-document": thisPageSpecs.pageNamespace + ":cat-document",
                 "cat-contents": thisPageSpecs.pageNamespace + ":cat-contents",
-                }
-        },
-        html: {
-            baseURL: 'app/pages/PromptsPage/tpl',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-            map: {
-                "page-header": thisPageSpecs.pageNamespace + ":page-header",
-                "page-east": thisPageSpecs.pageNamespace + ":page-east",
-                "page-body": thisPageSpecs.pageNamespace + ":page-body",
-                "page-west": thisPageSpecs.pageNamespace + ":page-west"
             }
         }
     }
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         html: {
-            "east": thisPageSpecs.pageNamespace + ":" + "page-east",
-            "north": thisPageSpecs.pageNamespace + ":" + "page-header",
-            "center": thisPageSpecs.pageNamespace + ":" + "page-body",
-            "west": thisPageSpecs.pageNamespace + ":" + "page-west"
+            "east": "page-east",
+            "north": "page-header",
+            "center": "page-body",
+            "west": "page-west"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,
@@ -112,18 +103,7 @@ License: MIT
                 
                 var tmpDocsList = ['index.json'];
                 showContentInPreviewPane('about-action-app')
-                ThisApp.om.getObjects('[get]:' + docsBaseURL, tmpDocsList).then(function (theDocs) {
-                    var tmpIndexDoc = theDocs["index.json"];
-                    if (!(tmpIndexDoc)) {
-                        //--- No Documentation found
-                        console.error("No Documentation found");
-                        throw ("No Documentation found");
-                    }
-                    if (tmpIndexDoc && tmpIndexDoc.categories) {
-                        ThisPage.categoriesIndex = tmpIndexDoc.categories;
-                    }
-
-                });
+                
                 //--- Do special stuff on page load here
                 //--- Then optionally call the stuff that will happen every time 
                 //      the page is activated if not already called by above code

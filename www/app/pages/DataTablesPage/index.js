@@ -22,17 +22,8 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    thisPageSpecs.required = {
-        html: {
-            baseURL: pageBaseURL + 'html',
-            map:{
-                "page-body": "page-body",
-                "page-footer": "page-footer"
-            }
-        }
-    }
-
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         html: {
             "center":"page-body",
             "south": "page-footer"

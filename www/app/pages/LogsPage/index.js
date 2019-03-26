@@ -27,18 +27,11 @@ License: MIT
             map:{
                 "msg-ctr-item": thisPageSpecs.pageNamespace + ":msg-ctr-item"
             }
-        },
-        html: {
-            baseURL: pageBaseURL + 'html',
-            map:{
-                "page-header":"page-header",
-                "page-body":"page-body",
-                "page-footer":"page-footer"
-            }
         }
     }
 
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         html: {
             "north":"page-header",
             "center":"page-body",

@@ -23,30 +23,20 @@ License: MIT
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
     var docsBaseURL =  'app/pages/DocsPage/docs';
 
-    //--- Define page templates that should load when the page is activated
+    //--- Define page templates used in the page that are not in layouts
     thisPageSpecs.required = {
         templates: {
             baseURL: pageBaseURL + 'tpl',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
                 "cat-document": thisPageSpecs.pageNamespace + ":cat-document",
                 "cat-contents": thisPageSpecs.pageNamespace + ":cat-contents"
-            }
-        },
-        html: {
-            baseURL: pageBaseURL + 'html',
-            map: {
-                "page-header": "page-header",
-                "page-east": "page-east",
-                "page-body": "page-body",
-                "page-west": "page-west"
             }
         }
     }
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         html: {
             "east": "page-east",
             "north": "page-header",

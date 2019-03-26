@@ -21,36 +21,6 @@ License: MIT
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
 
-
-    // thisPageSpecs.required = {
-    //     panels: {
-    //         baseURL: pageBaseURL + 'panels',
-    //         map: {
-    //             "body": "body",
-    //             "header": "header",
-    //             "footer": "footer",
-    //             "east": "east",
-    //             "west": "west"
-    //         }
-    //     },
-    //     controls: {
-    //         baseURL: pageBaseURL + 'controls',
-    //         map: {
-    //             "TesterControl": "tester"
-    //         }
-    //     }
-
-    // }
-
-
-    //--- Define this applications layouts
-    //controls:  (use name from thisPageSpecs.pageControls)
-    //   "north": {partname: "pageTitle",control: "titleBar"}
-    //      and use: ThisPage.part.pageTitle to get control
-
-    //-> templates:  (use name from thisPageSpecs.pageTemplates)
-    //  "north": thisPageSpecs.pageNamespace + ":" + "page-north",
-
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
         panels: {

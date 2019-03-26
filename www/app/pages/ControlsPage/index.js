@@ -20,54 +20,6 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    // //--- Define page templates that should load when the page is activated
-    // thisPageSpecs.required = {
-    //     html: {
-    //         baseURL: pageBaseURL + 'html',
-    //         //-- Page to lookup : name to call it when pulling
-    //         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-    //         map: {
-    //             "page-header": "page-header",
-    //             "page-east": "page-east",
-    //             "page-body": "page-body",
-    //             "page-west": "page-west"
-    //         }
-    //     },
-    //     panels: {
-    //         list: ["catalog/panels/common/east"]
-    //     }
-    // }
-
-    var tmpRequiredSpecs = {
-        "controls": ['library/controls/TesterControl'],
-        "panels": ['library/panels/common/east']
-      }
-
-      thisPageSpecs.required = tmpRequiredSpecs;
-
-   //  --- Define page templates that should load when the page is activated
-    thisPageSpecs.required = {
-        // html: {
-        //     baseURL: pageBaseURL + 'html',
-        //     //-- Page to lookup : name to call it when pulling
-        //     //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-        //     map: {
-        //         "page-header": "page-header"
-        //     }
-        // }
-        // ,
-        panels: {
-            list: [
-                "library/panels/common/east"
-            ]
-        }
-        // ,
-        // panels: [
-        //     'library/panels/common/east'
-        // ]
-    }
-    // ,controls: ['library/controls/TesterControl']
-
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
          baseURL: pageBaseURL,

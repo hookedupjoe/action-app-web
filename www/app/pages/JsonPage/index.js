@@ -21,21 +21,9 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    //--- Define page templates that should load when the page is activated
-    thisPageSpecs.required = {
-        html: {
-            baseURL: pageBaseURL + 'html',
-            map: {
-                "page-header": "page-header",
-                "page-east": "page-east",
-                "page-body": "page-body",
-                "page-west": "page-west"
-            }
-        }
-    }
-
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         html: {
             "east": "page-east",
             "north": "page-header",
