@@ -480,12 +480,17 @@ var ActionAppCore = {};
 
 
 
-
+    var resourceAlias = {
+        "control": "controls",
+        "panel": "panels"
+    }
     me.addResourceFromContent = function (theType, theName, theContent, theFullPath, theOptions) {
         var tmpOptions = theOptions || {};
         var tmpThis = this;
         var tmpResourceData = theContent;
         var tmpName = theName;
+        theType = resourceAlias[theType] || theType;
+        //tmpName = resourceAlias[tmpName] || tmpName;
         var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || '';
         if (!tmpNS) {
             //--- Auto sense a namespace function, use it if present
@@ -5282,9 +5287,13 @@ License: MIT
     }
 
     meInstance.initControlComponents = function () {
+        var dfd = jQuery.Deferred();
 
         var tmpEl = this.parentEl;
 
+        var tmpDefs = [];
+        
+        
         var tmpControls = ThisApp.getByAttr$({ ctlcomp: 'control' }, tmpEl);
         if (tmpControls.length) {
             for (var iControl = 0; iControl < tmpControls.length; iControl++) {
@@ -5301,7 +5310,7 @@ License: MIT
                     } else {
                         var tmpPart = tmpCtl.create(tmpPartName);
                         this.parts[tmpPartName] = tmpPart;
-                        tmpPart.loadToElement(tmpControlEl);   
+                        tmpDefs.push(tmpPart.loadToElement(tmpControlEl));   
                     }
                 }
 
@@ -5328,7 +5337,7 @@ License: MIT
                     }
                     var tmpPart = tmpCtl.create(tmpPartName);
                     this.parts[tmpPartName] = tmpPart;
-                    tmpPart.loadToElement(tmpControlEl);                
+                    tmpDefs.push(tmpPart.loadToElement(tmpControlEl));
                 }
 
             }
@@ -5359,8 +5368,13 @@ License: MIT
                 .attr('appcomp', '');
         }
 
+        $.whenAll(tmpDefs).then(function(theReply){
+            dfd.resolve(true)
+        })
+        
 
-
+        return dfd.promise();
+        
     }
 
     meInstance.loadToElement = function (theEl, theOptions) {
@@ -5376,9 +5390,11 @@ License: MIT
 
         this.controlSpec.assureRequired().then(function(){
             console.log( 'assureRequired ran');
-            tmpThis.initControlComponents();
-            tmpThis.refreshControl();
-            dfd.resolve(true)
+            tmpThis.initControlComponents().then(function(theReply){
+                tmpThis.refreshControl();
+                dfd.resolve(true)    
+            });
+            
         })
         
         
