@@ -20,6 +20,16 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
+    thisPageSpecs.required = {
+        controls: {
+            baseURL: pageBaseURL,
+            map: {
+                "controls/TesterControl": "TesterControl",
+                "controls/FormShowFor": "demoFormCtl"
+            }
+        }
+    }
+
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
         panels: {
@@ -178,7 +188,7 @@ License: MIT
         } else if (tmpTestName == "Test 2") {
             ThisPage.part.pageTitle.sayHello();
         } else if (tmpTestName == "Test 3") {
-            ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theData) {
+            ThisPage.getControl('demoFormCtl').prompt().then(function (theReply, theData) {
                 if (theReply == false) {
                     return false;
                 }
@@ -214,14 +224,14 @@ License: MIT
 
     ThisPage.promptDemoForm = promptDemoForm;
     function promptDemoForm() {
-        ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theControl) {
+        ThisPage.getControl('demoFormCtl').prompt().then(function (theReply, theData) {
             if (theReply == false) {
+                alert("Form was not submitted", "Not Submitted", "i")
                 return false;
             }
-            if (theControl) {
-                var tmpData = theControl.getData();
-                console.log("tmpData", tmpData);
-                alert("See console for form data", "Form Submitted");
+            if (theData) {
+                console.log("theData", theData);
+                alert("See console for the data submitted", "Form Submitted", "c");
             }
         })
     };
