@@ -5315,7 +5315,6 @@ License: MIT
 
     meInstance.loadToElement = function (theEl, theOptions) {
         this.parentEl = ThisApp.asSpot(theEl);
-        console.log("loadToElement this",this)
         var tmpHTML = this.getHTML();
         this.parentEl.html(tmpHTML);
         this.parentEl.on('change', this.onFieldChange.bind(this))
@@ -5414,6 +5413,8 @@ License: MIT
         return tmpHTML;
     }
 
+   
+
     //--- Internal use - creates index of all fields and items with a name;
     me._loadContentIndex = function (theItems, theOptionalIndex, theOptionalOutline) {
         var tmpIndex = theOptionalIndex || {
@@ -5421,6 +5422,8 @@ License: MIT
             itemsList: [],
             fields: {},
             items: {},
+            controls: {},
+            required: {},
             outline: []
         }
         var tmpOL = theOptionalOutline || tmpIndex.outline;
@@ -5441,7 +5444,8 @@ License: MIT
 
             tmpOL.push(tmpThisObj)
 
-            var tmpType = me.getControlType(tmpCtl);
+            var tmpControl = me.getWebControl(tmpCtl)
+            var tmpType = tmpControl.type || 'field'
 
             tmpType = tmpType + 's';
 
@@ -5449,6 +5453,22 @@ License: MIT
 
                 var tmpName = tmpItem.name;
 
+                    
+                if( tmpCtl == 'control' || tmpCtl == 'panel' ){
+                    tmpIndex.controls[tmpName] = tmpItem;
+                    //--- If we have a control name and source is not parent, add to the list
+                    //---   if source is parent, it will go up the chain and find it there
+                    //---   must be loaded by name by the parent
+                    //---   ** When used - can have a basic name, not full heirarchy
+                    //         ... and can also replace out any full with short name as alias
+                    if( tmpControl && tmpItem.controlname && (!(tmpItem.source === 'parent')) ){
+                        //--- Create a node for this required item
+                        tmpIndex.required[tmpCtl] = tmpIndex.required[tmpCtl] || {};
+                        tmpIndex.required[tmpCtl].list = tmpIndex.required[tmpCtl].list || [];
+                        tmpIndex.required[tmpCtl].list.push(tmpItem.controlname)
+                    }
+                }
+                
                 //=== type is index or field
                 var tmpToAdd = tmpItem;
                 if (tmpType == 'items') {
@@ -5487,6 +5507,7 @@ License: MIT
 
         return tmpIndex;
     }
+	
 
     //--- Bubble Global Helpers
     var checkBoxAt = 0;
