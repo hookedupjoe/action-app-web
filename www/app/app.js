@@ -11,53 +11,6 @@
       var siteMod = ActionAppCore.module('site');
       ThisApp = new siteMod.CoreApp();
 
-      var tmpRequiredSpecs = {
-        "controls": {
-          baseURL: 'app/controls/special',
-          list: [
-            'NewTestControl',
-            'more/NewTestControl2'
-          ],
-          map: {
-            "NewTestControl": "MainControl"
-          }
-        },
-        "html": {
-          baseURL: 'app/app-tpl',
-          map: {
-            "about-this-app": "app:about-this-app-snippet",
-            "page-loading-spinner": "app:page-loading-spinner-snippet"
-          }
-        },
-        "templates": {
-          baseURL: 'app/app-tpl',
-          map: {
-            "about-this-app": "app:about-this-app",
-            "page-loading-spinner": "app:page-loading-spinner"
-          }
-        },
-        "panels": [
-          'catalog/panels/common/east',
-          'library/common/panels/forms/title',
-          'library/common/panels/status/status-bar',
-          {
-            baseURL: 'library/panels/demos',
-            list: [
-              'cardsdemo',
-              'showfor'
-            ]
-          },
-          {
-            baseURL: 'app/panels',
-            map: {
-              "showfor": "frmShowFor"
-            }
-          }
-        ]
-      }
-      // ThisApp.loadResources(tmpRequiredSpecs).then(function () {
-      //   console.log('loadResources done', ThisApp.res);
-      // })
       //--- Items to load when the application loads
       var tmpRequired = {
         "templates": {
@@ -83,7 +36,7 @@
       //     [blank] = blank or missing value will make it show on the left only
       */
       var tmpPluginComponents = ['DataTables'];
-      var tmpAppCompsToInit = ['ControlsPage', 'ControlDesignerPage', 'UsingControlsPage', 'HomePage', 'DocsPage', 'PromptsPage', 'DataTablesPage', 'JsonPage', 'LogsPage'];
+      var tmpAppCompsToInit = ['ControlDesignerPage', 'UsingControlsPage', 'ControlsPage',  'HomePage', 'DocsPage', 'PromptsPage', 'DataTablesPage', 'JsonPage', 'LogsPage'];
       var tmpAppComponents = [];
 
       ThisApp.useModuleComponents('plugin', tmpPluginComponents)

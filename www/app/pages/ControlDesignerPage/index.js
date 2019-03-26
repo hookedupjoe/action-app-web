@@ -20,7 +20,16 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-
+    
+    thisPageSpecs.required = {
+        controls: {
+            baseURL: pageBaseURL,
+            map: {
+                "controls/TesterControl": "TesterControl",
+                "controls/FormShowFor": "FormShowFor"
+            }
+        }
+    }
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
         panels: {
@@ -29,9 +38,9 @@ License: MIT
             "east": { partname: "east", control: "east" },
             "west": { partname: "west", control: "west" }
         },
-        controls: {
-           "south": { partname: "south", control: "TesterControl" },
-        },
+        // controls: {
+        //   "south": { partname: "south", control: "TesterControl" }
+        // },
         templates: {
         },
         facetPrefix: thisPageSpecs.pageNamespace,
@@ -165,38 +174,7 @@ License: MIT
                 "NewTestControl": "MainControl"
                 // ,"forms/TesterFormControl": "TesterFormControl"
               }
-            },
-            "html": {
-              baseURL: 'app/app-tpl',
-              map: {
-                "about-this-app": "app:about-this-app-snippet",
-                "page-loading-spinner": "app:page-loading-spinner-snippet"
-              }
-            },
-            "templates": {
-              baseURL: 'app/app-tpl',
-              map: {
-                "about-this-app": "app:about-this-app",
-                "page-loading-spinner": "app:page-loading-spinner"
-              }
-            },
-            "panels": [
-              'library/common/panels/forms/title',
-              'library/common/panels/status/status-bar',
-              {
-                baseURL: 'library/panels/demos',
-                list: [
-                  'cardsdemo',
-                  'showfor'
-                ]
-              },
-              {
-                baseURL: 'app/panels',
-                map: {
-                  "showfor": "frmShowFor"
-                }
-              }
-            ]
+            }
           }
           var tmpThis = this;
          
@@ -232,27 +210,12 @@ License: MIT
 
 
     function test4(theParams){
-        var tester = ThisPage.getControl('tester');
+        var tester = ThisPage.getControl('TesterControl');
         tester.prompt()
-        // // var tmpReady = true;
-        // // if( !(ThisPage.scope.test3Control) ){
-        // //     tmpReady = test3();
-        // // }
-        // // $.when(tmpReady).then(function(){
-        // //     ThisPage.scope.test3Control.sayHello();
-        // // })
-
-        // ThisApp.loadControl('TesterControl', '/app/pages/ControlDesignerPage/controls').then(function(theControl){
-        //     theControl.prompt().then(function(theReply, theData){
-        //         console.log( 'theData', theData);
-        //     });
-        // })
-        
         
     }
     function test3(theParams){
-
-        ThisPage.getControl('tester').prompt();
+        alert("This space intentionally left blank")
     }
     
     var tmpTest2Counter = 0;
