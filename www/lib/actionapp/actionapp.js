@@ -414,6 +414,7 @@ var ActionAppCore = {};
             tmpURIs = tmpURIs.concat(tmpNewURIs)
         }
         
+        console.log( 'tmpURIs', tmpURIs);
        var tmpRequests = [];
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
@@ -422,9 +423,9 @@ var ActionAppCore = {};
 
             var tmpExists = false;
         
-            if ( ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri] ){
-                tmpExists = true;
-            } 
+            // if ( ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri] ){
+            //     tmpExists = true;
+            // } 
 
             if( !(tmpExists) ){
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
@@ -449,14 +450,14 @@ var ActionAppCore = {};
 
         
         $.whenAll(tmpDefs).then(function (theResults) {
+            
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
-             
-                if(tmpResponse.length){
+                
+                if( typeof(tmpResponse) == 'object'){
                     tmpResponse = tmpResponse[0];
                 }
-                
 
                 if( tmpRequest.type == 'panels'  ){
                     if( isStr(tmpResponse) ) {
@@ -536,23 +537,33 @@ var ActionAppCore = {};
 
             //=== if a string, just add it as is, no name
             if (isStr(tmpSpec)) {
-                tmpRet.push({ type: theType, uri: tmpSpec, name: tmpSpec })
-            } else if (isObj(tmpSpec)) {
+                var tmpSpecName = tmpSpec;
+                tmpSpec = {
+                    map: {}
+                }
+                tmpSpec.map[tmpSpecName] = tmpSpecName;
+                console.log( 'single entry added ', tmpSpecName);
+                //tmpRet.push({ type: theType, uri: tmpSpec, name: tmpSpec })
+            } 
+            
+            if (isObj(tmpSpec)) {
+                console.log( 'tmpSpec', tmpSpec);
                 var tmpBaseURL = tmpSpec.baseURL || '';
                 if (tmpBaseURL && !tmpBaseURL.endsWith('/')) {
                     tmpBaseURL += '/';
                 }
+                //--- If we have a list, create a map out of it
                 if (Array.isArray(tmpSpec.list)) {
+                    tmpSpec.map = tmpSpec.map || {};
                     var tmpSpecItems = tmpSpec.list;
                     for (var iSpecItem = 0; iSpecItem < tmpSpecItems.length; iSpecItem++) {
                         var tmpSpecItem = tmpSpecItems[iSpecItem];
-                        if (tmpBaseURL) {
-                            tmpSpecItem = tmpBaseURL + tmpSpecItem;
-                        }
-                        tmpRet.push({ type: theType, uri: tmpSpecItem , name: tmpSpecItem })
+                        tmpSpec.map[tmpSpecItem] = tmpSpecItem;
                     }
+                    delete(tmpSpec.list);
 
                 }
+
                 if (isObj(tmpSpec.map)) {
                     for (var aURI in tmpSpec.map) {
                         var tmpEntryName = tmpSpec.map[aURI];
