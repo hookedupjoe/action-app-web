@@ -7,11 +7,13 @@
 		{
 			"ctl": "control",
 			"controlname": "TesterControl",
+			"source": "parent",
 			"name": "control1"
 		},
 		{
 			"ctl": "panel",
 			"controlname": "east",
+			"source": "parent",
 			"name": "panel1"
 		},		
 		{
