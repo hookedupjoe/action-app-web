@@ -30,6 +30,7 @@ License: MIT
             }
         }
     }
+
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
         panels: {
@@ -143,6 +144,7 @@ License: MIT
         var tmpName = ThisPage.parts.west.getFieldValue('yourname');
         ThisPage.parts.body.parts.control1.sayHello(tmpName)
     };
+
     function test5(theParams){
         demoPullingNewResources()
     }
