@@ -4,6 +4,9 @@
     "default": {
       "title": "Default Loaded"
     },    
+    "controlsdemo": {
+      "title": "Nested Controls"
+    },
     "showfor": {
       "title": "Show For Demo"
     },

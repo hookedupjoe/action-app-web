@@ -431,6 +431,7 @@ var ActionAppCore = {};
                 if( tmpURI.type == 'panels'  ){
                     tmpDebugFlag = true;
                 }
+                console.log( 'Pulling URL: ', tmpURL);
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
