@@ -422,15 +422,17 @@ var ActionAppCore = {};
             var tmpType = aName;
             
             var tmpTypeSpecs = theSpecs[aName];
-            tmpURIs = tmpURIs.concat(
-                this.getResourceURIsForType(tmpType, tmpTypeSpecs, theOptions)
-            )
-            
+            var tmpNewURIs = this.getResourceURIsForType(tmpType, tmpTypeSpecs, theOptions);
+              
+            tmpURIs = tmpURIs.concat(tmpNewURIs)
+            console.log( 'tmpURIs', tmpURIs);
         }
-        var tmpRequests = [];
+        
+       var tmpRequests = [];
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
 
+            var tmpDebugFlag = false;
            
             //** if already loaded or in current list - SKIP
 
@@ -442,11 +444,16 @@ var ActionAppCore = {};
 
             if( !(tmpExists) ){
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
+                if( tmpURI.type == 'panels'  ){
+                    console.log( 'tmpURL', tmpURL);
+                    tmpDebugFlag = true;
+                }
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
                         url: tmpURL,
-                        method: 'GET'
+                        method: 'GET',
+                        datatype: 'text'
                     })
                 );
             } else {
@@ -454,19 +461,21 @@ var ActionAppCore = {};
             }
             
 
-            // if (!(tmpIndex[tmpURL])) {
-            //     tmpIndex[tmpURL] = true;
-               
-            // }
 
         }
 
         
         $.whenAll(tmpDefs).then(function (theResults) {
+            console.log( 'theResults', theResults);
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
-                tmpResponse = tmpResponse[0];
+             
+                if(tmpResponse.length){
+                    tmpResponse = tmpResponse[0];
+                }
+                
+
                 if( tmpRequest.type == 'panels'  ){
                     if( isStr(tmpResponse) ) {
                         try {
@@ -477,10 +486,7 @@ var ActionAppCore = {};
                     }
                 
                 }
-                // console.log( 'tmpRequest.type', tmpRequest.type);
-                // if( tmpRequest.type == 'http'){
-                //  console.log( 'addResourceFromContent', tmpRequest.type);   
-                // }
+              
                 tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse, tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
@@ -520,7 +526,7 @@ var ActionAppCore = {};
                 var tmpResourceData = eval(tmpResourceData);
                 tmpResourceData.controlConfig.parent = tmpThis;
             } catch (ex) {
-                console.warn("Could not convert control to object");
+                console.warn("Could not convert control to object",tmpResourceData);
             }
         } else if (theType == 'panels') {
             try {
@@ -535,6 +541,10 @@ var ActionAppCore = {};
     //--- theType: (controls, panels, html or templates)
     me.getResourceURIsForType = function (theType, theSpecs) {
         
+        if( theType == 'panels'){
+            console.log( 'getResourceURIsForType', theType, theSpecs);
+        }
+
         var tmpRet = [];
         var tmpSpecs = theSpecs;
         if (!(Array.isArray(tmpSpecs))) {
@@ -2460,9 +2470,11 @@ License: MIT
 
 
         if (this.options.required) {
+            console.log( 'this.options.required', this.options.required);
             tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         }
         if( tmpLayoutReq ){
+            console.log( 'tmpLayoutReq', tmpLayoutReq);
             tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this })
         }
 
@@ -5225,11 +5237,11 @@ License: MIT
                     var tmpCtl = this.parentControl.getControl(tmpControlName);
                     if( !(tmpCtl) ){
                         console.warn("Could not find parent control " + tmpControlName)
-                        return false;
+                    } else {
+                        var tmpPart = tmpCtl.create(tmpPartName);
+                        this.parts[tmpPartName] = tmpPart;
+                        tmpPart.loadToElement(tmpControlEl);   
                     }
-                    var tmpPart = tmpCtl.create(tmpPartName);
-                    this.parts[tmpPartName] = tmpPart;
-                    tmpPart.loadToElement(tmpControlEl);   
                 }
 
             }
@@ -5253,6 +5265,7 @@ License: MIT
                         console.warn("Could not find parent control " + tmpControlName)
                         return false;
                     }
+                    console.log( 'tmpPartName', tmpPartName);
                     var tmpPart = tmpCtl.create(tmpPartName);
                     this.parts[tmpPartName] = tmpPart;
                     tmpPart.loadToElement(tmpControlEl);                

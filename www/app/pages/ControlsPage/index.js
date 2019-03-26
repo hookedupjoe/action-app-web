@@ -39,56 +39,38 @@ License: MIT
     // }
 
     var tmpRequiredSpecs = {
-        "controls": {
-          baseURL: 'app/controls/special',
-          list: [
-            'NewTestControl',
-            'more/NewTestControl2'
-          ],
-          map: {
-            "NewTestControl": "MainControl"
-          }
-        },
-        "html": {
-          baseURL: 'app/app-tpl',
-          map: {
-            "about-this-app": "app:about-this-app-snippet",
-            "page-loading-spinner": "app:page-loading-spinner-snippet"
-          }
-        },
-        "templates": {
-          baseURL: 'app/app-tpl',
-          map: {
-            "about-this-app": "app:about-this-app",
-            "page-loading-spinner": "app:page-loading-spinner"
-          }
-        },
-        "panels": [
-          'catalog/panels/common/east'
-        ]
+        "controls": ['library/controls/TesterControl'],
+        "panels": ['library/panels/common/east']
       }
 
       thisPageSpecs.required = tmpRequiredSpecs;
 
-     //--- Define page templates that should load when the page is activated
-    // thisPageSpecs.required = {
-    //     html: [{
-    //         baseURL: pageBaseURL + 'html',
-    //         //-- Page to lookup : name to call it when pulling
-    //         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-    //         map: {
-    //             // "page-header": "page-header",
-    //             // "page-east": "page-east",
-    //             // "page-body": "page-body",
-    //             // "page-west": "page-west"
-    //         }
-    //     }],
-    //     panels: ["catalog/panels/common/east"]
-    // }
+   //  --- Define page templates that should load when the page is activated
+    thisPageSpecs.required = {
+        // html: {
+        //     baseURL: pageBaseURL + 'html',
+        //     //-- Page to lookup : name to call it when pulling
+        //     //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+        //     map: {
+        //         "page-header": "page-header"
+        //     }
+        // }
+        // ,
+        panels: {
+            list: [
+                "library/panels/common/east"
+            ]
+        }
+        // ,
+        // panels: [
+        //     'library/panels/common/east'
+        // ]
+    }
+    // ,controls: ['library/controls/TesterControl']
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
-        baseURL: pageBaseURL,
+         baseURL: pageBaseURL,
         html: {
             "east": "page-east",
             "north": "page-header",
@@ -304,7 +286,6 @@ License: MIT
         })
     }
     function getControlObject(theObjectName) {
-        console.log( 'getControlObject called on controls page');
         var dfd = jQuery.Deferred();
         var tmpObjectName = theObjectName || '';
         if (!tmpObjectName) {
@@ -313,7 +294,6 @@ License: MIT
             if ((tmpObjectName.indexOf('.') == -1)) {
                 tmpObjectName += '.json';
             }
-            console.log( 'tmpObjectName', tmpObjectName);
             var tmpDocsList = [tmpObjectName];
             var tmpLocation = ThisApp.common.samplesBaseURL;
             ThisApp.om.getObjects('[get]:' + tmpLocation, tmpDocsList).then(function (theDocs) {
