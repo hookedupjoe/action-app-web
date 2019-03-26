@@ -431,7 +431,6 @@ var ActionAppCore = {};
                 if( tmpURI.type == 'panels'  ){
                     tmpDebugFlag = true;
                 }
-                console.log( 'tmpURL', tmpURL);
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
@@ -443,11 +442,7 @@ var ActionAppCore = {};
             } else {
                 //console.log( '* skipping resource for ', tmpURI.uri);
             }
-            
-
-
         }
-
         
         $.whenAll(tmpDefs).then(function (theResults) {
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
@@ -4438,7 +4433,6 @@ License: MIT
         var tmpPromLayoutReq = true;
 
         var tmpLayoutReq = this.getContentRequired();
-        console.log( 'assureRequired tmpLayoutReq', tmpLayoutReq);
         var tmpInitReq = ThisApp.loadResources.bind(this);
 
 
@@ -5389,7 +5383,6 @@ License: MIT
 
 
         this.controlSpec.assureRequired().then(function(){
-            console.log( 'assureRequired ran');
             tmpThis.initControlComponents().then(function(theReply){
                 tmpThis.refreshControl();
                 dfd.resolve(true)    
@@ -5537,7 +5530,6 @@ License: MIT
                     //---   must be loaded by name by the parent
                     //---   ** When used - can have a basic name, not full heirarchy
                     //         ... and can also replace out any full with short name as alias
-                    console.log( 'tmpItem.controlname', tmpItem);
                     if( tmpControl && tmpItem.controlname && (!(tmpItem.source === 'parent')) ){
                         //--- Create a node for this required item
                         tmpIndex.required[tmpCtl] = tmpIndex.required[tmpCtl] || {};
