@@ -449,14 +449,14 @@ var ActionAppCore = {};
 
         
         $.whenAll(tmpDefs).then(function (theResults) {
-            
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
-                
-                if( typeof(tmpResponse) == 'object'){
+             
+                if(tmpResponse.length){
                     tmpResponse = tmpResponse[0];
                 }
+                
 
                 if( tmpRequest.type == 'panels'  ){
                     if( isStr(tmpResponse) ) {
@@ -536,30 +536,23 @@ var ActionAppCore = {};
 
             //=== if a string, just add it as is, no name
             if (isStr(tmpSpec)) {
-                var tmpSpecName = tmpSpec;
-                tmpSpec = {
-                    map: {}
-                }
-                tmpSpec.map[tmpSpecName] = tmpSpecName;
-            } 
-            
-            if (isObj(tmpSpec)) {
+                tmpRet.push({ type: theType, uri: tmpSpec, name: tmpSpec })
+            } else if (isObj(tmpSpec)) {
                 var tmpBaseURL = tmpSpec.baseURL || '';
                 if (tmpBaseURL && !tmpBaseURL.endsWith('/')) {
                     tmpBaseURL += '/';
                 }
-                //--- If we have a list, create a map out of it
                 if (Array.isArray(tmpSpec.list)) {
-                    tmpSpec.map = tmpSpec.map || {};
                     var tmpSpecItems = tmpSpec.list;
                     for (var iSpecItem = 0; iSpecItem < tmpSpecItems.length; iSpecItem++) {
                         var tmpSpecItem = tmpSpecItems[iSpecItem];
-                        tmpSpec.map[tmpSpecItem] = tmpSpecItem;
+                        if (tmpBaseURL) {
+                            tmpSpecItem = tmpBaseURL + tmpSpecItem;
+                        }
+                        tmpRet.push({ type: theType, uri: tmpSpecItem , name: tmpSpecItem })
                     }
-                    delete(tmpSpec.list);
 
                 }
-
                 if (isObj(tmpSpec.map)) {
                     for (var aURI in tmpSpec.map) {
                         var tmpEntryName = tmpSpec.map[aURI];
@@ -2422,6 +2415,7 @@ License: MIT
         var dfd = jQuery.Deferred();
         var tmpThis = this;
         this.options = this.options || {};
+        me.controls = {};
         var tmpThis = this;
 
 
@@ -2841,7 +2835,7 @@ License: MIT
 
     me.init = init;
     function init(theApp) {
-      
+
         if (theApp) {
             this.app = theApp;
         }
@@ -3984,7 +3978,13 @@ License: MIT
         return tmpNew
     }
 
-  
+    function getRequiredFromContent(theContent){
+        var tmpRet = {}
+        tmpRet.objects = {
+            list: ['library/controls/TesterControl']
+        }
+        return tmpRet;
+    }
     //--- Get field elements from a control element or control name
     me.getControlFields = getControlFields
     function getControlFields(theControlEl, theFieldName) {
@@ -4399,49 +4399,10 @@ License: MIT
         if (tmpOptions.proto) {
             tmpObj.extend(tmpOptions.proto);
         }
+
+        
         
         return tmpObj
-    }
-
-    meControl.getContentRequired = function () {
-        var tmpRet = {}
-        tmpRet.controls = {
-            list: ['library/controls/TesterControl']
-        }
-        tmpRet.panels = 'library/panels/common/east'
-        console.log( 'getContentRequired this', this);
-        return tmpRet;
-    }
-
-
-    meControl.initOnFirstLoad = function () {
-        var dfd = jQuery.Deferred();
-        var tmpThis = this;
-        this.options = this.options || {};
-        me.controls = {};
-        var tmpThis = this;
-
-
-        var tmpPromRequired = true;
-        var tmpPromContentReq = true;
-
-        var tmpContentReq = this.getContentRequired();
-
-        var tmpInitReq = ThisApp.loadResources.bind(this);
-
-
-        if (this.options.required) {
-            tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
-        }
-        if( tmpContentReq ){
-            tmpPromContentReq = tmpInitReq(tmpContentReq, { nsParent: this })
-        }
-
-        $.when(tmpPromRequired,tmpPromContentReq).then(function (theReply) {
-            dfd.resolve(true);
-        })
-
-        return dfd.promise();
     }
 
     meControl.prompt = function (theOptions) {
@@ -5351,27 +5312,18 @@ License: MIT
 
 
     }
- 
-       
+
     meInstance.loadToElement = function (theEl, theOptions) {
-        var dfd = jQuery.Deferred();
-
         this.parentEl = ThisApp.asSpot(theEl);
-        
-        var tmpThis = this;
-        this.controlSpec.initOnFirstLoad().then(function(theReply){
-            var tmpHTML = tmpThis.getHTML();
-            tmpThis.parentEl.html(tmpHTML);
-            tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this))
-            tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this))
-    
-    
-            tmpThis.initControlComponents();
-            tmpThis.refreshControl();
-            dfd.resolve(true)
-        })
+        console.log("loadToElement this",this)
+        var tmpHTML = this.getHTML();
+        this.parentEl.html(tmpHTML);
+        this.parentEl.on('change', this.onFieldChange.bind(this))
+        this.parentEl.on('click', this.onItemClick.bind(this))
 
-        return dfd;
+        this.initControlComponents();
+        this.refreshControl();
+        return this;
 
     }
 
@@ -5469,7 +5421,6 @@ License: MIT
             itemsList: [],
             fields: {},
             items: {},
-            controls: {},
             outline: []
         }
         var tmpOL = theOptionalOutline || tmpIndex.outline;
