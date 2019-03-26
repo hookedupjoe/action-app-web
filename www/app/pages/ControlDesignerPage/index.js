@@ -171,11 +171,11 @@ License: MIT
     function getControlAndCreateInstanceInASpot(theParams){
         var tmpTargetItem = ThisPage.parts.body.getItem('control1');
         var tmpEl = tmpTargetItem.el;
-        console.log( 'tmpEl', tmpEl);
+        
         var tmp = ThisPage.res.controls['tester'];
-        console.log( 'tmpCtl', tmpCtl);
+
         var tmpPart = tmpCtl.create('body-control1');
-        console.log( 'tmpPart', tmpPart);
+
         tmpPart.loadToElement(tmpEl);
         tmpPart.sayHello('Dynamic Dan')
 

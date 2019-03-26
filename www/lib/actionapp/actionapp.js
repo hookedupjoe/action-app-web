@@ -442,13 +442,11 @@ var ActionAppCore = {};
 
             if( !(tmpExists) ){
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
-                //console.log( 'Pulling resource for ', tmpURI.uri);
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
                         url: tmpURL,
-                        method: 'GET',
-                        dataType: 'html'
+                        method: 'GET'
                     })
                 );
             } else {
@@ -471,9 +469,18 @@ var ActionAppCore = {};
                 tmpResponse = tmpResponse[0];
                 if( tmpRequest.type == 'panels'  ){
                     if( isStr(tmpResponse) ) {
-                        tmpResponse = ThisApp.json(tmpResponse,true);
+                        try {
+                           tmpResponse = ThisApp.json(tmpResponse,true);    
+                        } catch (ex) {
+                            console.warn("Could not convert panel object ", tmpRequest.uri)
+                        }
                     }
+                
                 }
+                // console.log( 'tmpRequest.type', tmpRequest.type);
+                // if( tmpRequest.type == 'http'){
+                //  console.log( 'addResourceFromContent', tmpRequest.type);   
+                // }
                 tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse, tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
@@ -519,7 +526,7 @@ var ActionAppCore = {};
             try {
                 var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, { parent: tmpThis })
             } catch (ex) {
-                console.warn("Could not convert control to object");
+                console.warn("Could not convert panel to object");
             }
         }
         tmpThis.addResource(theType, tmpName, theFullPath, tmpResourceData);
@@ -2448,7 +2455,6 @@ License: MIT
         var tmpPromLayoutReq = true;
 
         var tmpLayoutReq = this.getLayoutRequired();
-        console.log( 'tmpLayoutReq', tmpLayoutReq);
 
         var tmpInitReq = ThisApp.loadResources.bind(this);
 
@@ -2460,9 +2466,7 @@ License: MIT
             tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this })
         }
 
-       // console.log( 'tmpLayoutReq', tmpLayoutReq);
         $.when(tmpPromRequired,tmpPromLayoutReq).then(function (theReply) {
-            //--- No async calls, just run it
             tmpThis.initLayout();
             tmpThis.initAppComponents();
             dfd.resolve(true);
@@ -2559,7 +2563,6 @@ License: MIT
         var tmpBaseURL = this.layoutOptions.baseURL || '';
 
         if (this.layoutOptions && this.layoutOptions.html) {
-            console.log( 'this.layoutOptions.html', this.layoutOptions.html);
             var tmpHTMLNode = {
                 baseURL: tmpBaseURL + 'html',
                 map: {}
@@ -2567,7 +2570,6 @@ License: MIT
 
             tmpLTs = this.layoutOptions.html
             for (var aName in tmpLTs) {
-                console.log( 'aName', aName);
                 tmpLTFound = true;
                 tmpAnyFound = true;
 
@@ -2580,7 +2582,6 @@ License: MIT
                     tmpLTName = tmpLT.control;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
-                console.log( 'tmpLTName', tmpLTName);
                 tmpHTMLNode.map[tmpLTName] = tmpLTName;
             }
 

@@ -44,17 +44,17 @@ License: MIT
     // }
 
 
-    thisPageSpecs.required = {
-        panels: {
-            baseURL: pageBaseURL + 'panels',
-            map: {
-                "title": "titleBarCtl",
-                "nestedtabs": "previewPanelCtl",
-                "showfor": "demoFormCtl",
-                "buttonPanel": "buttonPanelCtl"
-            }
-        }
-    }
+    // thisPageSpecs.required = {
+    //     panels: {
+    //         baseURL: pageBaseURL + 'panels',
+    //         map: {
+    //             "title": "titleBarCtl",
+    //             "nestedtabs": "previewPanelCtl",
+    //             "showfor": "demoFormCtl",
+    //             "buttonPanel": "buttonPanelCtl"
+    //         }
+    //     }
+    // }
 
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,

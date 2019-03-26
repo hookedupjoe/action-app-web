@@ -20,31 +20,80 @@ License: MIT
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    //--- Define page templates that should load when the page is activated
-    thisPageSpecs.required = {
-        html: {
-            baseURL: pageBaseURL + 'html',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-            map: {
-                "page-header": "page-header",
-                "page-east": "page-east",
-                "page-body": "page-body",
-                "page-west": "page-west"
-            }
+    // //--- Define page templates that should load when the page is activated
+    // thisPageSpecs.required = {
+    //     html: {
+    //         baseURL: pageBaseURL + 'html',
+    //         //-- Page to lookup : name to call it when pulling
+    //         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+    //         map: {
+    //             "page-header": "page-header",
+    //             "page-east": "page-east",
+    //             "page-body": "page-body",
+    //             "page-west": "page-west"
+    //         }
+    //     },
+    //     panels: {
+    //         list: ["catalog/panels/common/east"]
+    //     }
+    // }
+
+    var tmpRequiredSpecs = {
+        "controls": {
+          baseURL: 'app/controls/special',
+          list: [
+            'NewTestControl',
+            'more/NewTestControl2'
+          ],
+          map: {
+            "NewTestControl": "MainControl"
+          }
         },
-        panels: {
-            list: ["catalog/panels/common/east"]
-        }
-    }
+        "html": {
+          baseURL: 'app/app-tpl',
+          map: {
+            "about-this-app": "app:about-this-app-snippet",
+            "page-loading-spinner": "app:page-loading-spinner-snippet"
+          }
+        },
+        "templates": {
+          baseURL: 'app/app-tpl',
+          map: {
+            "about-this-app": "app:about-this-app",
+            "page-loading-spinner": "app:page-loading-spinner"
+          }
+        },
+        "panels": [
+          'catalog/panels/common/east'
+        ]
+      }
+
+      thisPageSpecs.required = tmpRequiredSpecs;
+
+     //--- Define page templates that should load when the page is activated
+    // thisPageSpecs.required = {
+    //     html: [{
+    //         baseURL: pageBaseURL + 'html',
+    //         //-- Page to lookup : name to call it when pulling
+    //         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+    //         map: {
+    //             // "page-header": "page-header",
+    //             // "page-east": "page-east",
+    //             // "page-body": "page-body",
+    //             // "page-west": "page-west"
+    //         }
+    //     }],
+    //     panels: ["catalog/panels/common/east"]
+    // }
 
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         html: {
-            "east": "" + "page-east",
-            "north": "" + "page-header",
-            "center": "" + "page-body",
-            "west": "" + "page-west"
+            "east": "page-east",
+            "north": "page-header",
+            "center": "page-body",
+            "west": "page-west"
         },
         facetPrefix: thisPageSpecs.pageNamespace,
         north: true,
@@ -255,6 +304,7 @@ License: MIT
         })
     }
     function getControlObject(theObjectName) {
+        console.log( 'getControlObject called on controls page');
         var dfd = jQuery.Deferred();
         var tmpObjectName = theObjectName || '';
         if (!tmpObjectName) {
