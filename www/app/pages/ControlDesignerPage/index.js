@@ -26,17 +26,17 @@ License: MIT
         panels: {
             baseURL: pageBaseURL + 'panels',
             map: {
-                "body": "bodyCtl",
-                "header": "headerCtl",
-                "footer": "footerCtl",
-                "east": "eastCtl",
-                "west": "westCtl"
+                "body": "body",
+                "header": "header",
+                "footer": "footer",
+                "east": "east",
+                "west": "west"
             }
         },
         controls: {
             baseURL: pageBaseURL + 'controls',
             map: {
-                "TesterControl": "testerCtl"
+                "TesterControl": "tester"
             }
         }
 
@@ -53,14 +53,14 @@ License: MIT
 
     thisPageSpecs.layoutOptions = {
         panels: {
-            "center": { partname: "body", control: "bodyCtl" },
-            "north": { partname: "header", control: "headerCtl" },
-            // "south": { partname: "footer", control: "footerCtl" },
-            "east": { partname: "east", control: "eastCtl" },
-            "west": { partname: "west", control: "westCtl" }
+            "center": { partname: "body", control: "body" },
+            "north": { partname: "header", control: "header" },
+            // "south": { partname: "footer", control: "footer" },
+            "east": { partname: "east", control: "east" },
+            "west": { partname: "west", control: "west" }
         },
         controls: {
-           "south": { partname: "footer", control: "testerCtl" },
+           "south": { partname: "footer", control: "tester" },
         },
         templates: {
         },
@@ -172,7 +172,7 @@ License: MIT
         var tmpTargetItem = ThisPage.parts.body.getItem('control1');
         var tmpEl = tmpTargetItem.el;
         console.log( 'tmpEl', tmpEl);
-        var tmpCtl = ThisPage.res.controls['testerCtl'];
+        var tmp = ThisPage.res.controls['tester'];
         console.log( 'tmpCtl', tmpCtl);
         var tmpPart = tmpCtl.create('body-control1');
         console.log( 'tmpPart', tmpPart);
@@ -262,8 +262,8 @@ License: MIT
 
 
     function test4(theParams){
-        var testerCtl = ThisPage.getControl('testerCtl');
-        testerCtl.prompt()
+        var tester = ThisPage.getControl('tester');
+        tester.prompt()
         // // var tmpReady = true;
         // // if( !(ThisPage.scope.test3Control) ){
         // //     tmpReady = test3();
@@ -282,7 +282,7 @@ License: MIT
     }
     function test3(theParams){
 
-        ThisPage.getControl('testerCtl').prompt();
+        ThisPage.getControl('tester').prompt();
     }
     
     var tmpTest2Counter = 0;

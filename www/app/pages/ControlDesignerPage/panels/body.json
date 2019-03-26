@@ -6,12 +6,12 @@
 		},
 		{
 			"ctl": "control",
-			"controlname": "testerCtl",
+			"controlname": "tester",
 			"name": "control1"
 		},
 		{
 			"ctl": "panel",
-			"controlname": "eastCtl",
+			"controlname": "east",
 			"name": "panel1"
 		},		
 		{
