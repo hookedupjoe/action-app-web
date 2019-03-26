@@ -342,7 +342,7 @@ var ActionAppCore = {};
         setTimeout(function () {
             dfd.resolve(true)
         }, tmpMS)
-        return dfd;
+        return dfd.promise();
     }
 
     me.initAppComponents = function (theOptionalTarget) {
@@ -473,7 +473,7 @@ var ActionAppCore = {};
             }
             dfd.resolve(true);
         })
-        return dfd;
+        return dfd.promise();
 
     }
 
@@ -1828,7 +1828,7 @@ var ActionAppCore = {};
 
         if (me.isSetup) {
             dfd.resolve(true)
-            return dfd;
+            return dfd.promise();
         };
 
         me.isSetup = true;
@@ -1857,7 +1857,7 @@ var ActionAppCore = {};
         })
 
 
-        return dfd;
+        return dfd.promise();
 
     }
 
@@ -1881,7 +1881,7 @@ var ActionAppCore = {};
         });
 
 
-        return dfd;
+        return dfd.promise();
     }
     me.postInit = postInit;
     function postInit(theAppConfig) {
@@ -4405,9 +4405,51 @@ License: MIT
         return tmpObj
     }
 
+    meControl.getContentRequired = function(){
+        var tmpRet = {}
+        
+        return tmpRet;
+    }
+
+    meControl.assureRequired = function () {
+        var dfd = jQuery.Deferred();
+        if( this.assureRequiredRun === true ){
+            dfd.resolve(true)
+            
+            return dfd.promise();
+        }
+        var tmpThis = this;
+        this.options = this.options || {};
+       
+        var tmpThis = this;
+
+        var tmpPromRequired = true;
+        var tmpPromLayoutReq = true;
+
+        var tmpLayoutReq = this.getContentRequired();
+
+        var tmpInitReq = ThisApp.loadResources.bind(this);
+
+
+        if (this.options.required) {
+            tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
+        }
+        if( tmpLayoutReq ){
+            tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this })
+        }
+
+        $.when(tmpPromRequired,tmpPromLayoutReq).then(function (theReply) {
+            dfd.resolve(true);
+        })
+
+        return dfd.promise();
+    }
+
+
     meControl.prompt = function (theOptions) {
         var dfd = jQuery.Deferred();
 
+        
 
         var tmpOptions = theOptions || {};
         var tmpConfig = this.controlConfig;
@@ -4464,7 +4506,7 @@ License: MIT
 
 
 
-        return dfd;
+        return dfd.promise();
     }
 
 

@@ -309,7 +309,7 @@ License: MIT
 
         }
 
-        return dfd;
+        return dfd.promise();
 
 
     }
