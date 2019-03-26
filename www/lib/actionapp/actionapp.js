@@ -558,7 +558,7 @@ var ActionAppCore = {};
 
             //=== if a string, just add it as is, no name
             if (isStr(tmpSpec)) {
-                tmpRet.push({ type: theType, uri: tmpSpec })
+                tmpRet.push({ type: theType, uri: tmpSpec, name: tmpSpec })
             } else if (isObj(tmpSpec)) {
                 var tmpBaseURL = tmpSpec.baseURL || '';
                 if (tmpBaseURL && !tmpBaseURL.endsWith('/')) {
@@ -571,7 +571,7 @@ var ActionAppCore = {};
                         if (tmpBaseURL) {
                             tmpSpecItem = tmpBaseURL + tmpSpecItem;
                         }
-                        tmpRet.push({ type: theType, uri: tmpSpecItem })
+                        tmpRet.push({ type: theType, uri: tmpSpecItem , name: tmpSpecItem })
                     }
 
                 }
