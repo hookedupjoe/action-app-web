@@ -5163,6 +5163,7 @@ License: MIT
 
 
     meInstance.refreshForField = function (theFN) {
+        
         var tmpFN = theFN;
         var tmpSpecs = this.getFieldSpecs(tmpFN);
 
@@ -5246,6 +5247,7 @@ License: MIT
         return true;
     }
     meInstance.onFieldChange = function (theEvent) {
+       
         //--- A field changed in this control
         var tmpTarget = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
 
@@ -5456,7 +5458,6 @@ License: MIT
     }
 
    
-
     //--- Internal use - creates index of all fields and items with a name;
     me._loadContentIndex = function (theItems, theOptionalIndex, theOptionalOutline) {
         var tmpIndex = theOptionalIndex || {
@@ -5487,7 +5488,7 @@ License: MIT
             tmpOL.push(tmpThisObj)
 
             var tmpControl = me.getWebControl(tmpCtl)
-            var tmpType = tmpControl.type || 'field'
+            var tmpType = me.getControlType(tmpCtl)
 
             tmpType = tmpType + 's';
 
@@ -5503,6 +5504,7 @@ License: MIT
                     //---   must be loaded by name by the parent
                     //---   ** When used - can have a basic name, not full heirarchy
                     //         ... and can also replace out any full with short name as alias
+                    console.log( 'tmpItem.controlname', tmpItem);
                     if( tmpControl && tmpItem.controlname && (!(tmpItem.source === 'parent')) ){
                         //--- Create a node for this required item
                         tmpIndex.required[tmpCtl] = tmpIndex.required[tmpCtl] || {};
@@ -5549,6 +5551,8 @@ License: MIT
 
         return tmpIndex;
     }
+	
+	
 	
 
     //--- Bubble Global Helpers
@@ -7270,4 +7274,5 @@ License: MIT
 
 
 })(ActionAppCore, $);
+
 
