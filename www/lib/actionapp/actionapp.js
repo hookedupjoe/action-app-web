@@ -2445,12 +2445,23 @@ License: MIT
         //--- EMD ====> Deprecated - backward compat functionality until apps are upgraded
 
         var tmpPromRequired = true;
+        var tmpPromLayoutReq = true;
+
+        var tmpLayoutReq = this.getLayoutRequired();
+        console.log( 'tmpLayoutReq', tmpLayoutReq);
+
+        var tmpInitReq = ThisApp.loadResources.bind(this);
+
+
         if (this.options.required) {
-            var tmpInitReq = ThisApp.loadResources.bind(this);
             tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         }
+        if( tmpLayoutReq ){
+            tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this })
+        }
 
-        $.when(tmpPromRequired).then(function (theReply) {
+       // console.log( 'tmpLayoutReq', tmpLayoutReq);
+        $.when(tmpPromRequired,tmpPromLayoutReq).then(function (theReply) {
             //--- No async calls, just run it
             tmpThis.initLayout();
             tmpThis.initAppComponents();
@@ -2539,6 +2550,117 @@ License: MIT
         return tmpRes
     }
 
+    me.getLayoutRequired = function () {
+        if ( !(this.layoutOptions.baseURL) ){
+            return false;
+        }
+        var tmpRet = {};
+        var tmpAnyFound = false;
+        var tmpBaseURL = this.layoutOptions.baseURL || '';
+
+        if (this.layoutOptions && this.layoutOptions.html) {
+            console.log( 'this.layoutOptions.html', this.layoutOptions.html);
+            var tmpHTMLNode = {
+                baseURL: tmpBaseURL + 'html',
+                map: {}
+            };
+
+            tmpLTs = this.layoutOptions.html
+            for (var aName in tmpLTs) {
+                console.log( 'aName', aName);
+                tmpLTFound = true;
+                tmpAnyFound = true;
+
+                var tmpInstanceName = aName;
+                var tmpLT = tmpLTs[aName];
+                var tmpLTName = '';
+                if (typeof (tmpLT) == 'string') {
+                    tmpLTName = tmpLT;
+                } else {
+                    tmpLTName = tmpLT.control;
+                    tmpInstanceName = tmpLT.partname || tmpLT.name;
+                }
+                console.log( 'tmpLTName', tmpLTName);
+                tmpHTMLNode.map[tmpLTName] = tmpLTName;
+            }
+
+            if( tmpLTFound ){
+                tmpRet.html = tmpHTMLNode;
+            }
+
+        }
+
+        if (this.layoutOptions && this.layoutOptions.panels) {
+            var tmpLTs = this.layoutOptions.panels;
+            var tmpLTFound = false;
+
+           
+            var tmpPanelsNode = {
+                baseURL: tmpBaseURL + 'panels',
+                map: {}
+            };
+            for (var aName in tmpLTs) {
+                tmpLTFound = true;
+                tmpAnyFound = true;
+
+                var tmpInstanceName = aName;
+                var tmpLT = tmpLTs[aName];
+                var tmpLTName = '';
+                if (typeof (tmpLT) == 'string') {
+                    tmpLTName = tmpLT;
+                } else {
+                    tmpLTName = tmpLT.control;
+                    tmpInstanceName = tmpLT.partname || tmpLT.name;
+                }
+                
+                tmpPanelsNode.map[tmpLTName] = tmpLTName;
+            }
+
+            if( tmpLTFound ){
+                tmpRet.panels = tmpPanelsNode;
+            }
+        }   
+
+
+        if (this.layoutOptions && this.layoutOptions.controls) {
+            var tmpLTs = this.layoutOptions.controls;
+            var tmpLTFound = false;
+
+            var tmpBaseURL = this.layoutOptions.baseURL || '';
+            var tmpControlsNode = {
+                baseURL: tmpBaseURL + 'controls',
+                map: {}
+            };
+            for (var aName in tmpLTs) {
+                tmpLTFound = true;
+                tmpAnyFound = true;
+
+                var tmpInstanceName = aName;
+                var tmpLT = tmpLTs[aName];
+                var tmpLTName = '';
+                if (typeof (tmpLT) == 'string') {
+                    tmpLTName = tmpLT;
+                } else {
+                    tmpLTName = tmpLT.control;
+                    tmpInstanceName = tmpLT.partname || tmpLT.name;
+                }
+                tmpControlsNode.map[tmpLTName] = tmpLTName;
+            }
+
+            if( tmpLTFound ){
+                tmpRet.controls = tmpControlsNode;
+            }
+        }   
+
+
+        if( !(tmpAnyFound) ){
+            return false;
+        }
+        return tmpRet;
+
+    }
+    
+    
     me.initLayout = function () {
 
         if (this.layoutOptions && this.layoutOptions.content) {

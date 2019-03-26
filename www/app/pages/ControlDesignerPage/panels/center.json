@@ -6,7 +6,7 @@
 		},
 		{
 			"ctl": "control",
-			"controlname": "tester",
+			"controlname": "TesterControl",
 			"name": "control1"
 		},
 		{

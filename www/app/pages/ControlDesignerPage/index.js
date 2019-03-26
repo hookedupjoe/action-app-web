@@ -22,25 +22,25 @@ License: MIT
 
 
 
-    thisPageSpecs.required = {
-        panels: {
-            baseURL: pageBaseURL + 'panels',
-            map: {
-                "body": "body",
-                "header": "header",
-                "footer": "footer",
-                "east": "east",
-                "west": "west"
-            }
-        },
-        controls: {
-            baseURL: pageBaseURL + 'controls',
-            map: {
-                "TesterControl": "tester"
-            }
-        }
+    // thisPageSpecs.required = {
+    //     panels: {
+    //         baseURL: pageBaseURL + 'panels',
+    //         map: {
+    //             "body": "body",
+    //             "header": "header",
+    //             "footer": "footer",
+    //             "east": "east",
+    //             "west": "west"
+    //         }
+    //     },
+    //     controls: {
+    //         baseURL: pageBaseURL + 'controls',
+    //         map: {
+    //             "TesterControl": "tester"
+    //         }
+    //     }
 
-    }
+    // }
 
 
     //--- Define this applications layouts
@@ -52,15 +52,15 @@ License: MIT
     //  "north": thisPageSpecs.pageNamespace + ":" + "page-north",
 
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         panels: {
-            "center": { partname: "body", control: "body" },
-            "north": { partname: "header", control: "header" },
-            // "south": { partname: "footer", control: "footer" },
+            "center": { partname: "body", control: "center" },
+            "north": { partname: "north", control: "header" },
             "east": { partname: "east", control: "east" },
             "west": { partname: "west", control: "west" }
         },
         controls: {
-           "south": { partname: "footer", control: "tester" },
+           "south": { partname: "south", control: "TesterControl" },
         },
         templates: {
         },

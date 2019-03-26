@@ -21,34 +21,47 @@ License: MIT
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
     //--- Define page templates that should load when the page is activated
+    // thisPageSpecs.required = {
+    //     panels: {
+    //         baseURL: pageBaseURL + 'panels',
+    //         //-- Page to lookup : name to call it when pulling
+    //         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+    //         map: {
+    //             "title": "titleBarCtl",
+    //             "nestedtabs": "previewPanelCtl",
+    //             "showfor": "demoFormCtl",
+    //             "buttonPanel": "buttonPanelCtl"
+    //         }
+    //     },
+    //     html: {
+    //         baseURL: pageBaseURL + 'tpl',
+    //         //-- Page to lookup : name to call it when pulling
+    //         //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
+    //         map: {
+    //             "page-body": "page-body"
+    //         }
+    //     }
+    // }
+
+
     thisPageSpecs.required = {
         panels: {
             baseURL: pageBaseURL + 'panels',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
                 "title": "titleBarCtl",
                 "nestedtabs": "previewPanelCtl",
                 "showfor": "demoFormCtl",
                 "buttonPanel": "buttonPanelCtl"
             }
-        },
-        html: {
-            baseURL: pageBaseURL + 'tpl',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-            map: {
-                "page-body": "page-body"
-            }
         }
     }
 
-    
     thisPageSpecs.layoutOptions = {
+        baseURL: pageBaseURL,
         panels: {
-            "north": {partname: "pageTitle", control: "titleBarCtl"},
-            "east": {partname: "previewPanel", control: "previewPanelCtl"},  
-            "west": {partname: "buttonPanel", control: "buttonPanelCtl"}
+            "north": { partname: "pageTitle", control: "title" },
+            "east": { partname: "previewPanel", control: "nestedtabs" },
+            "west": { partname: "buttonPanel", control: "buttonPanel" }
         },
         html: {
             "center": "page-body"
@@ -79,7 +92,7 @@ License: MIT
     */
     var actions = ThisPage.pageActions;
     ThisPage._onPreInit = function (theApp) {
-        ThisPage._om = theApp.om;       
+        ThisPage._om = theApp.om;
         ThisPage.pageActions
     }
     ThisPage._onInit = function () {
@@ -95,7 +108,7 @@ License: MIT
     */
     ThisPage._onFirstActivate = function (theApp) {
 
-        
+
 
         //--- Create Custom Web Controls to use in control JSON at "ctl"
         //     - Namespace it - one global web controls, similar to one templating engine
@@ -103,14 +116,14 @@ License: MIT
             getHTML: function (theControlName, theObject, theControlObj, isSigner) {
                 var tmpObject = theObject || {};
                 var tmpName = tmpObject.yourname || 'World';
-                
+
                 var tmpHTML = [];
-                
+
                 tmpHTML.push('<h1>Hello ' + tmpName + '!</h1><hr /><div pagespot="hello-area">Hello Area Here</div>')
-               
+
                 tmpHTML = tmpHTML.join('');
                 return tmpHTML;
-        
+
             },
             isField: false
         }
@@ -119,32 +132,32 @@ License: MIT
 
         //--- Add new page specific HTML generator        
         ThisPage.addPageWebControl("hello", ControlHelloWorld);
-        
+
         ThisPage.initOnFirstLoad().then(
             function () {
 
                 //--- Extend loaded controls as well ...
                 var myStuff = {
                     helloCounter: 0,
-                    sayHello: function(theOptionalName){
+                    sayHello: function (theOptionalName) {
                         var tmpMsg = '';
-                        if( theOptionalName ){
+                        if (theOptionalName) {
                             tmpMsg = "Howdy " + theOptionalName;
                         } else {
                             this.helloCounter++;
                             var tmpColor = "blue";
-                            if (this.helloCounter % 2 == 0){
-                                tmpColor = "orange";    
+                            if (this.helloCounter % 2 == 0) {
+                                tmpColor = "orange";
                             }
                             tmpMsg = 'Hello World ' + this.helloCounter + ' times.'
                         }
-                        
 
-                        this.setFieldValue('title',tmpMsg);
-                        this.setFieldMessage('title','I was set',{color: tmpColor});
+
+                        this.setFieldValue('title', tmpMsg);
+                        this.setFieldMessage('title', 'I was set', { color: tmpColor });
                         ThisApp.refreshLayouts();
                         var tmpThis = this;
-                        ThisApp.delay(1000).then(function(){
+                        ThisApp.delay(1000).then(function () {
                             tmpThis.setFieldMessage('title', '');
                             ThisApp.refreshLayouts();
                         })
@@ -172,17 +185,17 @@ License: MIT
     //--- End lifecycle hooks
 
     //=== Page Setup
-   
+
 
     //--- Layout related lifecycle hooks
     ThisPage._onResizeLayout = function (thePane, theElement, theState, theOptions, theName) {
 
 
         if (thePane == 'center') {
-         
+
 
         } else if (thePane == 'east') {
-          
+
         }
     }
 
@@ -191,38 +204,38 @@ License: MIT
 
     //--- Add an action to this page ...
     actions.runTest = runTest;
-    function runTest(theParams, theTarget){
+    function runTest(theParams, theTarget) {
         //--- Get params if passed as an object or from attr's on theTarget
         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['testname']);
         //--- Use the variables
         var tmpTestName = tmpParams.testname || tmpParams.default || '';
-        if( tmpTestName == "Test 1"){
+        if (tmpTestName == "Test 1") {
             ThisPage.loadPageSpot('hello-area', 'We are having fun now.')
-        } else if( tmpTestName == "Test 2"){
+        } else if (tmpTestName == "Test 2") {
             ThisPage.part.pageTitle.sayHello();
-        } else if( tmpTestName == "Test 3"){
+        } else if (tmpTestName == "Test 3") {
             ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theData) {
-                if( theReply == false){
+                if (theReply == false) {
                     return false;
                 }
                 if (theData) {
-                    console.log("theData",theData);
-                    alert( "See console for form data","Form Submitted");
+                    console.log("theData", theData);
+                    alert("See console for form data", "Form Submitted");
                 } else {
                     console.warn("No data returned, expected some")
                 }
             })
 
-        } else if( tmpTestName == "Test 4"){
-            
+        } else if (tmpTestName == "Test 4") {
+
         } else {
             tmpTestName = 'Just the test'
         }
     };
-    
-    
+
+
     ThisPage.sayHello = sayHello;
-    function sayHello(theParams, theTarget){
+    function sayHello(theParams, theTarget) {
         //--- Get params if passed as an object or from attr's on theTarget
         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['myname']);
         //--- Use the variables
@@ -231,27 +244,27 @@ License: MIT
         ThisPage.part.pageTitle.sayHello(tmpName);
     };
     ThisPage.jumpToHobbies = jumpToHobbies;
-    function jumpToHobbies(){
+    function jumpToHobbies() {
         ThisPage.part.previewPanel.gotoField('hobbies');
     };
 
     ThisPage.promptDemoForm = promptDemoForm;
-    function promptDemoForm(){
+    function promptDemoForm() {
         ThisPage.getPanel('demoFormCtl').prompt().then(function (theReply, theControl) {
-            if( theReply == false){
+            if (theReply == false) {
                 return false;
             }
             if (theControl) {
                 var tmpData = theControl.getData();
-                console.log("tmpData",tmpData);
-                alert( "See console for form data","Form Submitted");
+                console.log("tmpData", tmpData);
+                alert("See console for form data", "Form Submitted");
             }
         })
     };
-    
+
 
     ThisPage.gotoControlsPage = gotoControlsPage;
-    function gotoControlsPage(){
+    function gotoControlsPage() {
         ThisApp.gotoPage('ControlsPage');
     };
 })(ActionAppCore, $);
