@@ -32,6 +32,9 @@ License: MIT
                 "page-body": "page-body",
                 "page-west": "page-west"
             }
+        },
+        panels: {
+            list: ["catalog/panels/common/east"]
         }
     }
 
