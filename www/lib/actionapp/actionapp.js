@@ -363,24 +363,11 @@ var ActionAppCore = {};
 
 
 
-    me.hasPanel = function (theName) {
-        var tmpItem = this.res.panels[theName];
-        return !(!tmpItem);
-    }
-  
     me.getPanel = function (theName) {
         return this.getResourceForType('panels',theName);
         // return this.res.panels[theName];
     }
 
-
-    me.hasControl = function (theName) {
-        var tmpItem = this.res.controls[theName];
-        return !(!tmpItem);
-    }
-    me.registerControl = function (theName, thePanel) {
-        this.res.controls[theName] = thePanel
-    }
 
     me.getResourceForType = function (theType, theName) {
         var tmpType = theType || 'controls';
@@ -425,15 +412,12 @@ var ActionAppCore = {};
             var tmpNewURIs = this.getResourceURIsForType(tmpType, tmpTypeSpecs, theOptions);
               
             tmpURIs = tmpURIs.concat(tmpNewURIs)
-            console.log( 'tmpURIs', tmpURIs);
         }
         
        var tmpRequests = [];
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
 
-            var tmpDebugFlag = false;
-           
             //** if already loaded or in current list - SKIP
 
             var tmpExists = false;
@@ -445,7 +429,6 @@ var ActionAppCore = {};
             if( !(tmpExists) ){
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
                 if( tmpURI.type == 'panels'  ){
-                    console.log( 'tmpURL', tmpURL);
                     tmpDebugFlag = true;
                 }
                 tmpRequests.push(tmpURI);
@@ -466,7 +449,6 @@ var ActionAppCore = {};
 
         
         $.whenAll(tmpDefs).then(function (theResults) {
-            console.log( 'theResults', theResults);
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
@@ -541,10 +523,6 @@ var ActionAppCore = {};
     //--- theType: (controls, panels, html or templates)
     me.getResourceURIsForType = function (theType, theSpecs) {
         
-        if( theType == 'panels'){
-            console.log( 'getResourceURIsForType', theType, theSpecs);
-        }
-
         var tmpRet = [];
         var tmpSpecs = theSpecs;
         if (!(Array.isArray(tmpSpecs))) {
@@ -2470,11 +2448,9 @@ License: MIT
 
 
         if (this.options.required) {
-            console.log( 'this.options.required', this.options.required);
             tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         }
         if( tmpLayoutReq ){
-            console.log( 'tmpLayoutReq', tmpLayoutReq);
             tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this })
         }
 
@@ -2870,10 +2846,7 @@ License: MIT
             , 'addResourceFromContent',
             , 'loadResources',
             , 'addResource'
-            , 'hasPanel'
             , 'getPanel'
-            , 'hasControl'
-            , 'registerControl'
             , 'getControl'
             , 'getResourceForType'
         ];
@@ -3999,9 +3972,13 @@ License: MIT
         if (isObj(theOptions)) {
             $.extend(theConfig, theOptions);
         }
-        return new Control(theConfig);
+       
+        var tmpNew = new Control(theConfig);
+
+        return tmpNew
     }
 
+  
     //--- Get field elements from a control element or control name
     me.getControlFields = getControlFields
     function getControlFields(theControlEl, theFieldName) {
@@ -4379,6 +4356,31 @@ License: MIT
     me.Control = Control;
     function Control(theConfig) {
         this.controlConfig = false;
+        this.res = {
+            "panels": {},
+            "controls": {},
+            "html": {}
+        };
+
+        
+        var tmpStuffToPullIn = [
+            , 'getResourceURIsForType'
+            , 'addResourceFromContent',
+            , 'loadResources',
+            , 'addResource'
+            , 'getPanel'
+            , 'getControl'
+            , 'getResourceForType'
+        ];
+
+        for (var iStuff = 0; iStuff < tmpStuffToPullIn.length; iStuff++) {
+            var tmpFuncName = tmpStuffToPullIn[iStuff];
+            var tmpFunc = ThisApp[tmpFuncName];
+            if (ThisApp.util.isFunc(tmpFunc)) {
+                this[tmpFuncName] = tmpFunc.bind(this);
+            }
+        }
+
         this.loadConfig(theConfig);
     }
 
@@ -4391,6 +4393,7 @@ License: MIT
         if (tmpOptions.proto) {
             tmpObj.extend(tmpOptions.proto);
         }
+        
         return tmpObj
     }
 
@@ -5265,7 +5268,6 @@ License: MIT
                         console.warn("Could not find parent control " + tmpControlName)
                         return false;
                     }
-                    console.log( 'tmpPartName', tmpPartName);
                     var tmpPart = tmpCtl.create(tmpPartName);
                     this.parts[tmpPartName] = tmpPart;
                     tmpPart.loadToElement(tmpControlEl);                
@@ -5302,18 +5304,38 @@ License: MIT
 
 
     }
-
+ 
+    //==== TEMP
+    function getRequiredFromContent(theContent){
+        var tmpRet = {}
+        tmpRet.controls = {
+            list: ['library/controls/TesterControl']
+        }
+        return tmpRet;
+    }
     meInstance.loadToElement = function (theEl, theOptions) {
+        var dfd = jQuery.Deferred();
+
         this.parentEl = ThisApp.asSpot(theEl);
+        console.log("loadToElement this",this)
+        
+       
+        var tmpRequired = getRequiredFromContent();
+        console.log( 'tmpRequired ctl', tmpRequired);
+        var tmpThis = this;
+        this.controlSpec.loadResources(tmpRequired).then(function(theReply){
+            var tmpHTML = tmpThis.getHTML();
+            tmpThis.parentEl.html(tmpHTML);
+            tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this))
+            tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this))
+    
+    
+            tmpThis.initControlComponents();
+            tmpThis.refreshControl();
+            dfd.resolve(true)
+        })
 
-        var tmpHTML = this.getHTML();
-        this.parentEl.html(tmpHTML);
-        this.parentEl.on('change', this.onFieldChange.bind(this))
-        this.parentEl.on('click', this.onItemClick.bind(this))
-
-        this.initControlComponents();
-        this.refreshControl();
-        return this;
+        return dfd;
 
     }
 
