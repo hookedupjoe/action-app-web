@@ -414,7 +414,6 @@ var ActionAppCore = {};
             tmpURIs = tmpURIs.concat(tmpNewURIs)
         }
         
-        console.log( 'tmpURIs', tmpURIs);
        var tmpRequests = [];
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
@@ -423,9 +422,9 @@ var ActionAppCore = {};
 
             var tmpExists = false;
         
-            // if ( ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri] ){
-            //     tmpExists = true;
-            // } 
+            if ( ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri] ){
+                tmpExists = true;
+            } 
 
             if( !(tmpExists) ){
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
@@ -542,12 +541,9 @@ var ActionAppCore = {};
                     map: {}
                 }
                 tmpSpec.map[tmpSpecName] = tmpSpecName;
-                console.log( 'single entry added ', tmpSpecName);
-                //tmpRet.push({ type: theType, uri: tmpSpec, name: tmpSpec })
             } 
             
             if (isObj(tmpSpec)) {
-                console.log( 'tmpSpec', tmpSpec);
                 var tmpBaseURL = tmpSpec.baseURL || '';
                 if (tmpBaseURL && !tmpBaseURL.endsWith('/')) {
                     tmpBaseURL += '/';
@@ -2426,7 +2422,6 @@ License: MIT
         var dfd = jQuery.Deferred();
         var tmpThis = this;
         this.options = this.options || {};
-        me.controls = {};
         var tmpThis = this;
 
 
@@ -2846,7 +2841,7 @@ License: MIT
 
     me.init = init;
     function init(theApp) {
-
+      
         if (theApp) {
             this.app = theApp;
         }
@@ -4408,6 +4403,47 @@ License: MIT
         return tmpObj
     }
 
+    meControl.getContentRequired = function () {
+        var tmpRet = {}
+        tmpRet.controls = {
+            list: ['library/controls/TesterControl']
+        }
+        tmpRet.panels = 'library/panels/common/east'
+        console.log( 'getContentRequired this', this);
+        return tmpRet;
+    }
+
+
+    meControl.initOnFirstLoad = function () {
+        var dfd = jQuery.Deferred();
+        var tmpThis = this;
+        this.options = this.options || {};
+        me.controls = {};
+        var tmpThis = this;
+
+
+        var tmpPromRequired = true;
+        var tmpPromContentReq = true;
+
+        var tmpContentReq = this.getContentRequired();
+
+        var tmpInitReq = ThisApp.loadResources.bind(this);
+
+
+        if (this.options.required) {
+            tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
+        }
+        if( tmpContentReq ){
+            tmpPromContentReq = tmpInitReq(tmpContentReq, { nsParent: this })
+        }
+
+        $.when(tmpPromRequired,tmpPromContentReq).then(function (theReply) {
+            dfd.resolve(true);
+        })
+
+        return dfd.promise();
+    }
+
     meControl.prompt = function (theOptions) {
         var dfd = jQuery.Deferred();
 
@@ -5316,25 +5352,14 @@ License: MIT
 
     }
  
-    //==== TEMP
-    function getRequiredFromContent(theContent){
-        var tmpRet = {}
-        tmpRet.controls = {
-            list: ['library/controls/TesterControl']
-        }
-        return tmpRet;
-    }
+       
     meInstance.loadToElement = function (theEl, theOptions) {
         var dfd = jQuery.Deferred();
 
         this.parentEl = ThisApp.asSpot(theEl);
-        console.log("loadToElement this",this)
         
-       
-        var tmpRequired = getRequiredFromContent();
-        console.log( 'tmpRequired ctl', tmpRequired);
         var tmpThis = this;
-        this.controlSpec.loadResources(tmpRequired).then(function(theReply){
+        this.controlSpec.initOnFirstLoad().then(function(theReply){
             var tmpHTML = tmpThis.getHTML();
             tmpThis.parentEl.html(tmpHTML);
             tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this))
@@ -5444,6 +5469,7 @@ License: MIT
             itemsList: [],
             fields: {},
             items: {},
+            controls: {},
             outline: []
         }
         var tmpOL = theOptionalOutline || tmpIndex.outline;
