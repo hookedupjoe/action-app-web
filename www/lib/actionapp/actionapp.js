@@ -431,6 +431,7 @@ var ActionAppCore = {};
                 if( tmpURI.type == 'panels'  ){
                     tmpDebugFlag = true;
                 }
+                console.log( 'tmpURL', tmpURL);
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
@@ -2383,6 +2384,7 @@ License: MIT
                 return this.parts[theInstanceName];
             }
 
+            //--- In this case we can just load the element control because it was required in the layout / required area
             this.loadLayoutControl = function (theRegion, theControl, theInstanceName) {
                 var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
                 var tmpInstance = this.createInstance(theControl, theInstanceName)
@@ -4407,7 +4409,10 @@ License: MIT
 
     meControl.getContentRequired = function(){
         var tmpRet = {}
-        
+        var tmpReq = this.controlConfig.index.required;
+        if( tmpReq ){
+            return tmpReq;
+        }
         return tmpRet;
     }
 
@@ -4415,9 +4420,10 @@ License: MIT
         var dfd = jQuery.Deferred();
         if( this.assureRequiredRun === true ){
             dfd.resolve(true)
-            
             return dfd.promise();
         }
+        this.assureRequiredRun = true;
+
         var tmpThis = this;
         this.options = this.options || {};
        
@@ -4427,15 +4433,15 @@ License: MIT
         var tmpPromLayoutReq = true;
 
         var tmpLayoutReq = this.getContentRequired();
-
+        console.log( 'assureRequired tmpLayoutReq', tmpLayoutReq);
         var tmpInitReq = ThisApp.loadResources.bind(this);
 
 
-        if (this.options.required) {
-            tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
-        }
+        // if (this.options.required) {
+        //     tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
+        // }
         if( tmpLayoutReq ){
-            tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this })
+            tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
         }
 
         $.when(tmpPromRequired,tmpPromLayoutReq).then(function (theReply) {
@@ -5358,15 +5364,26 @@ License: MIT
     }
 
     meInstance.loadToElement = function (theEl, theOptions) {
-        this.parentEl = ThisApp.asSpot(theEl);
-        var tmpHTML = this.getHTML();
-        this.parentEl.html(tmpHTML);
-        this.parentEl.on('change', this.onFieldChange.bind(this))
-        this.parentEl.on('click', this.onItemClick.bind(this))
+        var dfd = jQuery.Deferred();
+        
+        var tmpThis = this;
+        tmpThis.parentEl = ThisApp.asSpot(theEl);
+        var tmpHTML = tmpThis.getHTML();
+        tmpThis.parentEl.html(tmpHTML);
+        tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this))
+        tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this))
 
-        this.initControlComponents();
-        this.refreshControl();
-        return this;
+
+        this.controlSpec.assureRequired().then(function(){
+            console.log( 'assureRequired ran');
+            tmpThis.initControlComponents();
+            tmpThis.refreshControl();
+            dfd.resolve(true)
+        })
+        
+        
+        
+        return dfd.promise();
 
     }
 
