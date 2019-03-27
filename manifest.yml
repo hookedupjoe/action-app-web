@@ -4,6 +4,6 @@ applications:
   buildpack: sdk-for-nodejs
   instances: 2
   domain: mybluemix.net
-  name: action-app-cdn
-  host: action-app-cdn
+  name: action-app-home
+  host: action-app-home
   disk_quota: 512M
