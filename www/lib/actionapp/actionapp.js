@@ -1871,23 +1871,51 @@ var ActionAppCore = {};
 
         ThisCoreApp = this;
 
+        
+        var tmpDefs = [];
         var tmpThis = this;
-        me.setup(theAppConfig).then(function (theReply) {
-            if (!(theReply)) {
-                alert("Could not setup application, contact support")
-                dfd.resolve(false)
-            } else {
-                tmpThis.postInit(theAppConfig)
-                dfd.resolve(true)
-            }
 
+        if ( theAppConfig.pages && theAppConfig.pages.length ){
+            var tmpPageNames = theAppConfig.pages;
+            for (var iPageName = 0; iPageName < tmpPageNames.length; iPageName++) {
+                var tmpPageName = tmpPageNames[iPageName];
+                var tmpURL = '/app/pages/' + tmpPageName + '/index.js'
+                tmpDefs.push($.ajax({
+                    url: tmpURL,
+                    dataType: "script"
+                }));
+            }
+        }
+
+        $.whenAll(tmpDefs).then(function(theReply){
+            me.setup(theAppConfig).then(function (theReply) {
+                if (!(theReply)) {
+                    alert("Could not setup application, contact support")
+                    dfd.resolve(false)
+                } else {
+                    tmpThis.postInit(theAppConfig)
+                    dfd.resolve(true)
+                }
+    
+            }); 
         });
+
+        
 
 
         return dfd.promise();
     }
     me.postInit = postInit;
     function postInit(theAppConfig) {
+
+        if( theAppConfig.plugins ){
+            ThisApp.useModuleComponents('plugin', theAppConfig.plugins);
+        }
+        
+        if ( theAppConfig.pages ){
+            ThisApp.initModuleComponents(ThisApp, 'app', theAppConfig.pages);
+        }
+
         //--- Register app level action handler
         this.registerActionDelegate("_app", this.runAction.bind(this));
 

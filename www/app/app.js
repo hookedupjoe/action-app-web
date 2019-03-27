@@ -1,16 +1,20 @@
 (function () {
 
   ThisApp = null;
-  setup();
+
+  var tmpPluginNames = ['DataTables'];
+  var tmpPageNames = ['ControlDesignerPage', 'UsingControlsPage', 'ControlsPage',  'HomePage', 'DocsPage', 'PromptsPage', 'DataTablesPage', 'JsonPage', 'LogsPage'];
+
+  setup(tmpPageNames, tmpPluginNames);
 
   //---- ACTUAL CODE ==    
   ActionAppCore = ActionAppCore || window.ActionAppCore;
 
-  function setup() {
+  function setup(thePages, thePlugins) {
     try {
       var siteMod = ActionAppCore.module('site');
       ThisApp = new siteMod.CoreApp();
-
+    
       //--- Items to load when the application loads
       var tmpRequired = {
         "templates": {
@@ -35,24 +39,21 @@
       //     primary = show on top but not in sidebar, then add to sidebar for small screens only
       //     [blank] = blank or missing value will make it show on the left only
       */
-      var tmpPluginComponents = ['DataTables'];
-      var tmpAppCompsToInit = ['ControlDesignerPage', 'UsingControlsPage', 'ControlsPage',  'HomePage', 'DocsPage', 'PromptsPage', 'DataTablesPage', 'JsonPage', 'LogsPage'];
-      var tmpAppComponents = [];
+      // var tmpAppComponents = [];
 
-      ThisApp.useModuleComponents('plugin', tmpPluginComponents)
-
-      ThisApp.initModuleComponents(ThisApp, 'app', tmpAppCompsToInit)
-      ThisApp.useModuleComponents('app', tmpAppComponents)
+      // ThisApp.useModuleComponents('plugin', tmpPluginComponents)
+      // ThisApp.initModuleComponents(ThisApp, 'app', tmpAppCompsToInit)
+      // ThisApp.useModuleComponents('app', tmpAppComponents)
 
       ThisApp._onResizeLayouts = function (name, $pane, paneState) {
         //-- Do stuff here when application refreshes
 
       }
 
-      var tmpHidePages = (tmpAppCompsToInit.length < 2)
+     // var tmpHidePages = (tmpAppCompsToInit.length < 2)
 
       //--- Use tmpRequiredSpecs to preload more using that example
-      ThisApp.init({ required: tmpRequired, alibrarySpecs: tmpLibrarySpecs, hidePagesMenu: tmpHidePages }).then(function (theReply) {
+      ThisApp.init({ pages: thePages, plugins: thePlugins, required: tmpRequired, alibrarySpecs: tmpLibrarySpecs }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {
