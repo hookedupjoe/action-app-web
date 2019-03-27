@@ -2,12 +2,24 @@
 
   ThisApp = null;
 
-  var tmpPluginNames = ['DataTables'];
-  var tmpPageNames = ['ControlDesignerPage', 'UsingControlsPage', 'ControlsPage',  'HomePage', 'DocsPage', 'PromptsPage', 'DataTablesPage', 'JsonPage', 'LogsPage'];
+  var tmpPageNames = [
+    'ControlDesignerPage', 
+    'UsingControlsPage', 
+    'ControlsPage',  
+    'HomePage', 
+    'DocsPage', 
+    'PromptsPage', 
+    'DataTablesPage',
+    'JsonPage', 
+    'LogsPage'
+  ];
+
+  var tmpPluginNames = [
+    'DataTables'
+  ];
 
   setup(tmpPageNames, tmpPluginNames);
 
-  //---- ACTUAL CODE ==    
   ActionAppCore = ActionAppCore || window.ActionAppCore;
 
   function setup(thePages, thePlugins) {
@@ -27,16 +39,12 @@
       }
 
 
-      var tmpLibrarySpecs = {
-        baseURL: '/library'
-      };
-
       ThisApp._onResizeLayouts = function (name, $pane, paneState) {
         //-- Do stuff here when application refreshes
 
       }
 
-      ThisApp.init({ pages: thePages, plugins: thePlugins, required: tmpRequired, alibrarySpecs: tmpLibrarySpecs }).then(function (theReply) {
+      ThisApp.init({ pages: thePages, plugins: thePlugins, required: tmpRequired }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
         ThisApp.aboutThisApp = function () {
