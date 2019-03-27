@@ -31,28 +31,11 @@
         baseURL: '/library'
       };
 
-      /* ****************************************
-      //------------ This App Config
-      //-- "display" Option:  The Links on the top hide when in mobile, the display options control where the links show
-      //     primary = show on top but not in sidebar, then add to sidebar for small screens only
-      //     both = show on top and sidebar, then add to sidebar for small screens only
-      //     primary = show on top but not in sidebar, then add to sidebar for small screens only
-      //     [blank] = blank or missing value will make it show on the left only
-      */
-      // var tmpAppComponents = [];
-
-      // ThisApp.useModuleComponents('plugin', tmpPluginComponents)
-      // ThisApp.initModuleComponents(ThisApp, 'app', tmpAppCompsToInit)
-      // ThisApp.useModuleComponents('app', tmpAppComponents)
-
       ThisApp._onResizeLayouts = function (name, $pane, paneState) {
         //-- Do stuff here when application refreshes
 
       }
 
-     // var tmpHidePages = (tmpAppCompsToInit.length < 2)
-
-      //--- Use tmpRequiredSpecs to preload more using that example
       ThisApp.init({ pages: thePages, plugins: thePlugins, required: tmpRequired, alibrarySpecs: tmpLibrarySpecs }).then(function (theReply) {
         ThisApp.getByAttr$({ appuse: "app-loader" }).remove();
 
@@ -65,22 +48,14 @@
 
         //--- Extend common with your app specific stuff
         $.extend(ThisApp.common, {
-          samplesBaseURL: 'catalog/panels/samples',
-          yourStuff: function () {
-
-          }
+          samplesBaseURL: 'catalog/panels/samples'
         })
 
-
       });
-
-
 
     } catch (ex) {
       console.error("Unexpected Error " + ex);
     }
-
-
   }
 
 })();
