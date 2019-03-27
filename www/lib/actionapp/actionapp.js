@@ -431,7 +431,9 @@ var ActionAppCore = {};
                 if( tmpURI.type == 'panels'  ){
                     tmpDebugFlag = true;
                 }
-                console.log( 'Pulling URL: ', tmpURL);
+
+                //console.log( 'Pulling URL: ', tmpURL);
+
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
@@ -450,10 +452,9 @@ var ActionAppCore = {};
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
              
-                if(tmpResponse.length){
+                if(isObj(tmpResponse) && tmpResponse.length){
                     tmpResponse = tmpResponse[0];
                 }
-                
 
                 if( tmpRequest.type == 'panels'  ){
                     if( isStr(tmpResponse) ) {
