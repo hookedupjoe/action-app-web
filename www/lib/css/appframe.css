@@ -6,6 +6,16 @@ html, body {
   font-family: sans-serif;
 }
 
+
+.site-layout-north {
+  overflow: hidden;
+}
+
+.ui-layout-pane {
+  padding: 0px;
+}
+
+
 ui.radiobox.checkbox .box:after, .ui.radiobox.checkbox label:after {
   top: 1px;
   left: 0;
