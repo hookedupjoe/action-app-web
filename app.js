@@ -14,6 +14,7 @@ var server = app.listen(process.env.PORT || 7071, function () {
     var host = server.address().address;
     var port = server.address().port;
     console.log(chalk.magenta('Action App UI on port:' + port + "."));
-    console.log(chalk.blue("http://localhost:" + port));
+    console.log(chalk.blue('Launch it here'));
+    console.log("http://localhost:" + port);
     console.log("");
 });
