@@ -1972,12 +1972,19 @@ var ActionAppCore = {};
             }
         }
 
+
         var tmpNavHTML = '{{#each navlinks}} {{#if isTopLink}}<a appuse="tablinks" group="app:pages" item="{{name}}" action="showPage" class="item blue">{{title}}</a>{{/if}} {{/each}}';
         var tmpSideLinksHTML = '{{#each navlinks}} {{#if isSideLink}}<a appuse="tablinks" group="app:pages" item="{{name}}" action="showPage" class="item">{{{iconHTML}}}{{title}}</a>{{/if}} {{/each}}';
         ThisApp.addTemplate('tpl-side-menu-item', tmpSideLinksHTML)
         ThisApp.addTemplate('tpl-nav-menu-item', tmpNavHTML)
         $('[appuse="side-menu"]').html(ThisApp.renderTemplate('tpl-side-menu-item', me.config));
         $('[appuse="nav-menu"]').html(ThisApp.renderTemplate('tpl-nav-menu-item', me.config));
+
+        //--- Default Spinner, can override
+        ThisApp.addTemplate('app:page-loading-spinner', '<div><i class="huge icons"><i class="big loading circle notch icon"></i></i></div>')
+
+        //--- To Do, make this an option, low priority
+        ThisApp.setMessagesOptions({ show: false })
 
         initMenus();
         initAppActions();
