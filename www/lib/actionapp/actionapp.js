@@ -5840,9 +5840,17 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
             var tmpClasses = ''
 
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="image ' + tmpClasses + ' " style="' + tmpHidden + '">')
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="image ' + tmpClasses + ' " ' + tmpStyle + '>')
             if (tmpObject.src) {
                 tmpHTML.push('<img src="' + tmpObject.src + '" />')
             }
@@ -5886,12 +5894,20 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
             var tmpClasses = ''
 
             tmpClasses += getValueIfTrue(theObject, ['compact', 'floating']);
             tmpClasses += getValueIfThere(theObject, ['color', 'attached', 'size']);
 
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui message ' + tmpClasses + ' " style="' + tmpHidden + '">')
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui message ' + tmpClasses + ' " ' + tmpStyle + '>')
             if (tmpObject.icon) {
                 tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>')
             }
@@ -5932,7 +5948,14 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
-
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+            
             var tmpClasses = ''
             tmpClasses += getValueIfTrue(theObject, ['basic', 'compact', 'fluid', 'right', 'labeled', 'circular']);
             tmpClasses += getValueIfThere(theObject, ['color', 'size', 'floated']);
@@ -5958,7 +5981,7 @@ License: MIT
             } else if (isStr(tmpObject.pageaction)) {
                 tmpAction = ' pageaction="' + tmpObject.pageaction.trim() + '" ';
             }
-            tmpHTML.push('<button ' + tmpAction + getItemAttrString(theObject) + ' class="ui button ' + tmpClasses + ' " style="' + tmpHidden + '">')
+            tmpHTML.push('<button ' + tmpAction + getItemAttrString(theObject) + ' class="ui button ' + tmpClasses + ' " ' + tmpStyle + '>')
 
             if (tmpObject.icon && !(tmpObject.right)) {
                 tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>&nbsp;&nbsp;');
@@ -6011,6 +6034,13 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
 
             var tmpDivider = '';
             if (theControlName !== 'title') {
@@ -6019,7 +6049,7 @@ License: MIT
 
             var tmpText = tmpObject.text || tmpObject.html || tmpObject.title || '';
 
-            var tmpClasses = ''
+            var tmpClasses = tmpObject.classes || '';
             tmpClasses += getValueIfTrue(theObject, ['inverted', 'fitted', 'hidden', 'section', 'clearing']);
             tmpClasses += getValueIfThere(theObject, ['color', 'attached', 'size']);
 
@@ -6040,7 +6070,7 @@ License: MIT
             tmpClasses += tmpDivider;
 
             tmpHTML = [];
-            tmpHTML.push('<' + tmpStarter + tmpLevel + getItemAttrString(theObject) + ' class="ui' + tmpHoriz + '  ' + tmpClasses + '" style="' + tmpHidden + '">')
+            tmpHTML.push('<' + tmpStarter + tmpLevel + getItemAttrString(theObject) + ' class="ui' + tmpHoriz + '  ' + tmpClasses + '" ' + tmpStyle + '>')
             if (tmpObject.icon) {
                 tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>&nbsp;&nbsp;')
             }
@@ -6081,13 +6111,21 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
             var tmpClass = tmpObject.class || '';
             var tmpControlClass = tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
             tmpClasses += getValueIfTrue(theObject, ['link', 'fluid', 'placeholder', 'raised', 'tall', 'stacked', 'piled', 'vertical', 'loading', 'inverted', 'bottom', 'top', 'attached', 'padded', 'slim', 'compact', 'secondary', 'tertiary', 'circular', 'clearing', 'right', 'left', 'center', 'aligned', 'basic']);
             tmpClasses += getValueIfThere(theObject, ['color', 'icon', 'size']);
             tmpHTML = [];
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" ' + tmpStyle + '>')
 
             var tmpItems = tmpObject.items || tmpObject.content || [];
             tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
@@ -6126,10 +6164,27 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
             var tmpControlElem = theControlName || 'div';
             var tmpClasses = tmpObject.classes || '';
+
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
             tmpHTML = [];
-            tmpHTML.push('<' + tmpControlElem + ' ' + getItemAttrString(theObject) + ' class=" ' + tmpClasses + '" style="' + tmpHidden + '">')
+            tmpHTML.push('<' + tmpControlElem + ' ' + getItemAttrString(theObject) + ' class=" ' + tmpClasses + '" ' + tmpStyle + '>')
 
             tmpHTML.push(tmpObject.text || tmpObject.html || '')
 
@@ -6170,6 +6225,14 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
             var tmpClass = tmpObject.class || '';
             var tmpControlClass = tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
@@ -6177,7 +6240,7 @@ License: MIT
             var tmpUI = theIsUI ? 'ui ' : '';
 
             tmpHTML = [];
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpUI + ' ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpUI + ' ' + tmpControlClass + ' ' + tmpClasses + '" ' + tmpStyle + '>')
 
             tmpHTML.push(tmpObject.text || tmpObject.html || '')
 
@@ -7000,11 +7063,18 @@ License: MIT
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
             }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if( tmpHidden ){
+                tmpStyle += tmpHidden;
+            }
+            if( tmpStyle ){
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
 
             var tmpControlClass = 'card'; //tmpClass || theControlName;
             var tmpClasses = tmpObject.classes || '';
             tmpHTML = [];
-            tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" style="' + tmpHidden + '">')
+            tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" ' + tmpStyle + '>')
 
             //--- Create the proper content and index needed for this
             // theControlObj.initCustomSpec(tmpNewContent);
@@ -7143,10 +7213,15 @@ License: MIT
     me.webControls.add('meta', me.ControlElement);
     me.webControls.add('description', me.ControlElement);
     me.webControls.add('extra', me.ControlElement);
+    me.webControls.add('item', me.ControlElement);
+    me.webControls.add('ui', me.ControlElement);
 
     me.webControls.add('i', me.ControlDOM);
     me.webControls.add('span', me.ControlDOM);
     me.webControls.add('div', me.ControlDOM);
+    me.webControls.add('ul', me.ControlDOM);
+    me.webControls.add('li', me.ControlDOM);
+    me.webControls.add('a', me.ControlDOM);
 
 
     //=== Common Custom Web Controls ..
@@ -7336,5 +7411,6 @@ License: MIT
 
 
 })(ActionAppCore, $);
+
 
 
