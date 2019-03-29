@@ -5455,9 +5455,13 @@ License: MIT
         if (tmpSpecOptions.padding !== false) {
             tmpAttr = ' segment basic slim ';
         }
+        var tmpForm = 'form';
+        if (tmpSpecOptions.formClass === false) {
+            tmpForm = ''
+        }
         tmpHTML = tmpHTML.join('');
         if (tmpHTML) {
-            tmpHTML = '<div class="ui ' + tmpAttr + ' form" controls control name="' + tmpControlName + '">' + tmpHTML + '</div>';
+            tmpHTML = '<div class="ui ' + tmpAttr + ' ' + tmpForm + '" controls control name="' + tmpControlName + '">' + tmpHTML + '</div>';
         }
         return tmpHTML;
     }
@@ -5984,14 +5988,18 @@ License: MIT
             tmpHTML.push('<button ' + tmpAction + getItemAttrString(theObject) + ' class="ui button ' + tmpClasses + ' " ' + tmpStyle + '>')
 
             if (tmpObject.icon && !(tmpObject.right)) {
-                tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>&nbsp;&nbsp;');
+                tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>');
             }
 
             tmpHTML.push(tmpObject.text || tmpObject.html || tmpObject.title || '')
 
             if (tmpObject.icon && tmpObject.right) {
-                tmpHTML.push('&nbsp;&nbsp;<i class="' + tmpObject.icon + ' icon"></i>');
+                tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>');
             }
+
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+            
             tmpHTML.push('</button>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
@@ -6536,7 +6544,20 @@ License: MIT
             if (tmpValue) {
                 tmpValue = ' value="' + tmpValue + '" ';
             }
-            tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpSizeName + tmpReq + ' field">')
+            var tmpFieldOrInput = 'field';
+            if( theObject.input === true ){
+                tmpFieldOrInput = 'input';
+            }
+
+            var tmpInputClasses = tmpObject.inputClasses || '';
+            if( tmpObject.fit === true){
+                tmpInputClasses = ' fit ';
+            }
+            if( tmpInputClasses ){
+                tmpInputClasses = ' class="' + tmpInputClasses + '" '
+            }
+
+            tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpSizeName + tmpReq + ' ui ' + tmpFieldOrInput + '">')
             if (theObject.label) {
                 tmpHTML.push('<label>')
                 tmpHTML.push(theObject.label || '')
@@ -6551,8 +6572,17 @@ License: MIT
                 }
                 tmpPH = ' placeholder="' + tmpPH + ' ';
             }
-            tmpHTML.push('<input controls field ' + tmpValue + ' name="' + theObject.name + '" ' + tmpPH + '"></input>')
+            tmpHTML.push('<input ' + tmpInputClasses + ' type="text" controls field ' + tmpValue + ' name="' + theObject.name + '" ' + tmpPH + '">')
+
+
+            tmpHTML.push('</input>')
             tmpHTML.push(getNoteMarkup(theObject));
+
+
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            console.log( 'tmpItems', tmpItems);            
+            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+
 
             tmpHTML.push('</div>')
 

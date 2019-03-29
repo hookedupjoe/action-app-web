@@ -15,6 +15,10 @@ html, body {
   padding: 0px;
 }
 
+.ui.form input.fit {
+  width: auto !important;
+}
+
 .ui.definition.table.medium-label tr td:first-child:not(.ignored) {
   width: 200px;
 }
