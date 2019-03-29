@@ -6541,12 +6541,19 @@ License: MIT
                 tmpReq = ' required ';
             }
 
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            
             if (tmpValue) {
                 tmpValue = ' value="' + tmpValue + '" ';
             }
             var tmpFieldOrInput = 'field';
             if( theObject.input === true ){
                 tmpFieldOrInput = 'input';
+            }
+
+            //--- All input fields with content (buttons) are input style
+            if( tmpItems && tmpItems.length > 0 ){
+                tmpFieldOrInput = 'input'
             }
 
             var tmpInputClasses = tmpObject.inputClasses || '';
@@ -6581,8 +6588,6 @@ License: MIT
             tmpHTML.push(getNoteMarkup(theObject));
 
 
-            var tmpItems = tmpObject.items || tmpObject.content || [];
-            console.log( 'tmpItems', tmpItems);            
             tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
 
 
