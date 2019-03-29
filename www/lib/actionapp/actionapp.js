@@ -5249,6 +5249,8 @@ License: MIT
     meInstance.onItemClick = function (theEvent) {
         //--- A field changed in this control
         var tmpTarget = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
+        //--- Get the acdtual control, not sub item like icon
+        tmpTarget = tmpTarget.closest('[name][controls]')
         var tmpParams = ThisApp.getAttrs(tmpTarget, ['name', 'controls']);
         if (tmpParams.controls && tmpParams.name) {
             var tmpName = tmpParams.name;
@@ -5262,18 +5264,16 @@ License: MIT
                 var tmpActionName = tmpOnClick.run;
                 if (tmpActionName == 'publish') {
                     var tmpEvent = tmpOnClick.event || 'click';
+                    var tmpIsValid = true;
+                    var tmpPubParams = tmpOnClick.params || '';
 
                     if (tmpOnClick.validate === true) {
                         var tmpValidation = this.validate();
-                        if (tmpValidation.isValid) {
-                            this.publish(tmpEvent, [this, theEvent, tmpTarget])
-                        }
-                        return;
-                    } else {
-                        this.publish(tmpEvent, [this, theEvent, tmpTarget])
-                        return;
+                        tmpIsValid = tmpValidation.isValid;
                     }
-
+                    if (tmpIsValid) {
+                        this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
+                    }
                 }
                 //--- Not a known internal action
 
