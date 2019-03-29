@@ -5988,13 +5988,13 @@ License: MIT
             tmpHTML.push('<button ' + tmpAction + getItemAttrString(theObject) + ' class="ui button ' + tmpClasses + ' " ' + tmpStyle + '>')
 
             if (tmpObject.icon && !(tmpObject.right)) {
-                tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>');
+                tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i> ');
             }
 
             tmpHTML.push(tmpObject.text || tmpObject.html || tmpObject.title || '')
 
             if (tmpObject.icon && tmpObject.right) {
-                tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i>');
+                tmpHTML.push(' <i class="' + tmpObject.icon + ' icon"></i>');
             }
 
             var tmpItems = tmpObject.items || tmpObject.content || [];
