@@ -364,7 +364,7 @@ var ActionAppCore = {};
 
 
     me.getPanel = function (theName) {
-        return this.getResourceForType('panels',theName);
+        return this.getResourceForType('panels', theName);
         // return this.res.panels[theName];
     }
 
@@ -372,19 +372,19 @@ var ActionAppCore = {};
     me.getResourceForType = function (theType, theName) {
         var tmpType = theType || 'controls';
         var tmpResource = this.res[tmpType][theName];
-        if( !(tmpResource) ){
-            if ( this.parentControl && isFunc( this.parentControl.getResourceForType ) ){
+        if (!(tmpResource)) {
+            if (this.parentControl && isFunc(this.parentControl.getResourceForType)) {
                 tmpResource = this.parentControl.getResourceForType(theName)
             }
-            if( !(tmpResource) ){
+            if (!(tmpResource)) {
                 tmpResource = ThisApp.resCache[tmpType][theName];
             }
         }
         return tmpResource;
     }
-    
+
     me.getControl = function (theName) {
-        return this.getResourceForType('controls',theName);
+        return this.getResourceForType('controls', theName);
     }
 
     me.getExtnForType = function (theType) {
@@ -407,28 +407,28 @@ var ActionAppCore = {};
         var tmpDefs = [];
         for (var aName in theSpecs) {
             var tmpType = aName;
-            
+
             var tmpTypeSpecs = theSpecs[aName];
             var tmpNewURIs = this.getResourceURIsForType(tmpType, tmpTypeSpecs, theOptions);
-              
+
             tmpURIs = tmpURIs.concat(tmpNewURIs)
         }
-        
-       var tmpRequests = [];
+
+        var tmpRequests = [];
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
 
             //** if already loaded or in current list - SKIP
 
             var tmpExists = false;
-        
-            if ( ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri] ){
-                tmpExists = true;
-            } 
 
-            if( !(tmpExists) ){
+            if (ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri]) {
+                tmpExists = true;
+            }
+
+            if (!(tmpExists)) {
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
-                if( tmpURI.type == 'panels'  ){
+                if (tmpURI.type == 'panels') {
                     tmpDebugFlag = true;
                 }
 
@@ -446,27 +446,27 @@ var ActionAppCore = {};
                 //console.log( '* skipping resource for ', tmpURI.uri);
             }
         }
-        
+
         $.whenAll(tmpDefs).then(function (theResults) {
             for (var iRequest = 0; iRequest < tmpRequests.length; iRequest++) {
                 var tmpRequest = tmpRequests[iRequest];
                 var tmpResponse = theResults[iRequest];
-             
-                if(isObj(tmpResponse) && tmpResponse.length){
+
+                if (isObj(tmpResponse) && tmpResponse.length) {
                     tmpResponse = tmpResponse[0];
                 }
 
-                if( tmpRequest.type == 'panels'  ){
-                    if( isStr(tmpResponse) ) {
+                if (tmpRequest.type == 'panels') {
+                    if (isStr(tmpResponse)) {
                         try {
-                           tmpResponse = ThisApp.json(tmpResponse,true);    
+                            tmpResponse = ThisApp.json(tmpResponse, true);
                         } catch (ex) {
                             console.warn("Could not convert panel object ", tmpRequest.uri)
                         }
                     }
-                
+
                 }
-              
+
                 tmpThis.addResourceFromContent(tmpRequest.type, (tmpRequest.name || tmpRequest.uri), tmpResponse, tmpRequest.uri, theOptions);
             }
             dfd.resolve(true);
@@ -511,7 +511,7 @@ var ActionAppCore = {};
                 var tmpResourceData = eval(tmpResourceData);
                 tmpResourceData.controlConfig.parent = tmpThis;
             } catch (ex) {
-                console.warn("Could not convert control to object",tmpResourceData);
+                console.warn("Could not convert control to object", tmpResourceData);
             }
         } else if (theType == 'panels') {
             try {
@@ -525,7 +525,7 @@ var ActionAppCore = {};
 
     //--- theType: (controls, panels, html or templates)
     me.getResourceURIsForType = function (theType, theSpecs) {
-        
+
         var tmpRet = [];
         var tmpSpecs = theSpecs;
         if (!(Array.isArray(tmpSpecs))) {
@@ -552,14 +552,14 @@ var ActionAppCore = {};
                         if (tmpBaseURL) {
                             tmpSpecItem = tmpBaseURL + tmpSpecItem;
                         }
-                        tmpRet.push({ type: theType, uri: tmpSpecItem , name: tmpSpecItem })
+                        tmpRet.push({ type: theType, uri: tmpSpecItem, name: tmpSpecItem })
                     }
 
                 }
                 if (isObj(tmpSpec.map)) {
                     for (var aURI in tmpSpec.map) {
                         var tmpEntryName = tmpSpec.map[aURI];
-                        
+
 
                         if (tmpBaseURL) {
                             aURI = tmpBaseURL + aURI;
@@ -1871,11 +1871,11 @@ var ActionAppCore = {};
 
         ThisCoreApp = this;
 
-        
+
         var tmpDefs = [];
         var tmpThis = this;
 
-        if ( theAppConfig.pages && theAppConfig.pages.length ){
+        if (theAppConfig.pages && theAppConfig.pages.length) {
             var tmpPageNames = theAppConfig.pages;
             for (var iPageName = 0; iPageName < tmpPageNames.length; iPageName++) {
                 var tmpPageName = tmpPageNames[iPageName];
@@ -1887,7 +1887,7 @@ var ActionAppCore = {};
             }
         }
 
-        $.whenAll(tmpDefs).then(function(theReply){
+        $.whenAll(tmpDefs).then(function (theReply) {
             me.setup(theAppConfig).then(function (theReply) {
                 if (!(theReply)) {
                     alert("Could not setup application, contact support")
@@ -1896,11 +1896,11 @@ var ActionAppCore = {};
                     tmpThis.postInit(theAppConfig)
                     dfd.resolve(true)
                 }
-    
-            }); 
+
+            });
         });
 
-        
+
 
 
         return dfd.promise();
@@ -1908,11 +1908,11 @@ var ActionAppCore = {};
     me.postInit = postInit;
     function postInit(theAppConfig) {
 
-        if( theAppConfig.plugins ){
+        if (theAppConfig.plugins) {
             ThisApp.useModuleComponents('plugin', theAppConfig.plugins);
         }
-        
-        if ( theAppConfig.pages ){
+
+        if (theAppConfig.pages) {
             ThisApp.initModuleComponents(ThisApp, 'app', theAppConfig.pages);
         }
 
@@ -2489,11 +2489,11 @@ License: MIT
         if (this.options.required) {
             tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         }
-        if( tmpLayoutReq ){
+        if (tmpLayoutReq) {
             tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this })
         }
 
-        $.when(tmpPromRequired,tmpPromLayoutReq).then(function (theReply) {
+        $.when(tmpPromRequired, tmpPromLayoutReq).then(function (theReply) {
             tmpThis.initLayout();
             tmpThis.initAppComponents();
             dfd.resolve(true);
@@ -2582,7 +2582,7 @@ License: MIT
     }
 
     me.getLayoutRequired = function () {
-        if ( !(this.layoutOptions.baseURL) ){
+        if (!(this.layoutOptions.baseURL)) {
             return false;
         }
         var tmpRet = {};
@@ -2612,7 +2612,7 @@ License: MIT
                 tmpHTMLNode.map[tmpLTName] = tmpLTName;
             }
 
-            if( tmpLTFound ){
+            if (tmpLTFound) {
                 tmpRet.html = tmpHTMLNode;
             }
 
@@ -2622,7 +2622,7 @@ License: MIT
             var tmpLTs = this.layoutOptions.panels;
             var tmpLTFound = false;
 
-           
+
             var tmpPanelsNode = {
                 baseURL: tmpBaseURL + 'panels',
                 map: {}
@@ -2640,14 +2640,14 @@ License: MIT
                     tmpLTName = tmpLT.control;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
-                
+
                 tmpPanelsNode.map[tmpLTName] = tmpLTName;
             }
 
-            if( tmpLTFound ){
+            if (tmpLTFound) {
                 tmpRet.panels = tmpPanelsNode;
             }
-        }   
+        }
 
 
         if (this.layoutOptions && this.layoutOptions.controls) {
@@ -2675,20 +2675,20 @@ License: MIT
                 tmpControlsNode.map[tmpLTName] = tmpLTName;
             }
 
-            if( tmpLTFound ){
+            if (tmpLTFound) {
                 tmpRet.controls = tmpControlsNode;
             }
-        }   
+        }
 
 
-        if( !(tmpAnyFound) ){
+        if (!(tmpAnyFound)) {
             return false;
         }
         return tmpRet;
 
     }
-    
-    
+
+
     me.initLayout = function () {
 
         if (this.layoutOptions && this.layoutOptions.content) {
@@ -4011,13 +4011,13 @@ License: MIT
         if (isObj(theOptions)) {
             $.extend(theConfig, theOptions);
         }
-       
+
         var tmpNew = new Control(theConfig);
 
         return tmpNew
     }
 
-    function getRequiredFromContent(theContent){
+    function getRequiredFromContent(theContent) {
         var tmpRet = {}
         tmpRet.objects = {
             list: ['library/controls/TesterControl']
@@ -4407,7 +4407,7 @@ License: MIT
             "html": {}
         };
 
-        
+
         var tmpStuffToPullIn = [
             , 'getResourceURIsForType'
             , 'addResourceFromContent',
@@ -4439,15 +4439,15 @@ License: MIT
             tmpObj.extend(tmpOptions.proto);
         }
 
-        
-        
+
+
         return tmpObj
     }
 
-    meControl.getContentRequired = function(){
+    meControl.getContentRequired = function () {
         var tmpRet = {}
         var tmpReq = this.controlConfig.index.required;
-        if( tmpReq ){
+        if (tmpReq) {
             return tmpReq;
         }
         return tmpRet;
@@ -4455,7 +4455,7 @@ License: MIT
 
     meControl.assureRequired = function () {
         var dfd = jQuery.Deferred();
-        if( this.assureRequiredRun === true ){
+        if (this.assureRequiredRun === true) {
             dfd.resolve(true)
             return dfd.promise();
         }
@@ -4463,7 +4463,7 @@ License: MIT
 
         var tmpThis = this;
         this.options = this.options || {};
-       
+
         var tmpThis = this;
 
         var tmpPromRequired = true;
@@ -4476,11 +4476,11 @@ License: MIT
         // if (this.options.required) {
         //     tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
         // }
-        if( tmpLayoutReq ){
+        if (tmpLayoutReq) {
             tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
         }
 
-        $.when(tmpPromRequired,tmpPromLayoutReq).then(function (theReply) {
+        $.when(tmpPromRequired, tmpPromLayoutReq).then(function (theReply) {
             dfd.resolve(true);
         })
 
@@ -4491,7 +4491,7 @@ License: MIT
     meControl.prompt = function (theOptions) {
         var dfd = jQuery.Deferred();
 
-        
+
 
         var tmpOptions = theOptions || {};
         var tmpConfig = this.controlConfig;
@@ -4619,7 +4619,7 @@ License: MIT
 
         this.liveIndex = {};
         this.parts = {};
-        
+
         this.initPubSub();
     }
 
@@ -5205,7 +5205,7 @@ License: MIT
 
 
     meInstance.refreshForField = function (theFN) {
-        
+
         var tmpFN = theFN;
         var tmpSpecs = this.getFieldSpecs(tmpFN);
 
@@ -5289,7 +5289,7 @@ License: MIT
         return true;
     }
     meInstance.onFieldChange = function (theEvent) {
-       
+
         //--- A field changed in this control
         var tmpTarget = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
 
@@ -5323,8 +5323,8 @@ License: MIT
         var tmpEl = this.parentEl;
 
         var tmpDefs = [];
-        
-        
+
+
         var tmpControls = ThisApp.getByAttr$({ ctlcomp: 'control' }, tmpEl);
         if (tmpControls.length) {
             for (var iControl = 0; iControl < tmpControls.length; iControl++) {
@@ -5333,22 +5333,22 @@ License: MIT
                 var tmpControlName = tmpControlEl.attr('controlname');
 
                 var tmpPartName = tmpControlEl.attr('partname') || tmpControlEl.attr('name') || tmpControlName;
-                if( tmpControlName && tmpPartName ){
+                if (tmpControlName && tmpPartName) {
 
                     var tmpCtl = this.parentControl.getControl(tmpControlName);
-                    if( !(tmpCtl) ){
+                    if (!(tmpCtl)) {
                         console.warn("Could not find parent control " + tmpControlName)
                     } else {
                         var tmpPart = tmpCtl.create(tmpPartName);
                         this.parts[tmpPartName] = tmpPart;
-                        tmpDefs.push(tmpPart.loadToElement(tmpControlEl));   
+                        tmpDefs.push(tmpPart.loadToElement(tmpControlEl));
                     }
                 }
 
             }
         }
 
-        
+
 
 
         var tmpPanels = ThisApp.getByAttr$({ ctlcomp: 'panel' }, tmpEl);
@@ -5359,10 +5359,10 @@ License: MIT
                 var tmpControlName = tmpControlEl.attr('controlname');
 
                 var tmpPartName = tmpControlEl.attr('partname') || tmpControlEl.attr('name') || tmpControlName;
-                if( tmpControlName && tmpPartName ){
+                if (tmpControlName && tmpPartName) {
 
                     var tmpCtl = this.parentControl.getPanel(tmpControlName);
-                    if( !(tmpCtl) ){
+                    if (!(tmpCtl)) {
                         console.warn("Could not find parent control " + tmpControlName)
                         return false;
                     }
@@ -5374,7 +5374,7 @@ License: MIT
             }
         }
 
-        
+
 
 
 
@@ -5399,18 +5399,18 @@ License: MIT
                 .attr('appcomp', '');
         }
 
-        $.whenAll(tmpDefs).then(function(theReply){
+        $.whenAll(tmpDefs).then(function (theReply) {
             dfd.resolve(true)
         })
-        
+
 
         return dfd.promise();
-        
+
     }
 
     meInstance.loadToElement = function (theEl, theOptions) {
         var dfd = jQuery.Deferred();
-        
+
         var tmpThis = this;
         tmpThis.parentEl = ThisApp.asSpot(theEl);
         var tmpHTML = tmpThis.getHTML();
@@ -5419,16 +5419,21 @@ License: MIT
         tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this))
 
 
-        this.controlSpec.assureRequired().then(function(){
-            tmpThis.initControlComponents().then(function(theReply){
-                tmpThis.refreshControl();
-                dfd.resolve(true)    
-            });
-            
+        this.controlSpec.assureRequired().then(function () {
+            var tmpInitResults = tmpThis.initControlComponents();
+            if (tmpInitResults && tmpInitResults.then) {
+                tmpThis.initControlComponents().then(function (theReply) {
+                    tmpThis.refreshControl();
+                    dfd.resolve(true)
+                });
+            } else {
+                dfd.resolve(false)
+            }
+
         })
-        
-        
-        
+
+
+
         return dfd.promise();
 
     }
@@ -5524,7 +5529,7 @@ License: MIT
         return tmpHTML;
     }
 
-   
+
     //--- Internal use - creates index of all fields and items with a name;
     me._loadContentIndex = function (theItems, theOptionalIndex, theOptionalOutline) {
         var tmpIndex = theOptionalIndex || {
@@ -5563,22 +5568,22 @@ License: MIT
 
                 var tmpName = tmpItem.name;
 
-                    
-                if( tmpCtl == 'control' || tmpCtl == 'panel' ){
+
+                if (tmpCtl == 'control' || tmpCtl == 'panel') {
                     tmpIndex.controls[tmpName] = tmpItem;
                     //--- If we have a control name and source is not parent, add to the list
                     //---   if source is parent, it will go up the chain and find it there
                     //---   must be loaded by name by the parent
                     //---   ** When used - can have a basic name, not full heirarchy
                     //         ... and can also replace out any full with short name as alias
-                    if( tmpControl && tmpItem.controlname && (!(tmpItem.source === 'parent')) ){
+                    if (tmpControl && tmpItem.controlname && (!(tmpItem.source === 'parent'))) {
                         //--- Create a node for this required item
                         tmpIndex.required[tmpCtl] = tmpIndex.required[tmpCtl] || {};
                         tmpIndex.required[tmpCtl].list = tmpIndex.required[tmpCtl].list || [];
                         tmpIndex.required[tmpCtl].list.push(tmpItem.controlname)
                     }
                 }
-                
+
                 //=== type is index or field
                 var tmpToAdd = tmpItem;
                 if (tmpType == 'items') {
@@ -5617,9 +5622,9 @@ License: MIT
 
         return tmpIndex;
     }
-	
-	
-	
+
+
+
 
     //--- Bubble Global Helpers
     var checkBoxAt = 0;
@@ -5845,10 +5850,10 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
@@ -5899,10 +5904,10 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
@@ -5953,13 +5958,13 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
-            
+
             var tmpClasses = ''
             tmpClasses += getValueIfTrue(theObject, ['basic', 'compact', 'fluid', 'right', 'labeled', 'circular']);
             tmpClasses += getValueIfThere(theObject, ['color', 'size', 'floated']);
@@ -5999,7 +6004,7 @@ License: MIT
 
             var tmpItems = tmpObject.items || tmpObject.content || [];
             tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
-            
+
             tmpHTML.push('</button>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
@@ -6043,10 +6048,10 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
@@ -6120,10 +6125,10 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
@@ -6173,10 +6178,10 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
@@ -6184,10 +6189,10 @@ License: MIT
             var tmpClasses = tmpObject.classes || '';
 
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
@@ -6234,10 +6239,10 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
@@ -6542,23 +6547,23 @@ License: MIT
             }
 
             var tmpItems = tmpObject.items || tmpObject.content || [];
-            
+
             if (tmpValue) {
                 tmpValue = ' value="' + tmpValue + '" ';
             }
             var tmpFieldOrInput = 'field';
-            if( theObject.input === true ){
+            if (theObject.input === true) {
                 tmpFieldOrInput = 'input';
             }
 
             //--- All input fields with content (buttons) are input style
-            if( tmpItems && tmpItems.length > 0 ){
+            if (tmpItems && tmpItems.length > 0) {
                 tmpFieldOrInput = 'input'
             }
 
             var tmpInputClasses = tmpObject.inputClasses || '';
             tmpInputClasses += getValueIfTrue(theObject, ['fit']);
-            if( tmpInputClasses ){
+            if (tmpInputClasses) {
                 tmpInputClasses = ' class="' + tmpInputClasses + '" '
             }
 
@@ -7101,10 +7106,10 @@ License: MIT
                 tmpHidden = 'display:none;';
             }
             var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
-            if( tmpHidden ){
+            if (tmpHidden) {
                 tmpStyle += tmpHidden;
             }
-            if( tmpStyle ){
+            if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
 
