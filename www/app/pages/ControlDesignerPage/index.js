@@ -33,7 +33,7 @@ License: MIT
 
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
-        panels: {
+        controls: {
             "center": { partname: "body", control: "center" },
             "north": { partname: "north", control: "north" },
             "east": { partname: "east", control: "east" },
@@ -225,7 +225,7 @@ License: MIT
         tmpTest2Counter++;
         var tmpArea = ThisPage.parts.body;
         var tmpArea2 = ThisPage.parts.east;
-        var tmpArea3 = ThisPage.parts.body.parts.panel1;
+        var tmpArea3 = ThisPage.parts.body.parts.eastSide;
 
         tmpArea.getSpot("body").css('color','blue');
         tmpArea.loadSpot("body", "Hello Center Spot " + tmpTest2Counter);
@@ -240,7 +240,7 @@ License: MIT
         tmpArea2.loadSpot("body", "Hello East Spot " + tmpTest2Counter);
         tmpArea2.gotoItem('body');
 
-        tmpArea3.loadSpot("body", "Hello Panel 1 in body spot " + tmpTest2Counter);
+        tmpArea3.loadSpot("body", "Hello in body spot " + tmpTest2Counter);
         tmpArea3.gotoItem('body');
 
         //ThisPage.part.east.addToSpot("body", "Hello East Spot");
@@ -256,8 +256,8 @@ License: MIT
         var tmpIsVis = tmpPreviewArea.getItemDisplay('preview-details');
         tmpPreviewArea.setItemDisplay('preview-details', !tmpIsVis, ['slow']);
 
-        ThisPage.parts.body.parts.panel1.loadSpot('body', "Hello Panel One Spot");
-        ThisPage.parts.body.parts.panel1.gotoItem('body')
+        ThisPage.parts.body.parts.eastSide.loadSpot('body', "Hello Panel One Spot");
+        ThisPage.parts.body.parts.eastSide.gotoItem('body')
 
     }
 
