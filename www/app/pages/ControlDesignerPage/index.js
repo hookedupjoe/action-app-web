@@ -35,7 +35,7 @@ License: MIT
         baseURL: pageBaseURL,
         panels: {
             "center": { partname: "body", control: "center" },
-            "north": { partname: "north", control: "header" },
+            "north": { partname: "north", control: "north" },
             "east": { partname: "east", control: "east" },
             "west": { partname: "west", control: "west" }
         },
