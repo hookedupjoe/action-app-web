@@ -6550,14 +6550,16 @@ License: MIT
             }
 
             var tmpInputClasses = tmpObject.inputClasses || '';
-            if( tmpObject.fit === true){
-                tmpInputClasses = ' fit ';
-            }
+            tmpInputClasses += getValueIfTrue(theObject, ['fit']);
             if( tmpInputClasses ){
                 tmpInputClasses = ' class="' + tmpInputClasses + '" '
             }
 
-            tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpSizeName + tmpReq + ' ui ' + tmpFieldOrInput + '">')
+            var tmpClasses = ''
+            tmpClasses += getValueIfTrue(theObject, ['compact', 'fluid']);
+            tmpClasses += getValueIfThere(theObject, ['color', 'size']);
+
+            tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpClasses + tmpSizeName + tmpReq + ' ui ' + tmpFieldOrInput + '">')
             if (theObject.label) {
                 tmpHTML.push('<label>')
                 tmpHTML.push(theObject.label || '')
