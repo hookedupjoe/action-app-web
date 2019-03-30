@@ -17,18 +17,6 @@ License: MIT
     };
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    thisPageSpecs.required = {
-        templates: {
-            baseURL: pageBaseURL + 'tpl',
-            //-- Page to lookup : name to call it when pulling
-            //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
-            map: {
-                "cat-document": thisPageSpecs.pageName + ":cat-document",
-                "cat-contents": thisPageSpecs.pageName + ":cat-contents",
-            }
-        }
-    }
-
     //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
@@ -84,21 +72,7 @@ License: MIT
         ThisPage.initOnFirstLoad().then(
             function () {
 
-                ThisPage.demoForm = ThisPage.getByAttr$({appuse:ThisPage.ns('demo-form')})
-                console.log("ThisPage.demoForm",ThisPage.demoForm);
-
-                ThisPage.demoForm.on('change', function(theEvent){
-                    console.log("hisPage.demoForm.on", arguments);
-                    var tmpItemChanged = theEvent.originalTarget || theEvent.target;
-                    console.log( 'tmpItemChanged', tmpItemChanged );
-                    
-                    
-                    
-                })
-                
-                var tmpDocsList = ['index.json'];
                 showContentInPreviewPane('about-action-app')
-                
                 //--- Do special stuff on page load here
                 //--- Then optionally call the stuff that will happen every time 
                 //      the page is activated if not already called by above code
@@ -133,64 +107,7 @@ License: MIT
         ThisPage.loadPageSpot(theCategoryName + ':doc-content', theDoc, ThisPage.ns('cat-document'))
     }
 
-    //--- Subscribed to the changing of any tabs
-    ThisPage.tabChanged = tabChanged;
-    function tabChanged(theTarget, theDetails) {
-        //--- If this group is the tab group we care about then 
-        if (theDetails && theDetails.group === ThisPage.ns('tabs')) {
-            //--- Get the item name of this tab, which is the category name
-            var tmpItemName = theDetails.item || '';
-            //--- This is where we lazy load the tab content one time
-            //     .. if not setup in tabsStatus, do setup and add it as done
-            if (!(ThisPage.tabsStatus[tmpItemName])) {
-                ThisPage.tabsStatus[tmpItemName] = {
-                    status: true
-                }
-                //-- Get the category with related docs form the index we loaded when the page was activated
-                var tmpCats = ThisPage.categoriesIndex[tmpItemName];
-                if (tmpCats) {
-                    //-- Load the list of documents on the left and related are using a template
-                    ThisPage.loadPageSpot(tmpItemName + ':doc-list', tmpCats, ThisPage.ns('cat-contents'))
-                    var tmpFirstDoc = tmpCats.docs[0];
-                    //-- Assume at least one doc (i.e. overview) in each category
-                    //   .. show it on first laod so we have initial content
-                    loadDocContent(tmpItemName, tmpFirstDoc);
-                }
-            }
-
-        }
-
-
-    };
-
-    //--- Action used to load a document for a category from the left links
-    ThisPage.loadCatDoc = loadCatDoc;
-    function loadCatDoc(theParams, theTarget) {
-        var tmpParams = theParams || false;
-
-        //--- Get the params from the target element
-        if (theTarget) {
-            tmpParams = {};
-            var tmpEl = $(theTarget)
-            tmpParams.pos = parseInt(tmpEl.attr('pos'));
-            tmpParams.category = tmpEl.attr('category');
-        }
-
-        if (!(tmpParams)) {
-            console.error("No valid params")
-            throw ("No valid params")
-        }
-
-        //--- Get the category details for the item selected
-        var tmpCat = ThisPage.categoriesIndex[tmpParams.category];
-        if (tmpCat) {
-            //--- Get the document based on the position this document is in the array
-            var tmpDoc = tmpCat.docs[tmpParams.pos];
-            loadDocContent(tmpParams.category, tmpDoc);
-        }
-
-    };
-
+    
     //---  The tabs are setup in the header and cards / content in the center layout panel
     ThisPage.gotoTab = function (theTabName, theTarget) {
         var tmpTabName = theTabName || '';
