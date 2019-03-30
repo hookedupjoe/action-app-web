@@ -6,12 +6,10 @@ License: MIT
 (function (ActionAppCore, $) {
 
     var SiteMod = ActionAppCore.module("site");
-    var AppModule = ActionAppCore.module("app");
 
     var thisPageSpecs = {
         pageName: "PromptsPage",
         pageTitle: "Prompts",
-        pageNamespace: 'prompt',
         navOptions: {
             topLink: true,
             sideLink: true
@@ -19,16 +17,14 @@ License: MIT
     };
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    var docsBaseURL = 'app/pages/PromptsPage/docs';
-
     thisPageSpecs.required = {
         templates: {
             baseURL: pageBaseURL + 'tpl',
             //-- Page to lookup : name to call it when pulling
             //---  Good to "namespace" your templates with the page prefix to avoid name conflicts
             map: {
-                "cat-document": thisPageSpecs.pageNamespace + ":cat-document",
-                "cat-contents": thisPageSpecs.pageNamespace + ":cat-contents",
+                "cat-document": thisPageSpecs.pageName + ":cat-document",
+                "cat-contents": thisPageSpecs.pageName + ":cat-contents",
             }
         }
     }
@@ -42,7 +38,7 @@ License: MIT
             "center": "page-body",
             "west": "page-west"
         },
-        facetPrefix: thisPageSpecs.pageNamespace,
+        facetPrefix: thisPageSpecs.pageName,
         north: true,
         south: false,
         west: true,
@@ -284,7 +280,7 @@ License: MIT
 
             var tmpAccountFormSpecs = {
                     "title": "Form Title",
-                    "formname": thisPageSpecs.pageNamespace + ":account",
+                    "formname": thisPageSpecs.pageName + ":account",
                     "requiredFieldList": ["name", "access", "account|url", "key"],
                     "defaultCaption": "Save Account Changes",
                     "defaultTitle": "Edit Account",

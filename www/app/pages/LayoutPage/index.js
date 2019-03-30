@@ -5,12 +5,10 @@ License: MIT
 (function (ActionAppCore, $) {
 
     var SiteMod = ActionAppCore.module("site");
-    var AppModule = ActionAppCore.module("app");
 
     var thisPageSpecs = {
         pageName: "LayoutPage",
         pageTitle: "Layout Only",
-        pageNamespace: 'layoutpg',
         navOptions: {
             topLink: true,
             sideLink: true
@@ -18,7 +16,7 @@ License: MIT
     };
 
     thisPageSpecs.layoutOptions = {
-        facetPrefix: thisPageSpecs.pageNamespace,
+        facetPrefix: thisPageSpecs.pageName,
         north: true,
         south: false,
         west: true,

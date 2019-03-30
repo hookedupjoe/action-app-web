@@ -6,12 +6,10 @@ License: MIT
 (function (ActionAppCore, $) {
 
     var SiteMod = ActionAppCore.module("site");
-    var AppModule = ActionAppCore.module("app");
 
     var thisPageSpecs = {
         pageName: "JsonPage",
         pageTitle: "JSON Helper",
-        pageNamespace: 'jsonpage',
         navOptions: {
             topLink: false,
             sideLink: true
@@ -29,7 +27,7 @@ License: MIT
             "center": "page-body",
             "west": "page-west"
         },
-        facetPrefix: thisPageSpecs.pageNamespace,
+        facetPrefix: thisPageSpecs.pageName,
         north: true,
         south: false,
         west: true,

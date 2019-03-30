@@ -6,12 +6,10 @@ License: MIT
 (function (ActionAppCore, $) {
 
     var SiteMod = ActionAppCore.module("site");
-    var AppModule = ActionAppCore.module("app");
 
     var thisPageSpecs = {
         pageName: "DocsPage",
         pageTitle: "Docs",
-        pageNamespace: 'docs',
         navOptions: {
             topLink: true,
             sideLink: true
@@ -27,8 +25,8 @@ License: MIT
         templates: {
             baseURL: pageBaseURL + 'tpl',
             map: {
-                "cat-document": thisPageSpecs.pageNamespace + ":cat-document",
-                "cat-contents": thisPageSpecs.pageNamespace + ":cat-contents"
+                "cat-document": thisPageSpecs.pageName + ":cat-document",
+                "cat-contents": thisPageSpecs.pageName + ":cat-contents"
             }
         }
     }
@@ -42,7 +40,7 @@ License: MIT
             "center": "page-body",
             "west": "page-west"
         },
-        facetPrefix: thisPageSpecs.pageNamespace,
+        facetPrefix: thisPageSpecs.pageName,
         north: true,
         south: false,
         west: true,

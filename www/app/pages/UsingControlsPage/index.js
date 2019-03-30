@@ -5,12 +5,10 @@ License: MIT
 (function (ActionAppCore, $) {
 
     var SiteMod = ActionAppCore.module("site");
-    var AppModule = ActionAppCore.module("app");
 
     var thisPageSpecs = {
         pageName: "UsingControlsPage",
         pageTitle: "Using Controls",
-        pageNamespace: 'ctluse',
         navOptions: {
             topLink: true,
             sideLink: true
@@ -39,7 +37,7 @@ License: MIT
         html: {
             "center": "page-body"
         },
-        facetPrefix: thisPageSpecs.pageNamespace,
+        facetPrefix: thisPageSpecs.pageName,
         north: true,
         south: false,
         west: true,

@@ -2410,7 +2410,7 @@ License: MIT
     function SitePage(theOptions) {
         this.options = theOptions || {};
         this.pageName = this.options.pageName || '';
-        this.pageNamespace = this.options.pageNamespace || '';
+        this.pageNamespace = this.options.pageNamespace || this.pageName || '';
         this.controlIndex = {}; //--- Control Configs Loaded, not instances
         this.part = {}; //--- Control instances by name
         this.parts = this.part //longcut - keep typing it wrong, can use either :)

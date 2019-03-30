@@ -6,12 +6,10 @@ License: MIT
 (function (ActionAppCore, $) {
 
     var SiteMod = ActionAppCore.module("site");
-    var AppModule = ActionAppCore.module("app");
 
     var thisPageSpecs = {
         pageName: "HomePage",
         pageTitle: "Home",
-        pageNamespace: 'home',
         navOptions: {
             icon: 'home',
             topLink: true,
@@ -30,7 +28,7 @@ License: MIT
             "center": "page-body",
             "south": "page-footer"
         },
-        facetPrefix: thisPageSpecs.pageNamespace,
+        facetPrefix: thisPageSpecs.pageName,
         north: false,
         south: false,
         west: false,
