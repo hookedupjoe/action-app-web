@@ -14,8 +14,7 @@ License: MIT
         navOptions: {
             topLink: true,
             sideLink: true
-        },
-        appModule: AppModule
+        }
     };
 
     thisPageSpecs.layoutOptions = {

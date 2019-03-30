@@ -15,8 +15,7 @@ License: MIT
         navOptions: {
             topLink: false,
             sideLink: true
-        },
-        appModule: AppModule
+        }
     };
 
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
