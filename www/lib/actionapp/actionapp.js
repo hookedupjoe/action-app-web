@@ -432,8 +432,6 @@ var ActionAppCore = {};
                     tmpDebugFlag = true;
                 }
 
-                //console.log( 'Pulling URL: ', tmpURL);
-
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
@@ -442,8 +440,6 @@ var ActionAppCore = {};
                         datatype: 'text'
                     })
                 );
-            } else {
-                //console.log( '* skipping resource for ', tmpURI.uri);
             }
         }
 
@@ -755,9 +751,37 @@ var ActionAppCore = {};
          var dfd = jQuery.Deferred();
          var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['page','name','pagename','item']);
          var tmpPageName = tmpParams.pagename || tmpParams.page || tmpParams.name || tmpParams.item || '';
-         me.gotoPage(tmpPageName);
-         
-         dfd.resolve(true)
+
+         var appModule = ActionAppCore.module('app');
+         var tmpPage = appModule[tmpPageName];
+
+         if( tmpPage ){
+            me.gotoPage(tmpPageName);
+            dfd.resolve(true)
+         } else {
+            //--- load it up then ... 
+            var tmpURL = '/app/pages/' + tmpPageName + '/index.js'
+            $.ajax({
+                url: tmpURL,
+                dataType: "script"
+            }).then(function(){
+//--- ToDo: Move this functionality up / see if correct place
+                //--- Init Module to register
+                ThisApp.initModuleComponents(ThisApp, 'app', [tmpPageName]);
+                //--- Get controller and init it
+                var tmpController = ThisApp.getComponent("app:" + tmpPageName);
+                if (tmpController && typeof (tmpController.init) == 'function') {
+                    tmpController.init(ThisApp);
+                }
+
+                //--- just in case, 100 ms to say hello
+                ThisApp.delay(100).then(function(theReply){
+                    ThisApp.gotoPage(tmpPageName);
+                    dfd.resolve(true)
+                })
+            })
+         }
+
          return dfd.promise(); 
       }
 
@@ -2453,19 +2477,13 @@ License: MIT
                 ThisApp.loadSpot(tmpRegionSpotName, theContent, theOptionalTemplateName, this.getParent$())
             }
         }
-        
+
         var appModule = ActionAppCore.module('app');
         appModule[this.pageName] = this;
 
-        // this.appModule = this.options.appModule || false;
-        // if (this.appModule) {
-        //     this.appModule[this.pageName] = this;
-        // }
     }
 
     var me = SitePage.prototype;
-    //var that = this;
-
 
     me.addPageWebControl = function (theControlName, theControl) {
         ThisApp.controls.addWebControl(this.ns(theControlName), theControl);
@@ -5298,14 +5316,7 @@ License: MIT
                     }
                 }
                 //--- Not a known internal action
-
             }
-
-
-            // console.log('tmpName item click', tmpName);
-
-            // console.log('tmpSpecs', tmpSpecs);
-
         }
 
         return true;
