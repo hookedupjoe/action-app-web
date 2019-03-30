@@ -4523,53 +4523,42 @@ License: MIT
 
 
     meControl.prompt = function (theOptions) {
-        console.log( 'prompt start');
         var dfd = jQuery.Deferred();
-
-
-
+    
         var tmpOptions = theOptions || {};
-        var tmpConfig = this.controlConfig;
-        var tmpCaption = tmpOptions.defaultCaption || tmpConfig.defaultCaption || tmpOptions.caption ||  "Save Changes";
-        var tmpTitle = tmpOptions.defaultTitle || tmpConfig.defaultTitle || tmpOptions.title ||  "Edit Details";
-        var tmpTopText = tmpOptions.topText || '';
+        var tmpCaption = tmpOptions.caption ||  "Save Changes";
+        var tmpTitle = tmpOptions.title ||  "Edit Details";
         var tmpDoc = tmpOptions.doc || {};
         var tmpExtraOptions = tmpOptions.promptOptions || false;
-        // var tmpText = '';
-        // if( tmpOptions.text ){
-        //     tmpText = tmpOptions.text;
-        // }
-
+    
         var tmpIsNew = false;
-
+    
         if (typeof (tmpOptions.isNew) == 'boolean') {
             tmpIsNew = tmpOptions.isNew;
         } else {
             tmpIsNew = (typeof (theDoc) != 'object');
         }
-
+    
         if (tmpIsNew) {
-            tmpCaption = tmpOptions.newCaption || tmpConfig.newCaption || "Save";
-            tmpTitle = tmpOptions.newTitle || tmpConfig.newTitle || "Create New";
+            tmpCaption = tmpOptions.newCaption || tmpCaption;
+            tmpTitle = tmpOptions.newTitle || tmpTitle;
         }
-
-
-
+    
+    
+    
         var tmpPromptOptions = {
             title: tmpTitle,
             control: this,
-            topText: tmpTopText,
             buttons: {
                 yes: tmpCaption,
                 no: "Cancel"
             }
         }
-
+    
         if (tmpOptions) {
             $.extend(tmpPromptOptions, tmpExtraOptions)
         }
-
-        console.log( 'tmpOptions', tmpOptions);
+    
         ThisApp.prompter.prompt(tmpPromptOptions).then(function (theReply, theControl) {
             var tmpData = {};
             if (theReply && theControl && isFunc(theControl.getData)) {
@@ -4581,11 +4570,12 @@ License: MIT
             }
             dfd.resolve(theReply, tmpData)
         })
-
-
-
+    
+    
+    
         return dfd.promise();
     }
+    
 
 
     meControl.loadConfig = function (theConfig) {
@@ -4668,66 +4658,10 @@ License: MIT
         $.extend(this, theNewFunctionality)
     }
 
-    // meInstance.getCustomSpec = function(theContentItems){
-    //     var tmpCustomSpec = {};
-    //     tmpCustomSpec.index = me._loadContentIndex(theContentItems);
-    //     tmpCustomSpec.content = theContentItems;
-    //     return tmpCustomSpec;
-    // }
-
-//     meInstance.prompt = function (theOptions) {
-//         var tmpOptions = theOptions || {};
-//         var tmpConfig = this.getConfig();
-//         var tmpCaption = tmpOptions.defaultCaption || tmpConfig.defaultCaption || theOptions.caption || "Save Changes";
-//         var tmpTitle = tmpOptions.defaultTitle || tmpConfig.defaultTitle || theOptions.title || "Edit Details";
-//         var tmpTopText = tmpOptions.topText || '';
-//         var tmpDoc = tmpOptions.doc || {};
-//         var tmpExtraOptions = tmpOptions.promptOptions || false;
-//         var tmpText = '';
-//         if( tmpOptions.text ){
-//             tmpText = tmpOptions.text;
-//         }
-
-//         var tmpIsNew = false;
-
-//         if (typeof (tmpOptions.isNew) == 'boolean') {
-//             tmpIsNew = tmpOptions.isNew;
-//         } else {
-//             tmpIsNew = (typeof (theDoc) != 'object');
-//         }
-
-//         if (tmpIsNew) {
-//             tmpCaption = tmpOptions.newCaption || tmpConfig.newCaption || "Save";
-//             tmpTitle = tmpOptions.newTitle || tmpConfig.newTitle || "Create New";
-//         }
-
-
-//         var tmpPromptOptions = {
-//             data: tmpDoc,
-//             control: this,
-//             title: tmpTitle,
-//             text: tmpText,
-//             topText: tmpTopText,
-//             buttons: {
-//                 yes: tmpCaption,
-//                 no: "Cancel"
-//             }
-//         }
-
-//         if (tmpOptions) {
-//             $.extend(tmpPromptOptions, tmpExtraOptions)
-//         }
-// console.log( 'tmpPromptOptions', tmpPromptOptions);
-//         return ThisApp.prompter.prompt(tmpPromptOptions)
-//     }
-
 
 
 meInstance.prompt = function (theOptions) {
-    console.log( 'meInstance prompt start');
     var dfd = jQuery.Deferred();
-
-
 
     var tmpOptions = theOptions || {};
     var tmpCaption = tmpOptions.caption ||  "Save Changes";
@@ -4767,7 +4701,6 @@ meInstance.prompt = function (theOptions) {
         $.extend(tmpPromptOptions, tmpExtraOptions)
     }
 
-    console.log( 'Control calling prompter with options', tmpOptions);
     ThisApp.prompter.prompt(tmpPromptOptions).then(function (theReply, theControl) {
         var tmpData = {};
         if (theReply && theControl && isFunc(theControl.getData)) {
