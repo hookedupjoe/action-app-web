@@ -742,7 +742,24 @@ var ActionAppCore = {};
 
         return tmpSpot;
     }
-
+    
+    /**
+       * openPage Action
+       * Assures a page is loaded and opens it either way
+       *
+       * @param  {String} thePageName   [The unique page name to open]
+       * @return this
+       */
+      me.openPage = openPage;
+      function openPage(theParams, theTarget) {
+         var dfd = jQuery.Deferred();
+         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['page','name','pagename','item']);
+         var tmpPageName = tmpParams.pagename || tmpParams.page || tmpParams.name || tmpParams.item || '';
+         me.gotoPage(tmpPageName);
+         
+         dfd.resolve(true)
+         return dfd.promise(); 
+      }
 
     /**
        * gotoPage
@@ -1521,7 +1538,8 @@ var ActionAppCore = {};
         if (!theTargetObj) {
             theTargetObj = theAction;
         }
-        var tmpPage = $(theTargetObj).attr("item") || '';
+        var tmpEl = $(theTargetObj);
+        var tmpPage = tmpEl.attr("pagename") || tmpEl.attr("name") || tmpEl.attr("item") || '';
         if (tmpPage) {
             me.gotoPage(tmpPage);
         } else {
@@ -1961,6 +1979,8 @@ var ActionAppCore = {};
         me.showSubPage = showSubPage;
         me.registerAction("showPage", showPage);
         me.registerAction("showSubPage", showSubPage);
+        
+        me.registerAction("openPage", openPage);
 
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
 
@@ -2428,17 +2448,19 @@ License: MIT
                 tmpInstance.loadToElement(tmpRegionSpotName);
 
             }
-
             this.loadRegion = function (theRegion, theContent, theOptionalTemplateName) {
                 var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
                 ThisApp.loadSpot(tmpRegionSpotName, theContent, theOptionalTemplateName, this.getParent$())
             }
+        }
+        
+        var appModule = ActionAppCore.module('app');
+        appModule[this.pageName] = this;
 
-        }
-        this.appModule = this.options.appModule || false;
-        if (this.appModule) {
-            this.appModule[this.pageName] = this;
-        }
+        // this.appModule = this.options.appModule || false;
+        // if (this.appModule) {
+        //     this.appModule[this.pageName] = this;
+        // }
     }
 
     var me = SitePage.prototype;
