@@ -393,7 +393,7 @@ var ActionAppCore = {};
             return '.json';
         }
         if (tmpType == 'controls' || tmpType == 'control') {
-            return '/index.js';
+            return '/control.js';
         }
         return '.html';
     }
