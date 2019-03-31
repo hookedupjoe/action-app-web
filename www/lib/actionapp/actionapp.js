@@ -4109,7 +4109,6 @@ License: MIT
 
     */
     meControl.prompt = function (theOptions) {
-        console.log( 'meControl.prompt', theOptions);
         var dfd = jQuery.Deferred();
 
         var tmpOptions = theOptions || {};
@@ -4125,7 +4124,6 @@ License: MIT
         var tmpControlPromptOptions = {};
         if( tmpConfig.options && ThisApp.util.isObj(tmpConfig.options.prompt) ){
             tmpControlPromptOptions = tmpConfig.options.prompt;
-            console.log( 'tmpControlPromptOptions', tmpControlPromptOptions);
         }
 
         function tmpGetFrom(theParam){
@@ -4149,7 +4147,7 @@ License: MIT
 
         var tmpDoc = tmpOptions.doc || {};
 
-        var tmpExtraOptions = theOptions.promptOptions || false;
+        var tmpExtraOptions = tmpOptions.promptOptions || false;
 
         var tmpPromptOptions = {
             title: tmpTitle,
@@ -4165,8 +4163,6 @@ License: MIT
             $.extend(tmpPromptOptions, tmpExtraOptions)
         }
 
-        console.log( 'tmpPromptOptions', tmpPromptOptions);
-    
         ThisApp.prompter.prompt(tmpPromptOptions).then(function (theReply, theControl) {
             var tmpData = {};
             if (theReply && theControl && isFunc(theControl.getData)) {
@@ -4563,13 +4559,14 @@ License: MIT
     }
 
 
-
+//ToDo: Add clear / set field UI with {quiet:true} the theOptions
     meInstance.validateField = function (theFN) {
         var tmpFN = theFN;
         var tmpSpecs = this.getFieldSpecs(tmpFN);
 
         if (tmpSpecs) {
             var tmpOnValidate = tmpSpecs.onValidate || false;
+            
             if (tmpOnValidate) {
                 if (isObj(tmpOnValidate)) {
                     var tmpName = tmpOnValidate.run;
@@ -4672,7 +4669,8 @@ License: MIT
 
 
         if (tmpIsValid) {
-            var tmpOnValidate = tmpConfig.onValidate;
+            var tmpOnValidate = this.onValidate || tmpConfig.onValidate;
+
             if (isObj(tmpOnValidate)) {
                 if (tmpOnValidate.isStoredFunction && tmpOnValidate._func) {
                     tmpOnValidate = ThisApp.util.stringToFunction(tmpOnValidate._func);
