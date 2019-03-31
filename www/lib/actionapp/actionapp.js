@@ -4366,10 +4366,7 @@ License: MIT
 
     meInstance.setFieldValue = function (theFieldName, theValue, theOptions) {
         var tmpOptions = theOptions || {};
-        var tmpSetOnly = true;
-        if( tmpOptions.setOnly === false ){
-            tmpSetOnly = false
-        }
+        var tmpSetOnly = ( tmpOptions.setOnly === true );
 
         var tmpFieldEl = this.getElByName$(theFieldName, 'field')
         if (!(tmpFieldEl)) { return ''; }
