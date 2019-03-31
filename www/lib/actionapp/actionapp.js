@@ -431,7 +431,6 @@ var ActionAppCore = {};
                 if (tmpURI.type == 'panels') {
                     tmpDebugFlag = true;
                 }
-
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
@@ -554,14 +553,21 @@ var ActionAppCore = {};
                 }
                 if (isObj(tmpSpec.map)) {
                     for (var aURI in tmpSpec.map) {
+                        
                         var tmpEntryName = tmpSpec.map[aURI];
+                        var tmpBaseMapURL = tmpBaseURL;
 
-
-                        if (tmpBaseURL) {
-                            aURI = tmpBaseURL + aURI;
+                        if( isObj(tmpEntryName)){
+                            tmpBaseMapURL = tmpEntryName.source || tmpBaseMapURL;
+                            tmpEntryName = tmpEntryName.name;
                         }
-
-                        tmpRet.push({ type: theType, uri: aURI, name: tmpEntryName })
+                        if (tmpBaseMapURL) {
+                            if (!(tmpBaseMapURL.endsWith('/'))){
+                                tmpBaseMapURL += '/';
+                            }
+                            aURI = tmpBaseMapURL + aURI;
+                        }
+                    tmpRet.push({ type: theType, uri: aURI, name: tmpEntryName })
                     }
                 }
             }
@@ -2482,44 +2488,45 @@ License: MIT
         var tmpOpts = theLayoutOptions;
 
         var tmpType = '';
-        if( tmpOpts.useControls === true ){
+        if (tmpOpts.useControls === true) {
             tmpType = 'controls';
-        } else if( tmpOpts.usePanels === true ){
-           tmpType = 'panels'
-        } else if( tmpOpts.useHTML === true ){
-           tmpType = 'html'
+        } else if (tmpOpts.usePanels === true) {
+            tmpType = 'panels'
+        } else if (tmpOpts.useHTML === true) {
+            tmpType = 'html'
         }
 
         var tmpRegions = ['center', 'north', 'south', 'east', 'west'];
         for (var i = 0; i < tmpRegions.length; i++) {
             var tmpRegionType = tmpType;
             var tmpRegion = tmpRegions[i];
-            var tmpRegionInfo  = tmpOpts[tmpRegion];
-            
+            var tmpRegionInfo = tmpOpts[tmpRegion];
+
             if (tmpRegionInfo) {
-            
-                if( typeof(tmpRegionInfo) == 'boolean' && tmpRegionType){
-                    
+
+                if (typeof (tmpRegionInfo) == 'boolean' && tmpRegionType) {
+
                     tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
-                    tmpOpts[tmpRegionType][tmpRegion] = { 
+                    tmpOpts[tmpRegionType][tmpRegion] = {
                         partname: tmpRegion,
-                        value: tmpRegion 
+                        value: tmpRegion
                     }
-                } else if( typeof(tmpRegionInfo) == 'string'){
+                } else if (typeof (tmpRegionInfo) == 'string') {
                     tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
 
-                    tmpOpts[tmpRegionType][tmpRegion] = { 
+                    tmpOpts[tmpRegionType][tmpRegion] = {
                         partname: tmpRegion,
-                        value: tmpRegionInfo 
+                        value: tmpRegionInfo
                     }
-                } else if( typeof(tmpRegionInfo) == 'object'){
-                    if( tmpRegionInfo.control ){
+                } else if (typeof (tmpRegionInfo) == 'object') {
+
+                    if (tmpRegionInfo.control) {
                         tmpRegionType = 'controls';
                         tmpRegionInfo.value = tmpRegionInfo.control;
-                    } else if( tmpRegionInfo.panel ){
+                    } else if (tmpRegionInfo.panel) {
                         tmpRegionType = 'panels';
                         tmpRegionInfo.value = tmpRegionInfo.panel;
-                    } else if( tmpRegionInfo.html ){
+                    } else if (tmpRegionInfo.html) {
                         tmpRegionType = 'html';
                         tmpRegionInfo = tmpRegionInfo.html;
                     }
@@ -2527,7 +2534,7 @@ License: MIT
                     tmpOpts[tmpRegionType][tmpRegion] = tmpRegionInfo
                 }
 
-                
+
                 tmpOpts[tmpRegion] = true;
             }
         }
@@ -2718,6 +2725,7 @@ License: MIT
 
                 var tmpInstanceName = aName;
                 var tmpLT = tmpLTs[aName];
+
                 var tmpLTName = '';
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
@@ -2726,7 +2734,15 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
 
-                tmpPanelsNode.map[tmpLTName] = tmpLTName;
+                if (tmpLT.source) {
+                    tmpPanelsNode.map[tmpLTName] = {
+                        source: tmpLT.source,
+                        name: tmpLTName
+                    };
+                } else {
+                    tmpPanelsNode.map[tmpLTName] = tmpLTName;
+                }
+
             }
 
             if (tmpLTFound) {
