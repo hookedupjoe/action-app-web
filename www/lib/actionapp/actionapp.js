@@ -738,7 +738,7 @@ var ActionAppCore = {};
 
         return tmpSpot;
     }
-    
+
     /**
        * openPage Action
        * Assures a page is loaded and opens it either way
@@ -746,26 +746,26 @@ var ActionAppCore = {};
        * @param  {String} thePageName   [The unique page name to open]
        * @return this
        */
-      me.openPage = openPage;
-      function openPage(theParams, theTarget) {
-         var dfd = jQuery.Deferred();
-         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['page','name','pagename','item']);
-         var tmpPageName = tmpParams.pagename || tmpParams.page || tmpParams.name || tmpParams.item || '';
+    me.openPage = openPage;
+    function openPage(theParams, theTarget) {
+        var dfd = jQuery.Deferred();
+        var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['page', 'name', 'pagename', 'item']);
+        var tmpPageName = tmpParams.pagename || tmpParams.page || tmpParams.name || tmpParams.item || '';
 
-         var appModule = ActionAppCore.module('app');
-         var tmpPage = appModule[tmpPageName];
+        var appModule = ActionAppCore.module('app');
+        var tmpPage = appModule[tmpPageName];
 
-         if( tmpPage ){
+        if (tmpPage) {
             me.gotoPage(tmpPageName);
             dfd.resolve(true)
-         } else {
+        } else {
             //--- load it up then ... 
             var tmpURL = '/app/pages/' + tmpPageName + '/index.js'
             $.ajax({
                 url: tmpURL,
                 dataType: "script"
-            }).then(function(){
-//--- ToDo: Move this functionality up / see if correct place
+            }).then(function () {
+                //--- ToDo: Move this functionality up / see if correct place
                 //--- Init Module to register
                 ThisApp.initModuleComponents(ThisApp, 'app', [tmpPageName]);
                 //--- Get controller and init it
@@ -775,15 +775,15 @@ var ActionAppCore = {};
                 }
 
                 //--- just in case, 100 ms to say hello
-                ThisApp.delay(100).then(function(theReply){
+                ThisApp.delay(100).then(function (theReply) {
                     ThisApp.gotoPage(tmpPageName);
                     dfd.resolve(true)
                 })
             })
-         }
+        }
 
-         return dfd.promise(); 
-      }
+        return dfd.promise();
+    }
 
     /**
        * gotoPage
@@ -2003,7 +2003,7 @@ var ActionAppCore = {};
         me.showSubPage = showSubPage;
         me.registerAction("showPage", showPage);
         me.registerAction("showSubPage", showSubPage);
-        
+
         me.registerAction("openPage", openPage);
 
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
@@ -2075,7 +2075,7 @@ var ActionAppCore = {};
             var tmpDefaultValue = theDefaultValue || '';
             var tmpParams = {
                 promptOptions: {
-                    onBeforePrompt: function(theControl){
+                    onBeforePrompt: function (theControl) {
                         theControl.loadSpot('text', theText);
                         theControl.setFieldValue('value', tmpDefaultValue || '')
                     }
@@ -2083,9 +2083,9 @@ var ActionAppCore = {};
                 title: theTitle,
                 submitLabel: theButtonCaption
             }
-            ThisApp.inputForm.prompt(tmpParams).then(function(theWasSubmitted, theData){
+            ThisApp.inputForm.prompt(tmpParams).then(function (theWasSubmitted, theData) {
                 var tmpValue = '';
-                if( theWasSubmitted ){
+                if (theWasSubmitted) {
                     var tmpValue = theData.value || '';
                 }
                 dfd.resolve(tmpValue);
@@ -3424,27 +3424,27 @@ License: MIT
             if ((tmpControl)) {
 
                 var tmpControlObject = tmpControl;
-                if( tmpControl.create ){
+                if (tmpControl.create) {
                     tmpControlObject = tmpControl.create("prompt-form");
                 }
                 me.callback = promptControlCommonCallback.bind(tmpControlObject)
                 me.promptControl = tmpControlObject;
 
-                if (tmpControlObject && ThisApp.util.isFunc(tmpOptions.onBeforeLoad) ){
+                if (tmpControlObject && ThisApp.util.isFunc(tmpOptions.onBeforeLoad)) {
                     var tmpFunc = tmpOptions.onBeforeLoad.bind(tmpControlObject);
-                    tmpFunc(tmpControlObject,this);
+                    tmpFunc(tmpControlObject, this);
                 }
 
                 tmpControlObject.loadToElement(me.promptDialogText.get(0))
 
-                if( ThisApp.util.isObj(tmpOptions.doc) ){
+                if (ThisApp.util.isObj(tmpOptions.doc)) {
                     tmpControlObject.loadData(tmpOptions.doc);
                 }
 
-                if (tmpControlObject && ThisApp.util.isFunc(tmpOptions.onBeforePrompt) ){
+                if (tmpControlObject && ThisApp.util.isFunc(tmpOptions.onBeforePrompt)) {
                     var tmpFunc = tmpOptions.onBeforePrompt.bind(tmpControlObject);
-                    tmpFunc(tmpControlObject,this);
-                }                
+                    tmpFunc(tmpControlObject, this);
+                }
 
             } else {
                 me.promptDialogText.html(tmpPromptText);
@@ -4116,26 +4116,26 @@ License: MIT
         var tmpDefaults = ThisApp.controls.defaults.prompt || {};
 
         var tmpPromptOptions = {};
-        if( ThisApp.util.isObj(tmpOptions.promptOptions) ){
+        if (ThisApp.util.isObj(tmpOptions.promptOptions)) {
             $.extend(tmpPromptOptions, tmpOptions.promptOptions);
         }
 
         //--- Does the control have options.prompt {...} setup?
         var tmpControlPromptOptions = {};
-        if( tmpConfig.options && ThisApp.util.isObj(tmpConfig.options.prompt) ){
+        if (tmpConfig.options && ThisApp.util.isObj(tmpConfig.options.prompt)) {
             tmpControlPromptOptions = tmpConfig.options.prompt;
         }
 
-        function tmpGetFrom(theParam){
+        function tmpGetFrom(theParam) {
             return tmpOptions[theParam] || tmpControlPromptOptions[theParam] || tmpDefaults[theParam] || '';
         }
         var tmpTitle = tmpGetFrom('title');
         var tmpSubmitLabel = tmpGetFrom('submitLabel');
         var tmpCancelLabel = tmpGetFrom('cancelLabel');
-        
+
         var tmpIsNew = tmpOptions.isNew === true;
         //--- Use new values if present
-        if( tmpIsNew ){
+        if (tmpIsNew) {
             var tmpTitleNew = tmpGetFrom('titleNew');
             var tmpSubmitLabelNew = tmpGetFrom('submitLabelNew');
             var tmpCancelLabelNew = tmpGetFrom('cancelLabelNew');
@@ -4174,12 +4174,12 @@ License: MIT
             }
             dfd.resolve(theReply, tmpData)
         })
-    
-    
-    
+
+
+
         return dfd.promise();
     }
-    
+
 
 
     meControl.loadConfig = function (theConfig) {
@@ -4364,9 +4364,31 @@ License: MIT
         }
     }
 
+    meInstance.setFieldList = function (theFieldName, theList, theOptions) {
+        var tmpOptions = theOptions || {};
+
+        var tmpFieldEl = this.getElByName$(theFieldName, 'field')
+        if (!(tmpFieldEl)) { return ''; }
+
+        // var tmpSetOnly = ( tmpOptions.setOnly === true );
+        var tmpFieldSpecs = this.getFieldSpecs(theFieldName);
+        if (tmpFieldSpecs) {
+            var tmpCtl = tmpFieldSpecs.ctl || 'field';
+            var tmpControl = me.webControls.get(tmpCtl);
+            if (!(tmpControl.setFieldList)) {
+                //  tmpRet = me._setControlList(this.getEl(), theFieldName, theList);
+            } else {
+                tmpControl.setFieldList(tmpFieldEl, theList, tmpOptions);
+            }
+        } else {
+            //  tmpRet = me._getControlData(this.getEl(), theFieldName);
+        }
+
+    }
+
     meInstance.setFieldValue = function (theFieldName, theValue, theOptions) {
         var tmpOptions = theOptions || {};
-        var tmpSetOnly = ( tmpOptions.setOnly === true );
+        var tmpSetOnly = (tmpOptions.setOnly === true);
 
         var tmpFieldEl = this.getElByName$(theFieldName, 'field')
         if (!(tmpFieldEl)) { return ''; }
@@ -4377,20 +4399,20 @@ License: MIT
             var tmpControl = me.webControls.get(tmpCtl);
             if (!(tmpControl.setFieldValue)) {
                 tmpFieldEl.val(theValue);
-                if( !tmpSetOnly ){
+                if (!tmpSetOnly) {
                     tmpFieldEl.trigger('change');
                 }
                 return true;
             } else {
                 if (tmpControl.setFieldValue(tmpFieldEl, theValue, tmpFieldSpecs)) {
-                    if( !tmpSetOnly ){
+                    if (!tmpSetOnly) {
                         tmpFieldEl.trigger('change');
-                    }    
+                    }
                 };
             }
         } else {
             tmpFieldEl.val(theValue);
-            if( !tmpSetOnly ){
+            if (!tmpSetOnly) {
                 tmpFieldEl.trigger('change');
             }
         }
@@ -4556,14 +4578,14 @@ License: MIT
     }
 
 
-//ToDo: Add clear / set field UI with {quiet:true} the theOptions
+    //ToDo: Add clear / set field UI with {quiet:true} the theOptions
     meInstance.validateField = function (theFN) {
         var tmpFN = theFN;
         var tmpSpecs = this.getFieldSpecs(tmpFN);
 
         if (tmpSpecs) {
             var tmpOnValidate = tmpSpecs._onValidate || tmpSpecs.onValidate || false;
-            
+
             if (tmpOnValidate) {
                 if (isObj(tmpOnValidate)) {
                     var tmpName = tmpOnValidate.run;
@@ -4740,8 +4762,8 @@ License: MIT
         var tmpData = theData || {};
         for (var iPos = 0; iPos < tmpList.length; iPos++) {
             var tmpFN = tmpList[iPos];
-            if( tmpData.hasOwnProperty(tmpFN)){
-                this.setFieldValue(tmpFN, tmpData[tmpFN], {setOnly: true});
+            if (tmpData.hasOwnProperty(tmpFN)) {
+                this.setFieldValue(tmpFN, tmpData[tmpFN], { setOnly: true });
             }
         }
         this.refreshControl();
@@ -5275,6 +5297,36 @@ License: MIT
 
     }
 
+    me.getListAsObjects = getListAsObjects;
+    function getListAsObjects(theList) {
+        var tmpList = getListAsArrays(theList);
+        var tmpRet = []
+
+        if (tmpList && tmpList.length > 0) {
+            for (var index = 0; index < tmpList.length; index++) {
+                var tmpEntry = tmpList[index] || '';
+                if (tmpEntry) {
+                    var tmpText = tmpEntry;
+                    var tmpVal = tmpEntry;
+                    if (!isStr(tmpEntry) && tmpEntry.length == 2) {
+                        //--- This is an array, get values
+                        tmpText = tmpEntry[0]
+                        tmpVal = tmpEntry[1]
+                    }
+                    tmpRet.push(
+                        {
+                            name: tmpText,
+                            value: tmpVal,
+                            text: tmpText
+                        }
+                    )
+
+                }
+            }
+        }
+        return tmpRet;
+
+    }
     me.getListAsArrays = getListAsArrays
     function getListAsArrays(theList) {
         var tmpList = theList;
@@ -6291,6 +6343,14 @@ License: MIT
                 return me._getControlData(theControlEl, theFieldSpecs.name);
             }
             return '';
+        },
+        setFieldList: function (theFieldEl, theList, theFieldSpecs) {
+            var tmpCtlEl = theFieldEl.closest('[ctlcomp]');
+            var tmpList = getListAsObjects(theList || '');
+
+            console.log('theList', theList);
+            console.log('tmpList', tmpList);
+            tmpCtlEl.dropdown('change values', tmpList);
         },
         setFieldValue: function (theFieldEl, theValue, theFieldSpecs) {
             var tmpCtlEl = theFieldEl.closest('[ctlcomp]');
