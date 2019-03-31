@@ -2065,7 +2065,10 @@ var ActionAppCore = {};
             }]
         }
 
-        ThisApp.inputForm = ThisApp.controls.newControl(tmpInputSpecs).create('app:input-form');
+        //ToDo: Modify to be always avail and include selecting a choice as option
+        //      This is to keep from buliding and destroying for each
+        //      Note: IF we add "cache" option to prompt, may work as well
+        ThisApp.inputForm = ThisApp.controls.newControl(tmpInputSpecs);
 
         ThisApp.input = function (theText, theTitle, theButtonCaption, theDefaultValue) {
             var dfd = jQuery.Deferred();
@@ -2078,7 +2081,7 @@ var ActionAppCore = {};
                     }
                 },
                 title: theTitle,
-                caption: theButtonCaption
+                submitLabel: theButtonCaption
             }
             ThisApp.inputForm.prompt(tmpParams).then(function(theWasSubmitted, theData){
                 var tmpValue = '';
@@ -3416,6 +3419,8 @@ License: MIT
             }
             me.promptDialogTitle.html(tmpTitle);
             me.promptDialogTextTop.html(tmpTopText)
+
+            //--- Special stuff to do when prompting a control
             if ((tmpControl)) {
 
                 var tmpControlObject = tmpControl;
@@ -3428,9 +3433,13 @@ License: MIT
                 if (tmpControlObject && ThisApp.util.isFunc(tmpOptions.onBeforeLoad) ){
                     var tmpFunc = tmpOptions.onBeforeLoad.bind(tmpControlObject);
                     tmpFunc(tmpControlObject,this);
-                }                
+                }
 
                 tmpControlObject.loadToElement(me.promptDialogText.get(0))
+
+                if( ThisApp.util.isObj(tmpOptions.doc) ){
+                    tmpControlObject.loadData(tmpOptions.doc);
+                }
 
                 if (tmpControlObject && ThisApp.util.isFunc(tmpOptions.onBeforePrompt) ){
                     var tmpFunc = tmpOptions.onBeforePrompt.bind(tmpControlObject);
@@ -4036,7 +4045,14 @@ License: MIT
     //=== === === === === === === === === === === === === === === === 
     //--- Global controls functions
     //=== === === === === === === === === === === === === === === === 
-
+    // ThisApp.controls.defaults.prompt.title to get/update default title
+    me.defaults = {
+        prompt: {
+            title: "Enter Details",
+            submitLabel: "Submit",
+            cancelLabel: "Cancel"
+        }
+    }
     //--- Create and return a new control instance based on config
     me.newControl = function (theConfig, theOptions) {
         if (!(theConfig)) {
@@ -4494,22 +4510,12 @@ License: MIT
             return dfd.promise();
         }
         this.assureRequiredRun = true;
-
-        var tmpThis = this;
         this.options = this.options || {};
-
-        var tmpThis = this;
-
         var tmpPromRequired = true;
         var tmpPromLayoutReq = true;
-
         var tmpLayoutReq = this.getContentRequired();
         var tmpInitReq = ThisApp.loadResources.bind(this);
 
-
-        // if (this.options.required) {
-        //     tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
-        // }
         if (tmpLayoutReq) {
             tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
         }
@@ -4522,42 +4528,87 @@ License: MIT
     }
 
 
+    //--- ToDo: Review this, better way?  Just use prompt options?
+    //     also have options: prompt: {} in the control options JSON
+
+    //Control / Form prompting
+
+    /*  
+    Prompt options: 
+       doc: the object that contains the data
+
+       title: the title to use by default
+       titleNew: the title when isNew
+
+       submitLabel: the label to put on the submit button, 
+       submitLabelNew: the submit label when isNew
+
+       cancelLabel: the label to put on the cancel button, 
+       cancelLabelNew: the cancel label when isNew
+
+    Note: Uses controls default if not provuded
+        ThisApp.controls.defaults
+            .title .titleNew / etc
+
+    */
     meControl.prompt = function (theOptions) {
+        console.log( 'meControl.prompt', theOptions);
         var dfd = jQuery.Deferred();
-    
+
         var tmpOptions = theOptions || {};
-        var tmpCaption = tmpOptions.caption ||  "Save Changes";
-        var tmpTitle = tmpOptions.title ||  "Edit Details";
+        var tmpConfig = this.controlConfig;
+        var tmpDefaults = ThisApp.controls.defaults.prompt || {};
+
+        var tmpPromptOptions = {};
+        if( ThisApp.util.isObj(tmpOptions.promptOptions) ){
+            $.extend(tmpPromptOptions, tmpOptions.promptOptions);
+        }
+
+        //--- Does the control have options.prompt {...} setup?
+        var tmpControlPromptOptions = {};
+        if( tmpConfig.options && ThisApp.util.isObj(tmpConfig.options.prompt) ){
+            tmpControlPromptOptions = tmpConfig.options.prompt;
+            console.log( 'tmpControlPromptOptions', tmpControlPromptOptions);
+        }
+
+        function tmpGetFrom(theParam){
+            return tmpOptions[theParam] || tmpControlPromptOptions[theParam] || tmpDefaults[theParam] || '';
+        }
+        var tmpTitle = tmpGetFrom('title');
+        var tmpSubmitLabel = tmpGetFrom('submitLabel');
+        var tmpCancelLabel = tmpGetFrom('cancelLabel');
+        
+        var tmpIsNew = tmpOptions.isNew === true;
+        //--- Use new values if present
+        if( tmpIsNew ){
+            var tmpTitleNew = tmpGetFrom('titleNew');
+            var tmpSubmitLabelNew = tmpGetFrom('submitLabelNew');
+            var tmpCancelLabelNew = tmpGetFrom('cancelLabelNew');
+
+            tmpTitle = tmpTitleNew || tmpTitle;
+            tmpSubmitLabel = tmpSubmitLabelNew || tmpSubmitLabel;
+            tmpCancelLabel = tmpCancelLabelNew || tmpCancelLabel;
+        }
+
         var tmpDoc = tmpOptions.doc || {};
-        var tmpExtraOptions = tmpOptions.promptOptions || false;
-    
-        var tmpIsNew = false;
-    
-        if (typeof (tmpOptions.isNew) == 'boolean') {
-            tmpIsNew = tmpOptions.isNew;
-        } else {
-            tmpIsNew = (typeof (theDoc) != 'object');
-        }
-    
-        if (tmpIsNew) {
-            tmpCaption = tmpOptions.newCaption || tmpCaption;
-            tmpTitle = tmpOptions.newTitle || tmpTitle;
-        }
-    
-    
-    
+
+        var tmpExtraOptions = theOptions.promptOptions || false;
+
         var tmpPromptOptions = {
             title: tmpTitle,
             control: this,
+            doc: tmpDoc,
             buttons: {
-                yes: tmpCaption,
-                no: "Cancel"
+                yes: tmpSubmitLabel,
+                no: tmpCancelLabel
             }
         }
-    
+
         if (tmpOptions) {
             $.extend(tmpPromptOptions, tmpExtraOptions)
         }
+
+        console.log( 'tmpPromptOptions', tmpPromptOptions);
     
         ThisApp.prompter.prompt(tmpPromptOptions).then(function (theReply, theControl) {
             var tmpData = {};
@@ -4660,63 +4711,8 @@ License: MIT
 
 
 
-meInstance.prompt = function (theOptions) {
-    var dfd = jQuery.Deferred();
+    // meInstance.prompt = meControl.prompt;
 
-    var tmpOptions = theOptions || {};
-    var tmpCaption = tmpOptions.caption ||  "Save Changes";
-    var tmpTitle = tmpOptions.title ||  "Edit Details";
-    var tmpDoc = tmpOptions.doc || {};
-    var tmpExtraOptions = tmpOptions.promptOptions || false;
-    // var tmpText = '';
-    // if( tmpOptions.text ){
-    //     tmpText = tmpOptions.text;
-    // }
-
-    var tmpIsNew = false;
-
-    if (typeof (tmpOptions.isNew) == 'boolean') {
-        tmpIsNew = tmpOptions.isNew;
-    } else {
-        tmpIsNew = (typeof (theDoc) != 'object');
-    }
-
-    if (tmpIsNew) {
-        tmpCaption = tmpOptions.newCaption || tmpCaption;
-        tmpTitle = tmpOptions.newTitle || tmpTitle;
-    }
-
-
-
-    var tmpPromptOptions = {
-        title: tmpTitle,
-        control: this,
-        buttons: {
-            yes: tmpCaption,
-            no: "Cancel"
-        }
-    }
-
-    if (tmpOptions) {
-        $.extend(tmpPromptOptions, tmpExtraOptions)
-    }
-
-    ThisApp.prompter.prompt(tmpPromptOptions).then(function (theReply, theControl) {
-        var tmpData = {};
-        if (theReply && theControl && isFunc(theControl.getData)) {
-            tmpData = theControl.getData();
-        }
-        if (theControl && theControl.destroy) {
-            theControl.destroy();
-            delete theControl;
-        }
-        dfd.resolve(theReply, tmpData)
-    })
-
-
-
-    return dfd.promise();
-}
 
     //--- Return cached control element
     meInstance.getEl = function () {
@@ -4815,7 +4811,13 @@ meInstance.prompt = function (theOptions) {
         }
     }
 
-    meInstance.setFieldValue = function (theFieldName, theValue) {
+    meInstance.setFieldValue = function (theFieldName, theValue, theOptions) {
+        var tmpOptions = theOptions || {};
+        var tmpSetOnly = true;
+        if( tmpOptions.setOnly === false ){
+            tmpSetOnly = false
+        }
+
         var tmpFieldEl = this.getElByName$(theFieldName, 'field')
         if (!(tmpFieldEl)) { return ''; }
 
@@ -4825,16 +4827,22 @@ meInstance.prompt = function (theOptions) {
             var tmpControl = me.webControls.get(tmpCtl);
             if (!(tmpControl.setFieldValue)) {
                 tmpFieldEl.val(theValue);
-                tmpFieldEl.trigger('change');
+                if( !tmpSetOnly ){
+                    tmpFieldEl.trigger('change');
+                }
                 return true;
             } else {
                 if (tmpControl.setFieldValue(tmpFieldEl, theValue, tmpFieldSpecs)) {
-                    tmpFieldEl.trigger('change');
+                    if( !tmpSetOnly ){
+                        tmpFieldEl.trigger('change');
+                    }    
                 };
             }
         } else {
             tmpFieldEl.val(theValue);
-            tmpFieldEl.trigger('change');
+            if( !tmpSetOnly ){
+                tmpFieldEl.trigger('change');
+            }
         }
         return this;
     }
@@ -5173,6 +5181,18 @@ meInstance.prompt = function (theOptions) {
             this.setFieldValue(tmpFN, '');
 
         }
+    }
+
+    meInstance.loadData = function (theData) {
+        var tmpList = this.getConfig().index.fieldsList;
+        var tmpData = theData || {};
+        for (var iPos = 0; iPos < tmpList.length; iPos++) {
+            var tmpFN = tmpList[iPos];
+            if( tmpData.hasOwnProperty(tmpFN)){
+                this.setFieldValue(tmpFN, tmpData[tmpFN], {setOnly: true});
+            }
+        }
+        this.refreshControl();
     }
 
     meInstance.getIndex = function () {
