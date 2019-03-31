@@ -2501,13 +2501,11 @@ License: MIT
                 if( typeof(tmpRegionInfo) == 'boolean' && tmpRegionType){
                     
                     tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
-// console.log( 'Default added',tmpRegionType, tmpRegion);
                     tmpOpts[tmpRegionType][tmpRegion] = { 
                         partname: tmpRegion,
                         value: tmpRegion 
                     }
                 } else if( typeof(tmpRegionInfo) == 'string'){
-// console.log( 'Added from string',tmpRegionType, tmpRegion, tmpRegionInfo);
                     tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
 
                     tmpOpts[tmpRegionType][tmpRegion] = { 
@@ -2525,8 +2523,6 @@ License: MIT
                         tmpRegionType = 'html';
                         tmpRegionInfo = tmpRegionInfo.html;
                     }
-
-                    // console.log( 'Added from object',tmpRegionType, tmpRegion, tmpRegionInfo);
                     tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
                     tmpOpts[tmpRegionType][tmpRegion] = tmpRegionInfo
                 }
@@ -2536,8 +2532,6 @@ License: MIT
             }
         }
 
-
-console.log( 'theLayoutOptions', theLayoutOptions);
         return theLayoutOptions;
 
     }
