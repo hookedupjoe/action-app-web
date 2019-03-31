@@ -2388,7 +2388,6 @@ License: MIT
     };
 
 
-
     //--- Base class for application pages
     function SitePage(theOptions) {
         this.options = theOptions || {};
@@ -2419,6 +2418,10 @@ License: MIT
         this.layoutOptions = this.options.layoutOptions || false;
 
         if (this.layoutOptions) {
+
+            //this.layoutOptions = preProcessLayoutRegions(this.layoutOptions);
+            preProcessLayoutRegions(this.layoutOptions);
+
             this.layoutOptions = this.layoutOptions || {};
             this.layoutConfig = $.extend({}, defaultLayoutOptions, (this.options.layoutConfig || {}));
 
@@ -2473,6 +2476,71 @@ License: MIT
     }
 
 
+    function preProcessLayoutRegions(theLayoutOptions) {
+        //--- By reference so will update original
+        //     .. to match desired layout to get by res type
+        var tmpOpts = theLayoutOptions;
+
+        var tmpType = '';
+        if( tmpOpts.useControls === true ){
+            tmpType = 'controls';
+        } else if( tmpOpts.usePanels === true ){
+           tmpType = 'panels'
+        } else if( tmpOpts.useHTML === true ){
+           tmpType = 'html'
+        }
+
+        var tmpRegions = ['center', 'north', 'south', 'east', 'west'];
+        for (var i = 0; i < tmpRegions.length; i++) {
+            var tmpRegionType = tmpType;
+            var tmpRegion = tmpRegions[i];
+            var tmpRegionInfo  = tmpOpts[tmpRegion];
+            
+            if (tmpRegionInfo) {
+            
+                if( typeof(tmpRegionInfo) == 'boolean' && tmpRegionType){
+                    
+                    tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
+// console.log( 'Default added',tmpRegionType, tmpRegion);
+                    tmpOpts[tmpRegionType][tmpRegion] = { 
+                        partname: tmpRegion,
+                        value: tmpRegion 
+                    }
+                } else if( typeof(tmpRegionInfo) == 'string'){
+// console.log( 'Added from string',tmpRegionType, tmpRegion, tmpRegionInfo);
+                    tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
+
+                    tmpOpts[tmpRegionType][tmpRegion] = { 
+                        partname: tmpRegion,
+                        value: tmpRegionInfo 
+                    }
+                } else if( typeof(tmpRegionInfo) == 'object'){
+                    if( tmpRegionInfo.control ){
+                        tmpRegionType = 'controls';
+                        tmpRegionInfo.value = tmpRegionInfo.control;
+                    } else if( tmpRegionInfo.panel ){
+                        tmpRegionType = 'panels';
+                        tmpRegionInfo.value = tmpRegionInfo.panel;
+                    } else if( tmpRegionInfo.html ){
+                        tmpRegionType = 'html';
+                        tmpRegionInfo = tmpRegionInfo.html;
+                    }
+
+                    // console.log( 'Added from object',tmpRegionType, tmpRegion, tmpRegionInfo);
+                    tmpOpts[tmpRegionType] = tmpOpts[tmpRegionType] || {};
+                    tmpOpts[tmpRegionType][tmpRegion] = tmpRegionInfo
+                }
+
+                
+                tmpOpts[tmpRegion] = true;
+            }
+        }
+
+
+console.log( 'theLayoutOptions', theLayoutOptions);
+        return theLayoutOptions;
+
+    }
     me.initOnFirstLoad = function () {
         var dfd = jQuery.Deferred();
         var tmpThis = this;
@@ -2629,7 +2697,7 @@ License: MIT
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
                 } else {
-                    tmpLTName = tmpLT.control;
+                    tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 tmpHTMLNode.map[tmpLTName] = tmpLTName;
@@ -2660,7 +2728,7 @@ License: MIT
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
                 } else {
-                    tmpLTName = tmpLT.control;
+                    tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
 
@@ -2692,7 +2760,7 @@ License: MIT
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
                 } else {
-                    tmpLTName = tmpLT.control;
+                    tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 tmpControlsNode.map[tmpLTName] = tmpLTName;
@@ -2763,7 +2831,7 @@ License: MIT
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
                 } else {
-                    tmpLTName = tmpLT.control;
+                    tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.panels[tmpLTName];
@@ -2786,7 +2854,7 @@ License: MIT
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
                 } else {
-                    tmpLTName = tmpLT.control;
+                    tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;;
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.controls[tmpLTName];
@@ -3403,7 +3471,7 @@ License: MIT
                 , tmpButtons = tmpOptions.buttons || ''
                 , tmpTopText = tmpOptions.topText || ''
                 , tmpTitle = tmpOptions.title || ''
-                , tmpControl = tmpOptions.control || false
+                , tmpControl = tmpOptions.control || tmpOptions.panel || tmpOptions.html || tmpOptions.value || false
                 , tmpSize = tmpOptions.size || 'small'
                 , tmpAction = tmpOptions.action || '';
 
