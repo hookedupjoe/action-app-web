@@ -4565,7 +4565,7 @@ License: MIT
         var tmpSpecs = this.getFieldSpecs(tmpFN);
 
         if (tmpSpecs) {
-            var tmpOnValidate = tmpSpecs.onValidate || false;
+            var tmpOnValidate = tmpSpecs._onValidate || tmpSpecs.onValidate || false;
             
             if (tmpOnValidate) {
                 if (isObj(tmpOnValidate)) {
@@ -4669,7 +4669,7 @@ License: MIT
 
 
         if (tmpIsValid) {
-            var tmpOnValidate = this.onValidate || tmpConfig.onValidate;
+            var tmpOnValidate = this._onValidate || this.onValidate || tmpConfig._onValidate || tmpConfig.onValidate;
 
             if (isObj(tmpOnValidate)) {
                 if (tmpOnValidate.isStoredFunction && tmpOnValidate._func) {
