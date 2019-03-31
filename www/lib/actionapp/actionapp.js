@@ -6347,9 +6347,6 @@ License: MIT
         setFieldList: function (theFieldEl, theList, theFieldSpecs) {
             var tmpCtlEl = theFieldEl.closest('[ctlcomp]');
             var tmpList = getListAsObjects(theList || '');
-
-            console.log('theList', theList);
-            console.log('tmpList', tmpList);
             tmpCtlEl.dropdown('change values', tmpList);
         },
         setFieldValue: function (theFieldEl, theValue, theFieldSpecs) {
