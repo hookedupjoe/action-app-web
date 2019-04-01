@@ -42,25 +42,18 @@ table.outline > tbody > tr[oluse="select"] {
 }
 
 table.outline > tbody > tr.active > td.tbl-label {
-  width:140px;
-  font-weight: bolder;
+  width:100px;
   background-color: #a333c8;
   color: white;
 }
 
 table.outline > tbody > tr.active[type="page"] > td.tbl-label {
-  width:140px;
-  font-weight: bolder;
   background-color: #21ba45;
-  color: white;
 }
 
 
 table.outline > tbody > tr.active[type="app"] > td.tbl-label {
-  width:140px;
-  font-weight: bolder;
   background-color: #2185d0;
-  color: white;
 }
 
 
@@ -74,6 +67,8 @@ table.outline > tbody > tr > td.tbl-label {
   background-color: #eeeeee;
 }
 table.outline > tbody > tr > td.tbl-details {
+  white-space: nowrap;
+  overflow:auto;
   width:auto;
 }
 
