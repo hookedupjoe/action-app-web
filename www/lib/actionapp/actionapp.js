@@ -181,14 +181,9 @@ var ActionAppCore = {};
             "html": {}
         };
 
-        //me.panelIndex = {};
-        me.controlIndex = {};
-
-        var defaults = {}; //? needed ?
         me.events = $({});
         me.$window = $(window);
         me.$document = $(document);
-
 
         me.pagesGroup = "app:pages";
 
@@ -2399,13 +2394,10 @@ License: MIT
         this.options = theOptions || {};
         this.pageName = this.options.pageName || '';
         this.pageNamespace = this.options.pageNamespace || this.pageName || '';
-        this.controlIndex = {}; //--- Control Configs Loaded, not instances
         this.part = {}; //--- Control instances by name
         this.parts = this.part //longcut - keep typing it wrong, can use either :)
         this.pageActions = {}; //--- A place for actions
         this.pageTitle = this.options.pageTitle || '';
-
-        this.controlIndex = {};
 
         this.res = {
             "panels": {},
@@ -5724,7 +5716,7 @@ License: MIT
                 tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i> ');
             }
 
-            tmpHTML.push(tmpObject.text || tmpObject.html || tmpObject.title || '')
+            tmpHTML.push(tmpObject.text || tmpObject.label  || tmpObject.title || '')
 
             if (tmpObject.icon && tmpObject.right) {
                 tmpHTML.push(' <i class="' + tmpObject.icon + ' icon"></i>');
