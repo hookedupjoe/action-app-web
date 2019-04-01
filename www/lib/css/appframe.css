@@ -11,6 +11,76 @@ html, body {
   overflow: hidden;
 }
 
+.pad1 {
+  padding: 1px !important;
+}
+.pad2 {
+  padding: 2px !important;
+}
+.pad3 {
+  padding: 3px !important;
+}
+.pad4 {
+  padding: 4px !important;
+}
+.pad5 {
+  padding: 5px !important;
+}
+.pad6 {
+  padding: 6px !important;
+}
+.pad8 {
+  padding: 8px !important;
+}
+.pad10 {
+  padding: 10px !important;
+}
+
+
+table.outline > tbody > tr[oluse="select"] {
+  cursor: pointer;
+}
+
+table.outline > tbody > tr.active > td.tbl-label {
+  width:140px;
+  font-weight: bolder;
+  background-color: #a333c8;
+  color: white;
+}
+
+table.outline > tbody > tr.active[type="page"] > td.tbl-label {
+  width:140px;
+  font-weight: bolder;
+  background-color: #21ba45;
+  color: white;
+}
+
+
+table.outline > tbody > tr.active[type="app"] > td.tbl-label {
+  width:140px;
+  font-weight: bolder;
+  background-color: #2185d0;
+  color: white;
+}
+
+
+
+table.outline > tbody > tr > td.tbl-icon {
+  width:40px;
+}
+table.outline > tbody > tr > td.tbl-label {
+  width:100px;
+  font-weight: bold;
+  background-color: #eeeeee;
+}
+table.outline > tbody > tr > td.tbl-details {
+  width:auto;
+}
+
+
+
+
+
 .ui-layout-pane {
   padding: 0px;
 }
