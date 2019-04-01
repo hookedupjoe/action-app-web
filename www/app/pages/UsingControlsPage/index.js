@@ -26,22 +26,15 @@ License: MIT
             }
         }
     }
-
+    
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
-        controls: {
-            "west": { partname: "buttonPanel", control: "buttonPanel" },
-            "east": { partname: "previewPanel", control: "east" },
-            "north": { partname: "north", control: "north" }
-        },
-        html: {
-            "center": "page-body"
-        },
-        facetPrefix: thisPageSpecs.pageName,
-        north: true,
-        south: false,
-        west: true,
-        east: true
+        useControls: true,
+            west: { partname: "buttonPanel", control: "buttonPanel" },
+            east: { partname: "previewPanel", control: "east" },
+            north: { partname: "north", control: "north" },
+            center: {html: "page-body"},
+            south: false
     }
 
     //--- Customize default layout configuration

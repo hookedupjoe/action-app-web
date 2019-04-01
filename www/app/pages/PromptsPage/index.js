@@ -17,20 +17,14 @@ License: MIT
     };
     var pageBaseURL = 'app/pages/' + thisPageSpecs.pageName + '/';
 
-    //--- Define this applications layouts
     thisPageSpecs.layoutOptions = {
         baseURL: pageBaseURL,
-        html: {
-            "east": "page-east",
-            "north": "page-header",
-            "center": "page-body",
-            "west": "page-west"
-        },
-        facetPrefix: thisPageSpecs.pageName,
-        north: true,
+
+        east: false,
         south: false,
-        west: true,
-        east: false
+        north: {html: "page-header"},
+        center: {html: "page-body"},
+        west: {html: "page-west"},
     }
 
     //--- Customize default layout configuration

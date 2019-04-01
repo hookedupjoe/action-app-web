@@ -16,7 +16,6 @@ License: MIT
     };
 
     thisPageSpecs.layoutOptions = {
-        facetPrefix: thisPageSpecs.pageName,
         north: true,
         south: false,
         west: true,

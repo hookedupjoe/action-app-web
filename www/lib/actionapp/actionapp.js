@@ -207,8 +207,6 @@ var ActionAppCore = {};
             if (tmpOpts.icon) {
                 theNavObject.iconHTML = '<i class="' + tmpOpts.icon + ' icon"></i>'
             }
-
-            //theNavObject.isNavLink = ( theNavObject.display == 'primary' );
             me.config.navlinks.push(theNavObject)
             return true;
         }
@@ -7178,6 +7176,4 @@ License: MIT
 
 
 })(ActionAppCore, $);
-
-
 
