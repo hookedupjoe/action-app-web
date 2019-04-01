@@ -421,9 +421,7 @@ var ActionAppCore = {};
 
             if (!(tmpExists)) {
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
-                if (tmpURI.type == 'panels') {
-                    tmpDebugFlag = true;
-                }
+                tmpURL = assureRelative(tmpURL);
                 tmpRequests.push(tmpURI);
                 tmpDefs.push(
                     $.ajax({
@@ -463,7 +461,19 @@ var ActionAppCore = {};
 
     }
 
+    function assureRelative(theURL){
+        var tmpURL = theURL;
 
+        if( !tmpURL.startsWith('.')){
+            if( !tmpURL.startsWith('/') ){
+                tmpURL = './' + tmpURL;
+            } else {
+                tmpURL = '.' + tmpURL
+            }
+        }
+
+        return tmpURL;
+    }
 
     var resourceAlias = {
         "control": "controls",
@@ -759,7 +769,7 @@ var ActionAppCore = {};
             dfd.resolve(true)
         } else {
             //--- load it up then ... 
-            var tmpURL = '/app/pages/' + tmpPageName + '/index.js'
+            var tmpURL = './app/pages/' + tmpPageName + '/index.js'
             $.ajax({
                 url: tmpURL,
                 dataType: "script"
@@ -1920,7 +1930,7 @@ var ActionAppCore = {};
             var tmpPageNames = theAppConfig.pages;
             for (var iPageName = 0; iPageName < tmpPageNames.length; iPageName++) {
                 var tmpPageName = tmpPageNames[iPageName];
-                var tmpURL = '/app/pages/' + tmpPageName + '/index.js'
+                var tmpURL = './app/pages/' + tmpPageName + '/index.js'
                 tmpDefs.push($.ajax({
                     url: tmpURL,
                     dataType: "script"
