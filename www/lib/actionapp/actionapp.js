@@ -968,13 +968,13 @@ var ActionAppCore = {};
         //--- Create a list of attributes to look for
         //  * appuse is tablink and the group is this group
         var tmpSelector = {
-            appuse: 'tablinks',
+            // appuse: 'tablinks',
             group: tmpGroupName
         }
         //--- Remove the 'active' class from all matching items for this group that are tablinks
         //--- Note: The getByAttr$ returns the elements, jQuery's removeClass 
         //          returns the elements being effected for chaining
-        var tmpAll = me.getByAttr$(tmpSelector)
+        me.getByAttr$(tmpSelector)
             .removeClass('active');
 
 
