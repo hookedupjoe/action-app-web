@@ -507,7 +507,6 @@ var ActionAppCore = {};
         if (theType == 'controls') {
             try {
                 tmpResourceData = eval(tmpResourceData);
-                console.log( 'controls tmpResourceData', tmpResourceData);
                 tmpResourceData = ThisApp.controls.newControl(tmpResourceData.specs, tmpResourceData.options || {})
                 tmpResourceData.controlConfig.parent = tmpThis;
             } catch (ex) {
@@ -3692,7 +3691,6 @@ License: MIT
     }
     //--- Create and return a new control instance based on config
     me.newControl = function (theConfig, theOptions) {
-        console.log( 'newControl', theConfig, theOptions);
         if (!(theConfig)) {
             return false;
         }
