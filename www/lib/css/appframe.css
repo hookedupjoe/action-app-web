@@ -60,8 +60,6 @@ table.outline > tbody > tr > td.tbl-icon {
 
 table.outline > tbody > tr > td.tbl-icon2 {
   width:80px;
-  white-space: nowrap;
-  overflow:auto;
 }
 
 table.outline > tbody > tr > td.tbl-details {

@@ -506,14 +506,16 @@ var ActionAppCore = {};
         }
         if (theType == 'controls') {
             try {
-                var tmpResourceData = eval(tmpResourceData);
+                tmpResourceData = eval(tmpResourceData);
+                console.log( 'controls tmpResourceData', tmpResourceData);
+                tmpResourceData = ThisApp.controls.newControl(tmpResourceData.specs, tmpResourceData.options || {})
                 tmpResourceData.controlConfig.parent = tmpThis;
             } catch (ex) {
                 console.warn("Could not convert control to object", tmpResourceData);
             }
         } else if (theType == 'panels') {
             try {
-                var tmpResourceData = ThisApp.controls.newControl(tmpResourceData, { parent: tmpThis })
+                tmpResourceData = ThisApp.controls.newControl(tmpResourceData, { parent: tmpThis })
             } catch (ex) {
                 console.warn("Could not convert panel to object");
             }
@@ -2013,7 +2015,6 @@ var ActionAppCore = {};
         me.registerAction("showPage", showPage);
         me.registerAction("showSubPage", showSubPage);
         me.registerAction("selectMe", showSubPage);
-
         me.registerAction("openPage", openPage);
 
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
@@ -3691,13 +3692,13 @@ License: MIT
     }
     //--- Create and return a new control instance based on config
     me.newControl = function (theConfig, theOptions) {
+        console.log( 'newControl', theConfig, theOptions);
         if (!(theConfig)) {
             return false;
         }
         if (isObj(theOptions)) {
             $.extend(theConfig, theOptions);
         }
-
         var tmpNew = new Control(theConfig);
 
         return tmpNew
@@ -6866,6 +6867,72 @@ License: MIT
 
     }
 
+    me.ControlTableOutline = {
+        getInfo: function (theControlName) {
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpRet = {
+                name: theControlName,
+                title: "Custom Control - Semantic Card with Options",
+                category: "Common Web Custom Controls",
+                properties: tmpProps,
+                actions: {}
+            };
+            return tmpRet;
+        },
+        getCustomContent: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpNewContent = [];
+
+           
+            tmpNewContent.push({
+                "ctl": "content",
+                "name": "control-body",
+                "content": [
+                    {
+                        "ctl": "title",
+                        "name": "topHeader",
+                        "text": "TESTING"
+                    }
+                ]
+            })
+
+            return tmpNewContent;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpHTML = [];
+            var tmpNewContent = this.getCustomContent(theControlName, theObject, theControlObj);
+
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if (tmpHidden) {
+                tmpStyle += tmpHidden;
+            }
+            if (tmpStyle) {
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
+            var tmpControlClass = '';
+            var tmpClasses = tmpObject.classes || '';
+            tmpHTML = [];
+            tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" ' + tmpStyle + '>')
+
+            tmpHTML.push(getContentHTML(theControlName, tmpNewContent, theControlObj))
+
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+
+    }
+
+
     me.getControlType = function (theControlName) {
         var tmpControl = me.getWebControl(theControlName)
         if (tmpControl && tmpControl.isField === true) {
@@ -6998,7 +7065,6 @@ License: MIT
     me.webControls.add('ul', me.ControlDOM);
     me.webControls.add('li', me.ControlDOM);
     me.webControls.add('a', me.ControlDOM);
-
     me.webControls.add('table', me.ControlDOM);
     me.webControls.add('tbody', me.ControlDOM);
     me.webControls.add('tr', me.ControlDOM);
@@ -7008,6 +7074,7 @@ License: MIT
 
     //=== Common Custom Web Controls ..
     me.webControls.add('cardfull', me.ControlFullCard);
+    me.webControls.add('tableoutline', me.ControlTableOutline);
 
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 
