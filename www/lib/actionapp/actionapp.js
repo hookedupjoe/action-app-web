@@ -6951,222 +6951,140 @@ License: MIT
             var tmpObject = theObject || {};
             var tmpNewContent = [];
 
-           
-            tmpNewContent.push({
+            
+            var tmpBase = {
 				ctl: "segment",
 				basic: true,
 				slim: true,
 				name: "outline",
-				content: [
-					{
-						ctl: "table",
-						classes: "ui very compact table selectable outline",
-						content: [
-							{
-								ctl: "tbody",
-								content: [
-									{
-										ctl: "tr",
-										classes: "",
-										attr: {
-											action: "selectMe",
-											group: "app-outline",
-											item: "application",
-											type: "app",
-											oluse: "select"
-										},
-										content: [
-											{
-												ctl: "td",
-												classes: "tbl-icon",
-												content: [
-													{
-														ctl: "i",
-														classes: "large globe blue icon"
-													}
-												]
-											},
-											{
-												ctl: "td",
-												classes: "tbl-details",
-												text: "My First App"
-											},
-											{
-												ctl: "td",
-												classes: "tbl-label",
-												text: "ThisApp"
-											},
-											{
-												ctl: "td",
-												classes: "tbl-icon2",
-												content: [
-													{
-														ctl: "i",
-														attr: {
-															action: "outlineDisplay",
-															select: "false",
-															scope: "children"
-														},
-														classes: "icon square minus large toright"
-													},
-													{
-														ctl: "i",
-														attr: {
-															action: "outlineDisplay",
-															select: "true",
-															scope: "children"
-														},
-														classes: "icon square plus large toright"
-													}
-												]
-											}
-										]
-									},
-									{
-										ctl: "tr",
-										attr: {
-											type: "app",
-											oluse: "container"
-										},
-										content: [
-											{
-												ctl: "td",
-												attr: {
-													colspan: "4",
-												},
-												content: [
-													{
-														ctl: "table",
-														classes: "ui very compact table selectable outline",
-														content: [
-															{
-																ctl: "tbody",
-																content: [
-																	{
-																		ctl: "tr",
-																		attr: {
-																			oluse: "collapsable",
-																			action: "selectMe",
-																			group: "app-outline",
-																			item: "page1-page",
-																			type: "page"
-																		},
-																		content: [
-																			{
-																				ctl: "td",
-																				classes: "tbl-icon",
-																				content: [
-																					{
-																						ctl: "i",
-																						classes: "columns icon green large"
-																					}
-																				]
-																			},
-																			{
-																				ctl: "td",
-																				classes: "tbl-details",
-																				text: "Home Page"
-																			},
-																			{
-																				ctl: "td",
-																				classes: "tbl-label",
-																				text: "Page"
-																			},
-																			{
-																				ctl: "td",
-																				classes: "tbl-icon",
-																				attr: {
-																					action: "toggleMe"
-																				},
-																				content: [
-																					{
-																						ctl: "i",
-																						classes: "icon square minus large toright"
-																					}
-																				]
-																			}
-																		]
+                content: []
+            }
 
-																	},
-																	{
-																		ctl: "tr",
-																		attr: {
-																			type: "page",
-																			oluse: "container"
-																		},
-																		content: [
-																			{
-																				ctl: "td",
-																				attr: {
-																					colspan: "4"
-																				},
-																				content: [
-																					{
-																						ctl: "table",
-																						classes: "ui very compact table selectable outline",
-																						content: [
-																							{
-																								ctl: "tbody",
-																								content: [
-																									{
-																										ctl: "tr",
-																										attr: {
-																											type: "region",
-																											type: "region",
-																											action: "selectMe",
-																											group: "app-outline",
-																											item: "page1-east",
-																											oluse: "select"
-																										},
-																										content: [
-																											{
-																												ctl: "td",
-																												classes: "tbl-icon",
-																												content: [
-																													{
-																														ctl: "i",
-																														classes: "newspaper outline icon purple large"
-																													}
-																												]
-																											},
-																											{
-																												ctl: "td",
-																												classes: "tbl-details",
-																												text: "East"
-																											},
-																											{
-																												ctl: "td",
-																												classes: "tbl-label",
-																												text: "Panel"
-																											}
-																										]
-																									}
+            
+            var tmpFuncGetHeaderAndContent = function(theType, theDetails, theMeta, theContent, theLevel, theGroup, theItem, theIcon, theColor){
+                var tmpIconNode = false;
+                var tmpColSpanDetails = "3";
 
-																								]
-																							}
-																						]
-																					}
-																				]
-																			}
-																		]
-																	}
-																]
-															}
-														]
-													}
-												]
+                if( theLevel == 2 ){
+                    tmpColSpanDetails = "4";
+                    tmpIconNode = {
+                        ctl: "td",
+                        classes: "tbl-icon",
+                        content: [
+                            {
+                                ctl: "i",
+                                attr: {
+                                    action: "toggleMe"
+                                },
+                                classes: "icon square minus large toright"
+                            }
+                        ]
+                    }
+                } else if( theLevel == 3 ){
+                    tmpColSpanDetails = "4";
+                    tmpPMIconCls = "tbl-icon2";
+                    tmpIconNode = {
+                        ctl: "td",
+                        classes: "tbl-icon2",
+                        content: [
+                            {
+                                ctl: "i",
+                                attr: {
+                                    action: "outlineDisplay",
+                                    select: "false",
+                                    scope: "children"
+                                },
+                                classes: "icon square minus large toright"
+                            },
+                            {
+                                ctl: "i",
+                                attr: {
+                                    action: "outlineDisplay",
+                                    select: "true",
+                                    scope: "children"
+                                },
+                                classes: "icon square plus large toright"
+                            }
+                        ]
+                    }
+                }
 
-											}
-										]
+                var tmpBodyCols = [
+                    {
+                        ctl: "td",
+                        classes: "tbl-icon",
+                        content: [
+                            {
+                                ctl: "i",
+                                classes: "large " + theIcon + " " + theColor + " icon"
+                            }
+                        ]
+                    },
+                    {
+                        ctl: "td",
+                        classes: "tbl-details",
+                        text: theDetails
+                    },
+                    {
+                        ctl: "td",
+                        classes: "tbl-label",
+                        text: theMeta
+                    }
+                ];
+                if (tmpIconNode){
+                    tmpBodyCols.push(tmpIconNode);
+                }
 
-									}
-								]
-							}
-						]
-					}
+                
+                var tmpHeaderAndContent = 	{
+                    ctl: "table",
+                    classes: "ui very compact table selectable outline",
+                    content: [
+                        {
+                            ctl: "tbody",
+                            content: [
+                                {
+                                    ctl: "tr",
+                                    classes: "",
+                                    attr: {
+                                        action: "selectMe",
+                                        group: theGroup,
+                                        item: theItem,
+                                        type: theType,
+                                        oluse: "select"
+                                    },
+                                    content: tmpBodyCols
+                                },
+                                {
+                                    ctl: "tr",
+                                    attr: {
+                                        type: theType,
+                                        oluse: "container"
+                                    },
+                                    content: [
+                                        {
+                                            ctl: "td",
+                                            attr: {
+                                                colspan: tmpColSpanDetails,
+                                            },
+                                            content: theContent
+                                        }
+                                    ]
+    
+                                }
+                            ]
+                        }
+                    ]
+                }
 
-				]
-			})
+                return tmpHeaderAndContent;
+            }
+            tmpBase.content.push(tmpFuncGetHeaderAndContent(
+                'app','My First App','ThisApp',[],3,'application-outline','application','globe','blue'
+            ))
+
+            
+            tmpNewContent.push(tmpBase)
 
             return tmpNewContent;
         },
