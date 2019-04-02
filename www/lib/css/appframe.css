@@ -43,29 +43,20 @@ table.outline > tbody > tr[oluse="select"] {
 
 table.outline > tbody > tr.active > td.tbl-label {
   width:100px;
-  background-color: #a333c8;
+  background-color: #aaaaaa;
   color: white;
 }
-
-table.outline > tbody > tr.active[type="page"] > td.tbl-label {
-  background-color: #21ba45;
-}
-
-
-table.outline > tbody > tr.active[type="app"] > td.tbl-label {
-  background-color: #2185d0;
-}
-
-
 
 table.outline > tbody > tr > td.tbl-icon {
   width:40px;
 }
+
 table.outline > tbody > tr > td.tbl-label {
   width:100px;
   font-weight: bold;
   background-color: #eeeeee;
 }
+
 table.outline > tbody > tr > td.tbl-details {
   white-space: nowrap;
   overflow:auto;
