@@ -6935,6 +6935,7 @@ License: MIT
 
     }
 
+    
     me.ControlTableOutline = {
         getInfo: function (theControlName) {
             var tmpProps = getCommonControlProperties(['hidden']);
@@ -7163,6 +7164,200 @@ License: MIT
 
     }
 
+    me.ControlTableOutlineNode = {
+        getInfo: function (theControlName) {
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpRet = {
+                name: theControlName,
+                title: "Custom Control - Table Outline node",
+                category: "Common Web Custom Controls",
+                properties: tmpProps,
+                actions: {}
+            };
+            return tmpRet;
+        },
+        getCustomContent: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpNewContent = [];
+
+            var tmpFuncGetHeaderAndContent = function(theType, theDetails, theMeta, theContent, theLevel, theGroup, theItem, theIcon, theColor){
+                var tmpIconNode = false;
+                var tmpColSpanDetails = "3";
+                var tmpHasContent = true;
+                if( !(theContent && theContent.length > 0 )){
+                    console.log( 'tmpHasContent', tmpHasContent);
+                    tmpHasContent = false;
+                }
+
+                var tmpOLUse = 'select';
+
+                if( theLevel == 2 ){
+                    tmpColSpanDetails = "4";
+
+                    //tmpRowAttr.oluse = "collapsable";
+                    tmpOLUse = "collapsable";
+                    tmpIconNode = {
+                        ctl: "td",
+                        classes: "tbl-icon",
+                        attr: {
+                            action: "toggleMe"
+                        },
+                        content: [
+                            {
+                                ctl: "i",
+                                classes: "icon square minus large toright"
+                            }
+                        ]
+                    }
+                } else if( theLevel == 3 ){
+                    tmpColSpanDetails = "4";
+                    tmpPMIconCls = "tbl-icon2";
+                    tmpIconNode = {
+                        ctl: "td",
+                        classes: "tbl-icon2",
+                        content: [
+                            {
+                                ctl: "i",
+                                attr: {
+                                    action: "outlineDisplay",
+                                    select: "false",
+                                    scope: "children"
+                                },
+                                classes: "icon square minus large toright"
+                            },
+                            {
+                                ctl: "i",
+                                attr: {
+                                    action: "outlineDisplay",
+                                    select: "true",
+                                    scope: "children"
+                                },
+                                classes: "icon square plus large toright"
+                            }
+                        ]
+                    }
+                }
+
+                var tmpBodyCols = [
+                    {
+                        ctl: "td",
+                        classes: "tbl-icon",
+                        content: [
+                            {
+                                ctl: "i",
+                                classes: "large " + theIcon + " " + theColor + " icon"
+                            }
+                        ]
+                    },
+                    {
+                        ctl: "td",
+                        classes: "tbl-details",
+                        text: theDetails
+                    },
+                    {
+                        ctl: "td",
+                        classes: "tbl-label",
+                        text: theMeta
+                    }
+                ];
+                if (tmpIconNode){
+                    tmpBodyCols.push(tmpIconNode);
+                }
+
+
+                var tmpFinalNode = {
+                    ctl: "tr",
+                    attr: {
+                        type: theType,
+                        oluse: "container"
+                    },
+                    content: [
+                        {
+                            ctl: "td",
+                            attr: {
+                                colspan: tmpColSpanDetails,
+                            },
+                            content: theContent     
+                        }
+                    ]
+
+                }
+
+
+                var tmpFinalContent = [
+                    {
+                        ctl: "tr",
+                        classes: "",
+                        attr: {
+                            action: "selectMe",
+                            group: theGroup,
+                            item: theItem,
+                            type: theType,
+                            oluse: tmpOLUse
+                        },
+                        content: tmpBodyCols
+                    }
+                ]
+
+                if( tmpHasContent ){
+                    tmpFinalContent.push(tmpFinalNode)
+                }
+
+                var tmpHeaderAndContent = 	{
+                    ctl: "table",
+                    classes: "ui very compact table selectable outline",
+                    content: [
+                        {
+                            ctl: "tbody",
+                            content: tmpFinalContent
+                        }
+                    ]
+                }
+
+                return tmpHeaderAndContent;
+            }
+            
+            
+            tmpNewContent.push(tmpFuncGetHeaderAndContent(
+                tmpObject.type, tmpObject.details, tmpObject.meta, tmpObject.content, tmpObject.level, tmpObject.group, tmpObject.item, tmpObject.icon, tmpObject.color
+            ))
+
+            return tmpNewContent;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+            var tmpHTML = [];
+            var tmpNewContent = this.getCustomContent(theControlName, theObject, theControlObj);
+
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if (tmpHidden) {
+                tmpStyle += tmpHidden;
+            }
+            if (tmpStyle) {
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
+            var tmpControlClass = '';
+            var tmpClasses = tmpObject.classes || '';
+            tmpHTML = [];
+            tmpHTML.push('<div ' + getItemAttrString(tmpObject) + ' class="ui ' + tmpControlClass + ' ' + tmpClasses + '" ' + tmpStyle + '>')
+
+            tmpHTML.push(getContentHTML(theControlName, tmpNewContent, theControlObj))
+
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+
+    }
+
 
     me.getControlType = function (theControlName) {
         var tmpControl = me.getWebControl(theControlName)
@@ -7306,6 +7501,8 @@ License: MIT
     //=== Common Custom Web Controls ..
     me.webControls.add('cardfull', me.ControlFullCard);
     me.webControls.add('table-outline', me.ControlTableOutline);
+    me.webControls.add('tbl-ol-node', me.ControlTableOutlineNode);
+    
 
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 
