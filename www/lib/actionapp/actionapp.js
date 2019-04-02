@@ -6965,17 +6965,23 @@ License: MIT
                 var tmpIconNode = false;
                 var tmpColSpanDetails = "3";
 
+               // var tmpRowAttr = {};
+                var tmpOLUse = 'select';
+
                 if( theLevel == 2 ){
                     tmpColSpanDetails = "4";
+
+                    //tmpRowAttr.oluse = "collapsable";
+                    tmpOLUse = "collapsable";
                     tmpIconNode = {
                         ctl: "td",
                         classes: "tbl-icon",
+                        attr: {
+                            action: "toggleMe"
+                        },
                         content: [
                             {
                                 ctl: "i",
-                                attr: {
-                                    action: "toggleMe"
-                                },
                                 classes: "icon square minus large toright"
                             }
                         ]
@@ -7051,7 +7057,7 @@ License: MIT
                                         group: theGroup,
                                         item: theItem,
                                         type: theType,
-                                        oluse: "select"
+                                        oluse: tmpOLUse
                                     },
                                     content: tmpBodyCols
                                 },
@@ -7079,8 +7085,18 @@ License: MIT
 
                 return tmpHeaderAndContent;
             }
+            var tmpPages = [];
+            var tmpHomePage = tmpFuncGetHeaderAndContent(
+                'page','HomePage','Page',[],2,'application-outline','page-HomePage','columns','green'
+            )
+            var tmpLogsPage = tmpFuncGetHeaderAndContent(
+                'page','LogsPage','Page',[],2,'application-outline','page-LogsPage','columns','green'
+            )
+            tmpPages.push(tmpHomePage);
+            tmpPages.push(tmpLogsPage);
+
             tmpBase.content.push(tmpFuncGetHeaderAndContent(
-                'app','My First App','ThisApp',[],3,'application-outline','application','globe','blue'
+                'app','My First App','ThisApp',tmpPages,3,'application-outline','application','globe','blue'
             ))
 
             
