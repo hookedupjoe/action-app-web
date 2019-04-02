@@ -1957,6 +1957,63 @@ var ActionAppCore = {};
 
         return dfd.promise();
     }
+
+    function outlineDisplay(theParams, theTarget){
+        var tmpEl = $(theTarget);
+        //var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
+        var tmpSelect = tmpEl.attr('select') || '';
+        var tmpScope = tmpEl.attr('scope') || '';
+        
+        //tmpScope == 'children' && ??
+        if(  tmpSelect ){
+            var tmpShow = tmpSelect == 'true';
+            var tmpContainer = tmpEl.closest('tr').next();
+            if( tmpContainer && tmpContainer.length ){
+                var tmpToggles = $('[oluse="collapsable"]', tmpContainer);
+                
+                for (var iToggle = 0; iToggle < tmpToggles.length; iToggle++) {
+                    var tmpToggle = $(tmpToggles[iToggle]);
+                    var tmpToggleNode = tmpToggle.find('[action="toggleMe"]');
+                    var tmpIcon = tmpToggleNode.find('i');
+
+                    tmpToggle = tmpToggle.next();
+                    var tmpIsVis = tmpToggle.is(":visible");
+                    if( !(tmpShow) ){
+                        tmpToggle.hide();
+                        tmpIcon.removeClass('minus')
+                            .addClass('plus');
+                    } else {
+                        tmpToggle.show();
+                        tmpIcon.removeClass('plus')
+                            .addClass('minus');
+                    }
+                }
+            }
+
+        } else {
+           
+        }
+        
+    };
+
+    
+    function toggleMe(theParams, theTarget){
+        var tmpEl = $(theTarget);
+        var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
+        var tmpIcon = tmpEl.find('i');
+        var tmpIsVis = tmpNext.is(":visible");
+        if( tmpIsVis ){
+            tmpNext.hide();
+            tmpIcon.removeClass('minus')
+                .addClass('plus');
+        } else {
+            tmpNext.show();
+            tmpIcon.removeClass('plus')
+                .addClass('minus');
+        }
+        
+    };
+
     me.postInit = postInit;
     function postInit(theAppConfig) {
 
@@ -2015,6 +2072,9 @@ var ActionAppCore = {};
         me.registerAction("showSubPage", showSubPage);
         me.registerAction("selectMe", showSubPage);
         me.registerAction("openPage", openPage);
+
+        me.registerAction("toggleMe", toggleMe);
+        me.registerAction("outlineDisplay", outlineDisplay);
 
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
 
@@ -3697,6 +3757,16 @@ License: MIT
         if (isObj(theOptions)) {
             $.extend(theConfig, theOptions);
         }
+
+        if( theConfig && theConfig.options && theConfig.options.css ){
+            var tmpCSS = theConfig.options.css || '';
+            if( Array.isArray(tmpCSS) ){
+                tmpCSS = tmpCSS.join('\n');
+            }
+            console.log("Added css to header for control")
+            $('head').append('<style>' + tmpCSS + '</style>');
+        }
+
         var tmpNew = new Control(theConfig);
 
         return tmpNew
@@ -6883,16 +6953,220 @@ License: MIT
 
            
             tmpNewContent.push({
-                "ctl": "content",
-                "name": "control-body",
-                "content": [
-                    {
-                        "ctl": "title",
-                        "name": "topHeader",
-                        "text": "TESTING"
-                    }
-                ]
-            })
+				ctl: "segment",
+				basic: true,
+				slim: true,
+				name: "outline",
+				content: [
+					{
+						ctl: "table",
+						classes: "ui very compact table selectable outline",
+						content: [
+							{
+								ctl: "tbody",
+								content: [
+									{
+										ctl: "tr",
+										classes: "",
+										attr: {
+											action: "selectMe",
+											group: "app-outline",
+											item: "application",
+											type: "app",
+											oluse: "select"
+										},
+										content: [
+											{
+												ctl: "td",
+												classes: "tbl-icon",
+												content: [
+													{
+														ctl: "i",
+														classes: "large globe blue icon"
+													}
+												]
+											},
+											{
+												ctl: "td",
+												classes: "tbl-details",
+												text: "My First App"
+											},
+											{
+												ctl: "td",
+												classes: "tbl-label",
+												text: "ThisApp"
+											},
+											{
+												ctl: "td",
+												classes: "tbl-icon2",
+												content: [
+													{
+														ctl: "i",
+														attr: {
+															action: "outlineDisplay",
+															select: "false",
+															scope: "children"
+														},
+														classes: "icon square minus large toright"
+													},
+													{
+														ctl: "i",
+														attr: {
+															action: "outlineDisplay",
+															select: "true",
+															scope: "children"
+														},
+														classes: "icon square plus large toright"
+													}
+												]
+											}
+										]
+									},
+									{
+										ctl: "tr",
+										attr: {
+											type: "app",
+											oluse: "container"
+										},
+										content: [
+											{
+												ctl: "td",
+												attr: {
+													colspan: "4",
+												},
+												content: [
+													{
+														ctl: "table",
+														classes: "ui very compact table selectable outline",
+														content: [
+															{
+																ctl: "tbody",
+																content: [
+																	{
+																		ctl: "tr",
+																		attr: {
+																			oluse: "collapsable",
+																			action: "selectMe",
+																			group: "app-outline",
+																			item: "page1-page",
+																			type: "page"
+																		},
+																		content: [
+																			{
+																				ctl: "td",
+																				classes: "tbl-icon",
+																				content: [
+																					{
+																						ctl: "i",
+																						classes: "columns icon green large"
+																					}
+																				]
+																			},
+																			{
+																				ctl: "td",
+																				classes: "tbl-details",
+																				text: "Home Page"
+																			},
+																			{
+																				ctl: "td",
+																				classes: "tbl-label",
+																				text: "Page"
+																			},
+																			{
+																				ctl: "td",
+																				classes: "tbl-icon",
+																				attr: {
+																					action: "toggleMe"
+																				},
+																				content: [
+																					{
+																						ctl: "i",
+																						classes: "icon square minus large toright"
+																					}
+																				]
+																			}
+																		]
+
+																	},
+																	{
+																		ctl: "tr",
+																		attr: {
+																			type: "page",
+																			oluse: "container"
+																		},
+																		content: [
+																			{
+																				ctl: "td",
+																				attr: {
+																					colspan: "4"
+																				},
+																				content: [
+																					{
+																						ctl: "table",
+																						classes: "ui very compact table selectable outline",
+																						content: [
+																							{
+																								ctl: "tbody",
+																								content: [
+																									{
+																										ctl: "tr",
+																										attr: {
+																											type: "region",
+																											type: "region",
+																											action: "selectMe",
+																											group: "app-outline",
+																											item: "page1-east",
+																											oluse: "select"
+																										},
+																										content: [
+																											{
+																												ctl: "td",
+																												classes: "tbl-icon",
+																												content: [
+																													{
+																														ctl: "i",
+																														classes: "newspaper outline icon purple large"
+																													}
+																												]
+																											},
+																											{
+																												ctl: "td",
+																												classes: "tbl-details",
+																												text: "East"
+																											},
+																											{
+																												ctl: "td",
+																												classes: "tbl-label",
+																												text: "Panel"
+																											}
+																										]
+																									}
+
+																								]
+																							}
+																						]
+																					}
+																				]
+																			}
+																		]
+																	}
+																]
+															}
+														]
+													}
+												]
+
+											}
+										]
+
+									}
+								]
+							}
+						]
+					}
+
+				]
+			})
 
             return tmpNewContent;
         },
@@ -7072,7 +7346,7 @@ License: MIT
 
     //=== Common Custom Web Controls ..
     me.webControls.add('cardfull', me.ControlFullCard);
-    me.webControls.add('tableoutline', me.ControlTableOutline);
+    me.webControls.add('table-outline', me.ControlTableOutline);
 
 
     //==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== 
