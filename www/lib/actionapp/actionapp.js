@@ -2012,6 +2012,7 @@ var ActionAppCore = {};
         me.showSubPage = showSubPage;
         me.registerAction("showPage", showPage);
         me.registerAction("showSubPage", showSubPage);
+        me.registerAction("selectMe", showSubPage);
 
         me.registerAction("openPage", openPage);
 
@@ -6997,6 +6998,12 @@ License: MIT
     me.webControls.add('ul', me.ControlDOM);
     me.webControls.add('li', me.ControlDOM);
     me.webControls.add('a', me.ControlDOM);
+
+    me.webControls.add('table', me.ControlDOM);
+    me.webControls.add('tbody', me.ControlDOM);
+    me.webControls.add('tr', me.ControlDOM);
+    me.webControls.add('td', me.ControlDOM);
+    
 
 
     //=== Common Custom Web Controls ..
