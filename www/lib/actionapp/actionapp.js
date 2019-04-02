@@ -6964,7 +6964,11 @@ License: MIT
             var tmpFuncGetHeaderAndContent = function(theType, theDetails, theMeta, theContent, theLevel, theGroup, theItem, theIcon, theColor){
                 var tmpIconNode = false;
                 var tmpColSpanDetails = "3";
-
+                var tmpHasContent = true;
+                if( !(theContent && theContent.length > 0 )){
+                    console.log( 'tmpHasContent', tmpHasContent);
+                    tmpHasContent = false;
+                }
                // var tmpRowAttr = {};
                 var tmpOLUse = 'select';
 
@@ -7041,44 +7045,52 @@ License: MIT
                     tmpBodyCols.push(tmpIconNode);
                 }
 
-                
+
+                var tmpFinalNode = {
+                    ctl: "tr",
+                    attr: {
+                        type: theType,
+                        oluse: "container"
+                    },
+                    content: [
+                        {
+                            ctl: "td",
+                            attr: {
+                                colspan: tmpColSpanDetails,
+                            },
+                            content: theContent     
+                        }
+                    ]
+
+                }
+
+
+                var tmpFinalContent = [
+                    {
+                        ctl: "tr",
+                        classes: "",
+                        attr: {
+                            action: "selectMe",
+                            group: theGroup,
+                            item: theItem,
+                            type: theType,
+                            oluse: tmpOLUse
+                        },
+                        content: tmpBodyCols
+                    }
+                ]
+
+                if( tmpHasContent ){
+                    tmpFinalContent.push(tmpFinalNode)
+                }
+
                 var tmpHeaderAndContent = 	{
                     ctl: "table",
                     classes: "ui very compact table selectable outline",
                     content: [
                         {
                             ctl: "tbody",
-                            content: [
-                                {
-                                    ctl: "tr",
-                                    classes: "",
-                                    attr: {
-                                        action: "selectMe",
-                                        group: theGroup,
-                                        item: theItem,
-                                        type: theType,
-                                        oluse: tmpOLUse
-                                    },
-                                    content: tmpBodyCols
-                                },
-                                {
-                                    ctl: "tr",
-                                    attr: {
-                                        type: theType,
-                                        oluse: "container"
-                                    },
-                                    content: [
-                                        {
-                                            ctl: "td",
-                                            attr: {
-                                                colspan: tmpColSpanDetails,
-                                            },
-                                            content: theContent
-                                        }
-                                    ]
-    
-                                }
-                            ]
+                            content: tmpFinalContent
                         }
                     ]
                 }
@@ -7086,11 +7098,24 @@ License: MIT
                 return tmpHeaderAndContent;
             }
             var tmpPages = [];
+            var tmpRegions1 = [];
+            tmpRegions1.push(
+                tmpFuncGetHeaderAndContent(
+                    'region','East','Panel',[],1,'application-outline','page-HomePage-east','newspaper','purple'
+                )
+            )
+            var tmpRegions2 = [];
+            tmpRegions2.push(
+                tmpFuncGetHeaderAndContent(
+                    'region','East','HTML',[],1,'application-outline','page-LogsPage-east','code','purple'
+                )
+            )
+
             var tmpHomePage = tmpFuncGetHeaderAndContent(
-                'page','HomePage','Page',[],2,'application-outline','page-HomePage','columns','green'
+                'page','HomePage','Page',tmpRegions1,2,'application-outline','page-HomePage','columns','green'
             )
             var tmpLogsPage = tmpFuncGetHeaderAndContent(
-                'page','LogsPage','Page',[],2,'application-outline','page-LogsPage','columns','green'
+                'page','LogsPage','Page',tmpRegions2,2,'application-outline','page-LogsPage','columns','green'
             )
             tmpPages.push(tmpHomePage);
             tmpPages.push(tmpLogsPage);
