@@ -48,7 +48,7 @@ License: MIT
 
     
 
-    var ThisControl = ThisApp.controls.newControl(ControlSpecs, { proto: ControlCode, parent: ThisApp } )
+    var ThisControl = {specs: ControlSpecs, options: { proto: ControlCode, parent: ThisApp }};
 
     // $.extend(ThisControl, ControlCode);
     //or .prototype ???
