@@ -41,9 +41,16 @@ table.outline > tbody > tr[oluse="select"] {
   cursor: pointer;
 }
 
+
+table.outline > tbody > tr > td.tbl-label {
+  width:90px;
+  color:black;
+  background-color: #eeeeee;
+}
+
 table.outline > tbody > tr.active > td.tbl-label {
-  width:100px;
-  background-color: #aaaaaa;
+  width:90px;
+  background-color: #777777;
   color: white;
 }
 
@@ -51,14 +58,15 @@ table.outline > tbody > tr > td.tbl-icon {
   width:40px;
 }
 
-table.outline > tbody > tr > td.tbl-label {
-  width:100px;
-  font-weight: bold;
-  background-color: #eeeeee;
+table.outline > tbody > tr > td.tbl-icon2 {
+  width:80px;
+  white-space: nowrap;
+  overflow:auto;
 }
 
 table.outline > tbody > tr > td.tbl-details {
   white-space: nowrap;
+  font-weight:bolder;
   overflow:auto;
   width:auto;
 }
@@ -362,6 +370,7 @@ clear:both;
 .scroll-site::-webkit-scrollbar-track
 {
 -webkit-box-shadow: inset 0 0 3px rgba(0,1,0,0.3);
+box-shadow: inset 0 0 3px rgba(0,1,0,0.3);
 background-color: #F5F5F5;
 }
 
