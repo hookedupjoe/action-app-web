@@ -36,7 +36,7 @@ html, body {
   padding: 10px !important;
 }
 
-
+/* 
 table.outline > tbody > tr[oluse="select"] {
   cursor: pointer;
 }
@@ -67,7 +67,7 @@ table.outline > tbody > tr > td.tbl-details {
   font-weight:bolder;
   overflow:auto;
   width:auto;
-}
+} */
 
 
 
