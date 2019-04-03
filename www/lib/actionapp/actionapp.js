@@ -3772,13 +3772,6 @@ License: MIT
         return tmpNew
     }
 
-    function getRequiredFromContent(theContent) {
-        var tmpRet = {}
-        tmpRet.objects = {
-            list: ['library/controls/TesterControl']
-        }
-        return tmpRet;
-    }
     //--- Get field elements from a control element or control name
     me.getControlFields = getControlFields
     function getControlFields(theControlEl, theFieldName) {
