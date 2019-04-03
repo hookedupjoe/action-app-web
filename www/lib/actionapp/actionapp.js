@@ -749,6 +749,12 @@ var ActionAppCore = {};
         return tmpSpot;
     }
 
+    me.getPage = getPage;
+    function getPage(thePageName){
+        var appModule = ActionAppCore.module('app');
+        var tmpPage = appModule[thePageName];
+        return tmpPage;
+    }
     /**
        * openPage Action
        * Assures a page is loaded and opens it either way
