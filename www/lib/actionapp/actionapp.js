@@ -7305,7 +7305,7 @@ License: MIT
 
                 var tmpHeaderAndContent = 	{
                     ctl: "table",
-                    classes: "ui very compact table selectable outline",
+                    classes: "ui very compact table selectable outline unstackable",
                     content: [
                         {
                             ctl: "tbody",
