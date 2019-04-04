@@ -7024,13 +7024,17 @@ License: MIT
                         ctl: "td",
                         classes: "tbl-details",
                         text: theDetails
-                    },
-                    {
+                    }
+                    
+                ];
+                if (theMeta){
+                   
+                    tmpBodyCols.push( {
                         ctl: "td",
                         classes: "tbl-label",
                         text: theMeta
-                    }
-                ];
+                    });
+                }
                 if (tmpIconNode){
                     tmpBodyCols.push(tmpIconNode);
                 }
