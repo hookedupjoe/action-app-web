@@ -168,6 +168,9 @@ var ActionAppCore = {};
 
         me.components = {};
 
+        me.resCacheFlags = {
+            'catalog': true
+        }
         //--- Full Path Index
         me.resCache = {
             "panels": {},
@@ -328,6 +331,9 @@ var ActionAppCore = {};
 
     $.extend(me, ExtendMod.SetDisplay);
 
+    //--- Know if we have initialized a control by site URI
+    me.resourceInitFlags = {};
+
     //--- Delay and then resolve promise
     me.delay = function (theMS) {
         var tmpMS = theMS || 1000;
@@ -379,6 +385,7 @@ var ActionAppCore = {};
     me.getControl = function (theName) {
         return this.getResourceForType('controls', theName);
     }
+
 
     me.getExtnForType = function (theType) {
         var tmpType = theType.toLowerCase();
@@ -461,11 +468,11 @@ var ActionAppCore = {};
 
     }
 
-    function assureRelative(theURL){
+    function assureRelative(theURL) {
         var tmpURL = theURL;
 
-        if( !tmpURL.startsWith('.')){
-            if( !tmpURL.startsWith('/') ){
+        if (!tmpURL.startsWith('.')) {
+            if (!tmpURL.startsWith('/')) {
                 tmpURL = './' + tmpURL;
             } else {
                 tmpURL = '.' + tmpURL
@@ -519,6 +526,22 @@ var ActionAppCore = {};
                 console.warn("Could not convert panel to object");
             }
         }
+        tmpResourceData.baseURI = theFullPath;
+
+        if( me.resourceInitFlags[theFullPath] !== true){
+            me.resourceInitFlags[theFullPath] = true;
+            if (tmpResourceData.controlConfig && tmpResourceData.controlConfig.options && tmpResourceData.controlConfig.options.css) {
+                var tmpCSS = tmpResourceData.controlConfig.options.css || '';
+                if (tmpCSS) {
+                    if (Array.isArray(tmpCSS)) {
+                        tmpCSS = tmpCSS.join('\n');
+                    }
+                    console.info("Added css to header for control " + theFullPath)
+                    $('head').append('<style>' + tmpCSS + '</style>');
+                }
+            }
+        }
+       
         tmpThis.addResource(theType, tmpName, theFullPath, tmpResourceData);
     }
 
@@ -557,21 +580,21 @@ var ActionAppCore = {};
                 }
                 if (isObj(tmpSpec.map)) {
                     for (var aURI in tmpSpec.map) {
-                        
+
                         var tmpEntryName = tmpSpec.map[aURI];
                         var tmpBaseMapURL = tmpBaseURL;
 
-                        if( isObj(tmpEntryName)){
+                        if (isObj(tmpEntryName)) {
                             tmpBaseMapURL = tmpEntryName.source || tmpBaseMapURL;
                             tmpEntryName = tmpEntryName.name;
                         }
                         if (tmpBaseMapURL) {
-                            if (!(tmpBaseMapURL.endsWith('/'))){
+                            if (!(tmpBaseMapURL.endsWith('/'))) {
                                 tmpBaseMapURL += '/';
                             }
                             aURI = tmpBaseMapURL + aURI;
                         }
-                    tmpRet.push({ type: theType, uri: aURI, name: tmpEntryName })
+                        tmpRet.push({ type: theType, uri: aURI, name: tmpEntryName })
                     }
                 }
             }
@@ -750,7 +773,7 @@ var ActionAppCore = {};
     }
 
     me.getPage = getPage;
-    function getPage(thePageName){
+    function getPage(thePageName) {
         var appModule = ActionAppCore.module('app');
         var tmpPage = appModule[thePageName];
         return tmpPage;
@@ -1964,19 +1987,19 @@ var ActionAppCore = {};
         return dfd.promise();
     }
 
-    function outlineDisplay(theParams, theTarget){
+    function outlineDisplay(theParams, theTarget) {
         var tmpEl = $(theTarget);
         //var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
         var tmpSelect = tmpEl.attr('select') || '';
         var tmpScope = tmpEl.attr('scope') || '';
-        
+
         //tmpScope == 'children' && ??
-        if(  tmpSelect ){
+        if (tmpSelect) {
             var tmpShow = tmpSelect == 'true';
             var tmpContainer = tmpEl.closest('tr').next();
-            if( tmpContainer && tmpContainer.length ){
+            if (tmpContainer && tmpContainer.length) {
                 var tmpToggles = $('[oluse="collapsable"]', tmpContainer);
-                
+
                 for (var iToggle = 0; iToggle < tmpToggles.length; iToggle++) {
                     var tmpToggle = $(tmpToggles[iToggle]);
                     var tmpToggleNode = tmpToggle.find('[action="toggleMe"]');
@@ -1984,7 +2007,7 @@ var ActionAppCore = {};
 
                     tmpToggle = tmpToggle.next();
                     var tmpIsVis = tmpToggle.is(":visible");
-                    if( !(tmpShow) ){
+                    if (!(tmpShow)) {
                         tmpToggle.hide();
                         tmpIcon.removeClass('minus')
                             .addClass('plus');
@@ -1997,18 +2020,18 @@ var ActionAppCore = {};
             }
 
         } else {
-           
+
         }
-        
+
     };
 
-    
-    function toggleMe(theParams, theTarget){
+
+    function toggleMe(theParams, theTarget) {
         var tmpEl = $(theTarget);
         var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
         var tmpIcon = tmpEl.find('i');
         var tmpIsVis = tmpNext.is(":visible");
-        if( tmpIsVis ){
+        if (tmpIsVis) {
             tmpNext.hide();
             tmpIcon.removeClass('minus')
                 .addClass('plus');
@@ -2017,7 +2040,7 @@ var ActionAppCore = {};
             tmpIcon.removeClass('plus')
                 .addClass('minus');
         }
-        
+
     };
 
     me.postInit = postInit;
@@ -3764,14 +3787,14 @@ License: MIT
             $.extend(theConfig, theOptions);
         }
 
-        if( theConfig && theConfig.options && theConfig.options.css ){
-            var tmpCSS = theConfig.options.css || '';
-            if( Array.isArray(tmpCSS) ){
-                tmpCSS = tmpCSS.join('\n');
-            }
-            console.log("Added css to header for control")
-            $('head').append('<style>' + tmpCSS + '</style>');
-        }
+        // if( theConfig && theConfig.options && theConfig.options.css ){
+        //     var tmpCSS = theConfig.options.css || '';
+        //     if( Array.isArray(tmpCSS) ){
+        //         tmpCSS = tmpCSS.join('\n');
+        //     }
+        //     console.log("Added css to header for control")
+        //     $('head').append('<style>' + tmpCSS + '</style>');
+        // }
 
         var tmpNew = new Control(theConfig);
 
@@ -5793,7 +5816,7 @@ License: MIT
                 tmpHTML.push('<i class="' + tmpObject.icon + ' icon"></i> ');
             }
 
-            tmpHTML.push(tmpObject.text || tmpObject.label  || tmpObject.title || '')
+            tmpHTML.push(tmpObject.text || tmpObject.label || tmpObject.title || '')
 
             if (tmpObject.icon && tmpObject.right) {
                 tmpHTML.push(' <i class="' + tmpObject.icon + ' icon"></i>');
@@ -6934,7 +6957,7 @@ License: MIT
 
     }
 
-   
+
     me.ControlTableOutlineNode = {
         getInfo: function (theControlName) {
             var tmpProps = getCommonControlProperties(['hidden']);
@@ -6951,18 +6974,17 @@ License: MIT
             var tmpObject = theObject || {};
             var tmpNewContent = [];
 
-            var tmpFuncGetHeaderAndContent = function(theType, theDetails, theMeta, theContent, theLevel, theGroup, theItem, theIcon, theColor){
+            var tmpFuncGetHeaderAndContent = function (theType, theDetails, theMeta, theContent, theLevel, theGroup, theItem, theIcon, theColor) {
                 var tmpIconNode = false;
                 var tmpColSpanDetails = "3";
                 var tmpHasContent = true;
-                if( !(theContent && theContent.length > 0 )){
-                    console.log( 'tmpHasContent', tmpHasContent);
+                if (!(theContent && theContent.length > 0)) {
                     tmpHasContent = false;
                 }
 
                 var tmpOLUse = 'select';
 
-                if( theLevel == 2 ){
+                if (theLevel == 2) {
                     tmpColSpanDetails = "4";
 
                     //tmpRowAttr.oluse = "collapsable";
@@ -6980,7 +7002,7 @@ License: MIT
                             }
                         ]
                     }
-                } else if( theLevel == 3 ){
+                } else if (theLevel == 3) {
                     tmpColSpanDetails = "4";
                     tmpPMIconCls = "tbl-icon2";
                     tmpIconNode = {
@@ -7025,17 +7047,17 @@ License: MIT
                         classes: "tbl-details",
                         text: theDetails
                     }
-                    
+
                 ];
-                if (theMeta){
-                   
-                    tmpBodyCols.push( {
+                if (theMeta) {
+
+                    tmpBodyCols.push({
                         ctl: "td",
                         classes: "tbl-label",
                         text: theMeta
                     });
                 }
-                if (tmpIconNode){
+                if (tmpIconNode) {
                     tmpBodyCols.push(tmpIconNode);
                 }
 
@@ -7052,7 +7074,7 @@ License: MIT
                             attr: {
                                 colspan: tmpColSpanDetails,
                             },
-                            content: theContent     
+                            content: theContent
                         }
                     ]
 
@@ -7074,11 +7096,11 @@ License: MIT
                     }
                 ]
 
-                if( tmpHasContent ){
+                if (tmpHasContent) {
                     tmpFinalContent.push(tmpFinalNode)
                 }
 
-                var tmpHeaderAndContent = 	{
+                var tmpHeaderAndContent = {
                     ctl: "table",
                     classes: "ui very compact table selectable outline unstackable",
                     content: [
@@ -7091,8 +7113,8 @@ License: MIT
 
                 return tmpHeaderAndContent;
             }
-            
-            
+
+
             tmpNewContent.push(tmpFuncGetHeaderAndContent(
                 tmpObject.type, tmpObject.details, tmpObject.meta, tmpObject.content, tmpObject.level, tmpObject.group, tmpObject.item, tmpObject.icon, tmpObject.color
             ))
@@ -7270,7 +7292,7 @@ License: MIT
     me.webControls.add('tbody', me.ControlDOM);
     me.webControls.add('tr', me.ControlDOM);
     me.webControls.add('td', me.ControlDOM);
-    
+
 
 
     //=== Common Custom Web Controls ..
