@@ -418,15 +418,23 @@ var ActionAppCore = {};
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
 
-            //** if already loaded or in current list - SKIP
-
-            var tmpExists = false;
-
-            if (ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri]) {
-                tmpExists = true;
+            if( tmpURI.type == 'panel' || tmpURI.type == 'control'){
+                tmpURI.type += 's';
             }
 
-            if (!(tmpExists)) {
+            var tmpExists = false;
+            if (ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri]) {
+                    tmpExists = true;
+            }
+
+//--- ToDo: Implement App Caching Rules            
+            if( tmpURI.uri.startsWith('design/')){
+                tmpExists = false;
+            }
+
+
+            if ((!tmpExists)) {
+                console.log( 'Resource: ',tmpURI.type,tmpURI.uri);
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
                 tmpURL = assureRelative(tmpURL);
                 tmpRequests.push(tmpURI);
@@ -548,6 +556,11 @@ var ActionAppCore = {};
     //--- theType: (controls, panels, html or templates)
     me.getResourceURIsForType = function (theType, theSpecs) {
 
+        
+        // if( theType == 'panel' || theType == 'control'){
+        //     theType += 's';
+        // }
+
         var tmpRet = [];
         var tmpSpecs = theSpecs;
         if (!(Array.isArray(tmpSpecs))) {
@@ -609,7 +622,6 @@ var ActionAppCore = {};
         } else {
             this.res[theType] = this.res[theType] || {};
             ThisApp.resCache[theType] = ThisApp.resCache[theType] || {};
-
             ThisApp.resCache[theType][theFullPath] = theResourceData;
             this.res[theType][theName] = theResourceData;
         }
@@ -3786,15 +3798,6 @@ License: MIT
         if (isObj(theOptions)) {
             $.extend(theConfig, theOptions);
         }
-
-        // if( theConfig && theConfig.options && theConfig.options.css ){
-        //     var tmpCSS = theConfig.options.css || '';
-        //     if( Array.isArray(tmpCSS) ){
-        //         tmpCSS = tmpCSS.join('\n');
-        //     }
-        //     console.log("Added css to header for control")
-        //     $('head').append('<style>' + tmpCSS + '</style>');
-        // }
 
         var tmpNew = new Control(theConfig);
 
