@@ -3785,7 +3785,7 @@ License: MIT
     // ThisApp.controls.defaults.prompt.title to get/update default title
     me.defaults = {
         prompt: {
-            title: "Enter Details",
+            title: "",
             submitLabel: "Submit",
             cancelLabel: "Cancel"
         }
