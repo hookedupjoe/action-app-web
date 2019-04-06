@@ -2037,6 +2037,13 @@ var ActionAppCore = {};
     };
 
 
+    function clearFlyover(theParams, theTarget){
+        var tmpMask = ThisApp.getByAttr$({appuse:'flyovermask'});
+        tmpMask.animate({ scrollTop: 0 }, 2, function(){
+            tmpMask.addClass('hidden');
+            ThisApp.getByAttr$({appuse:'flyover'}).addClass('hidden');
+        });
+    }
     function toggleMe(theParams, theTarget) {
         var tmpEl = $(theTarget);
         var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
@@ -2115,6 +2122,9 @@ var ActionAppCore = {};
 
         me.registerAction("toggleMe", toggleMe);
         me.registerAction("outlineDisplay", outlineDisplay);
+
+        me.registerAction("clearFlyover", clearFlyover);
+        
 
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
 
