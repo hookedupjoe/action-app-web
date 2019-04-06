@@ -418,23 +418,22 @@ var ActionAppCore = {};
         for (var iURI = 0; iURI < tmpURIs.length; iURI++) {
             var tmpURI = tmpURIs[iURI];
 
-            if( tmpURI.type == 'panel' || tmpURI.type == 'control'){
+            if (tmpURI.type == 'panel' || tmpURI.type == 'control') {
                 tmpURI.type += 's';
             }
 
             var tmpExists = false;
             if (ThisApp.resCache[tmpURI.type] && ThisApp.resCache[tmpURI.type][tmpURI.uri]) {
-                    tmpExists = true;
+                tmpExists = true;
             }
 
-//--- ToDo: Implement App Caching Rules            
-            if( tmpURI.uri.startsWith('design/')){
+            //--- ToDo: Implement App Caching Rules            
+            if (tmpURI.uri.startsWith('design/')) {
                 tmpExists = false;
             }
 
 
             if ((!tmpExists)) {
-                console.log( 'Resource: ',tmpURI.type,tmpURI.uri);
                 var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
                 tmpURL = assureRelative(tmpURL);
                 tmpRequests.push(tmpURI);
@@ -536,7 +535,7 @@ var ActionAppCore = {};
         }
         tmpResourceData.baseURI = theFullPath;
 
-        if( me.resourceInitFlags[theFullPath] !== true){
+        if (me.resourceInitFlags[theFullPath] !== true) {
             me.resourceInitFlags[theFullPath] = true;
             if (tmpResourceData.controlConfig && tmpResourceData.controlConfig.options && tmpResourceData.controlConfig.options.css) {
                 var tmpCSS = tmpResourceData.controlConfig.options.css || '';
@@ -549,14 +548,14 @@ var ActionAppCore = {};
                 }
             }
         }
-       
+
         tmpThis.addResource(theType, tmpName, theFullPath, tmpResourceData);
     }
 
     //--- theType: (controls, panels, html or templates)
     me.getResourceURIsForType = function (theType, theSpecs) {
 
-        
+
         // if( theType == 'panel' || theType == 'control'){
         //     theType += 's';
         // }
@@ -2495,7 +2494,12 @@ License: MIT
         north__paneSelector: ".middle-north",
         south__paneSelector: ".middle-south",
         west__paneSelector: ".middle-west",
-        east: { paneSelector: ".middle-east", resizable: true, resizeWhileDragging: true, slidable: true }
+        east: {
+            paneSelector: ".middle-east",
+            resizable: true,
+            resizeWhileDragging: true,
+            slidable: true
+        }
     };
 
 
