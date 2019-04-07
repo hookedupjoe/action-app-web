@@ -2037,18 +2037,18 @@ var ActionAppCore = {};
 
 
     function dropMenuOpen(theParams, theTarget) {
-        var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['menuname'])
+        // var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['menuname'])
         var tmpEl = $(theTarget);
-        
         var tmpPageEl = tmpEl.closest('[group="app:pages"]');
-        var tmpPageName = tmpPageEl.attr('item') || '';
 
-        console.log( 'tmpPageEl', tmpPageName, tmpPageEl);
         var tmpOffset = tmpEl.offset();
+        var tmpPageOffset = tmpPageEl.offset();
 
-        var tmpFOMask = ThisApp.getByAttr$({ appuse: 'flyovermask' });
-       
         var tmpFO = ThisApp.getByAttr$({ appuse: 'flyover' });
+        var tmpFOMask = ThisApp.getByAttr$({ appuse: 'flyovermask' });
+
+        //--- Move the flyover mast and related flyover to the page
+        //    ... so that pageaction works naturally
         tmpFOMask.detach().appendTo(tmpPageEl);
         var tmpMenuHTML = tmpEl.parent().html();
         tmpMenuHTML = tmpMenuHTML
@@ -2057,8 +2057,8 @@ var ActionAppCore = {};
 
         ThisApp.loadSpot('flyover-menu', tmpMenuHTML);
         tmpFO.css('width', tmpEl.css('width'));
-        tmpFO.css('top', tmpOffset.top + 'px');
-        tmpFO.css('left', tmpOffset.left + 'px');
+        tmpFO.css('top', (tmpOffset.top - tmpPageOffset.top) + 'px');
+        tmpFO.css('left', (tmpOffset.left - tmpPageOffset.left) + 'px');
 
         tmpFOMask.removeClass('hidden');
         tmpFO.removeClass('hidden');
