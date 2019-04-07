@@ -1962,8 +1962,7 @@ var ActionAppCore = {};
         var dfd = jQuery.Deferred();
 
         ThisCoreApp = this;
-
-
+        initAppMarkup();
         var tmpDefs = [];
         var tmpThis = this;
 
@@ -2037,11 +2036,42 @@ var ActionAppCore = {};
     };
 
 
-    function clearFlyover(theParams, theTarget){
-        var tmpMask = ThisApp.getByAttr$({appuse:'flyovermask'});
-        tmpMask.animate({ scrollTop: 0 }, 2, function(){
+    function dropMenuOpen(theParams, theTarget) {
+        var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['menuname'])
+        var tmpEl = $(theTarget);
+        var tmpOffset = tmpEl.offset();
+
+        var tmpFOMask = ThisApp.getByAttr$({ appuse: 'flyovermask' });
+        tmpFOMask.removeClass('hidden');
+
+        var tmpMenu = tmpEl.find('.menu.transition.hidden');
+
+
+        var tmpFOFade = ThisApp.getByAttr$({ appuse: 'flyoverfade' });
+        var tmpFO = ThisApp.getByAttr$({ appuse: 'flyover' });
+        var tmpMenuHTML = tmpEl.parent().html();
+        tmpMenuHTML = tmpMenuHTML
+            .replace('hidden', '')
+            .replace('action="dropmenuopen"', '');
+
+        //get(0).outerHTML.replace('hidden','');
+        console.log('tmpMenuHTML', tmpMenuHTML);
+
+        ThisApp.loadSpot('flyover-menu', tmpMenuHTML);
+        tmpFOFade.removeClass('hidden');
+        tmpFO.removeClass('hidden');
+        tmpFO.css('width', tmpEl.css('width'));
+        tmpFO.css('top', tmpOffset.top + 'px');
+        tmpFO.css('left', tmpOffset.left + 'px');
+    };
+
+    function clearFlyover(theParams, theTarget) {
+        var tmpMask = ThisApp.getByAttr$({ appuse: 'flyovermask' });
+        var tmpFOFade = ThisApp.getByAttr$({ appuse: 'flyoverfade' });
+        tmpMask.animate({ scrollTop: 0 }, 2, function () {
             tmpMask.addClass('hidden');
-            ThisApp.getByAttr$({appuse:'flyover'}).addClass('hidden');
+            tmpFOFade.addClass('hidden');
+            ThisApp.getByAttr$({ appuse: 'flyover' }).addClass('hidden');
         });
     }
     function toggleMe(theParams, theTarget) {
@@ -2123,8 +2153,9 @@ var ActionAppCore = {};
         me.registerAction("toggleMe", toggleMe);
         me.registerAction("outlineDisplay", outlineDisplay);
 
+        me.registerAction("dropmenuopen", dropMenuOpen);
         me.registerAction("clearFlyover", clearFlyover);
-        
+
 
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
 
@@ -2232,6 +2263,28 @@ var ActionAppCore = {};
     }
     function isObj(theItem) {
         return (typeof (theItem) == 'object')
+    }
+
+
+    function initAppMarkup() {
+        initFlyoverMarkup();
+    }
+
+    function initFlyoverMarkup() {
+
+        var tmpHTML = [];
+        tmpHTML.push('<div appuse="flyoverfade" class="pagemaskfade hidden"></div>')
+        tmpHTML.push('<div appuse="flyovermask" action="clearFlyover" class="pagemask hidden">')
+        tmpHTML.push('	<div appuse="flyover" class="flyover hidden">')
+        tmpHTML.push('		<div class="ui content form">')
+        tmpHTML.push('			<div class="ui field" spot="flyover-menu">')
+        tmpHTML.push('			</div>')
+        tmpHTML.push('		</div>')
+        tmpHTML.push('		<div style="clear:both"></div>')
+        tmpHTML.push('	</div>')
+        tmpHTML.push('</div>')
+
+        $('body').append(tmpHTML.join(''))
     }
 
     var myConvertLiveLoops = 0;
