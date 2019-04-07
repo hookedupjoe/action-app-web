@@ -2050,7 +2050,8 @@ var ActionAppCore = {};
         //--- Move the flyover mast and related flyover to the page
         //    ... so that pageaction works naturally
         tmpFOMask.detach().appendTo(tmpPageEl);
-        var tmpMenuHTML = tmpEl.parent().html();
+        //var tmpMenuHTML = tmpEl.parent().html();
+        var tmpMenuHTML = tmpEl.get(0).outerHTML;
         tmpMenuHTML = tmpMenuHTML
             .replace('hidden', '')
             .replace('action="dropmenuopen"', '');
@@ -5711,6 +5712,69 @@ License: MIT
 
     //----   COMMON ITEM CONTROLS =================================
 
+    me.ControlDropMenu = {
+        getInfo: function (theControlName) {
+
+            var tmpProps = getCommonControlProperties(['color', 'size', 'icon', 'floating', 'hidden']);
+            var tmpRet = {
+                name: theControlName,
+                title: "Semantic Dropdown Menu Action",
+                category: "Common Items",
+                properties: tmpProps
+            };
+
+            return tmpRet;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+
+            var tmpHTML = [];
+            var tmpLevel = 3;
+            if (theObject.level) {
+                tmpLevel = theObject.level
+            }
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if (tmpHidden) {
+                tmpStyle += tmpHidden;
+            }
+            if (tmpStyle) {
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
+            var tmpIcon = 'dropdown';
+            if( isStr(tmpObject.icon) ){
+                tmpIcon = tmpObject.icon;
+            }
+            var tmpClasses = ''
+
+            tmpClasses += getValueIfTrue(theObject, ['compact', 'floating']);
+            tmpClasses += getValueIfThere(theObject, ['color', 'attached', 'size']);
+
+            tmpHTML.push('<div dropmenu action="dropmenuopen" ' + getItemAttrString(theObject) + ' class="ui dropdown selection ' + tmpClasses + ' " ' + tmpStyle + '>')
+            tmpHTML.push(tmpObject.text || tmpObject.html || tmpObject.title || '')
+
+            if (tmpIcon) {
+                tmpHTML.push(' <i class="' + tmpIcon + ' icon"></i>')
+            }
+
+            tmpHTML.push('	<div class="menu transition fluid hidden" tabindex="-1" style="display: block !important;">')
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+            tmpHTML.push('	</div>')
+
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
     me.ControlImage = {
         getInfo: function (theControlName) {
 
@@ -7364,7 +7428,8 @@ License: MIT
     me.webControls.add('tr', me.ControlDOM);
     me.webControls.add('td', me.ControlDOM);
 
-
+    me.webControls.add('dropmenu', me.ControlDropMenu);
+    
 
     //=== Common Custom Web Controls ..
     me.webControls.add('cardfull', me.ControlFullCard);
