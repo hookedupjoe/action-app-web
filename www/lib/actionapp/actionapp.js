@@ -2039,32 +2039,32 @@ var ActionAppCore = {};
     function dropMenuOpen(theParams, theTarget) {
         var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['menuname'])
         var tmpEl = $(theTarget);
+        
+        var tmpPageEl = tmpEl.closest('[group="app:pages"]');
+        var tmpPageName = tmpPageEl.attr('item') || '';
+
+        console.log( 'tmpPageEl', tmpPageName, tmpPageEl);
         var tmpOffset = tmpEl.offset();
 
         var tmpFOMask = ThisApp.getByAttr$({ appuse: 'flyovermask' });
-        tmpFOMask.removeClass('hidden');
-
-        var tmpMenu = tmpEl.find('.menu.transition.hidden');
-
-
-        var tmpFOFade = ThisApp.getByAttr$({ appuse: 'flyoverfade' });
+       
         var tmpFO = ThisApp.getByAttr$({ appuse: 'flyover' });
+        tmpFOMask.detach().appendTo(tmpPageEl);
         var tmpMenuHTML = tmpEl.parent().html();
         tmpMenuHTML = tmpMenuHTML
             .replace('hidden', '')
             .replace('action="dropmenuopen"', '');
 
-        //get(0).outerHTML.replace('hidden','');
-        console.log('tmpMenuHTML', tmpMenuHTML);
-
         ThisApp.loadSpot('flyover-menu', tmpMenuHTML);
-        tmpFOFade.removeClass('hidden');
-        tmpFO.removeClass('hidden');
         tmpFO.css('width', tmpEl.css('width'));
         tmpFO.css('top', tmpOffset.top + 'px');
         tmpFO.css('left', tmpOffset.left + 'px');
+
+        tmpFOMask.removeClass('hidden');
+        tmpFO.removeClass('hidden');
     };
 
+    me.clearFlyover = clearFlyover;
     function clearFlyover(theParams, theTarget) {
         var tmpMask = ThisApp.getByAttr$({ appuse: 'flyovermask' });
         var tmpFOFade = ThisApp.getByAttr$({ appuse: 'flyoverfade' });
@@ -2273,7 +2273,7 @@ var ActionAppCore = {};
     function initFlyoverMarkup() {
 
         var tmpHTML = [];
-        tmpHTML.push('<div appuse="flyoverfade" class="pagemaskfade hidden"></div>')
+        // tmpHTML.push('<div appuse="flyoverfade" class="pagemaskfade hidden"></div>')
         tmpHTML.push('<div appuse="flyovermask" action="clearFlyover" class="pagemask hidden">')
         tmpHTML.push('	<div appuse="flyover" class="flyover hidden">')
         tmpHTML.push('		<div class="ui content form">')
@@ -3230,6 +3230,7 @@ License: MIT
         var tmpAction = tmpActionDetails.action;
         tmpObj = tmpActionDetails.el;
 
+        ThisApp.clearFlyover();
         if (tmpAction) {
             theEvent.preventDefault();
             theEvent.stopPropagation();
