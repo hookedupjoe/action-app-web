@@ -345,28 +345,36 @@ var ActionAppCore = {};
     }
 
     me.initAppComponents = function (theOptionalTarget) {
-        me.getByAttr$({ appcomp: 'dropdown' }, theOptionalTarget)
-            .dropdown({
-                showOnFocus: false
-            })
-            .attr('appcomp', '');
+        var tmpDDs = me.getByAttr$({ appcomp: 'dropdown' }, theOptionalTarget);
+        if (tmpDDs && tmpDDs.length) {
+            tmpDDs.attr('appcomp', '')
+                .dropdown({
+                    showOnFocus: false
+                })
+                ;
+        }
 
-        me.getByAttr$({ appcomp: 'checkbox' }, theOptionalTarget)
-            .checkbox()
-            .attr('appcomp', '');
+        var tmpCBs = me.getByAttr$({ appcomp: 'checkbox' }, theOptionalTarget);
+        if (tmpCBs && tmpCBs.length) {
+            tmpCBs.attr('appcomp', '')
+                .checkbox()
+                ;
+        }
 
-
-
+        var tmpLOs = me.getByAttr$({ appcomp: 'layout' }, theOptionalTarget)
+        if (tmpLOs && tmpLOs.length) {
+            me.getByAttr$({ appcomp: 'layout' }, theOptionalTarget)
+                .addClass('ctl-layout-frame')
+                .attr('appcomporig', 'layout')
+                .attr('appcomp', '')
+                .layout()
+                ;
+        }
     }
-
-
-
 
     me.getPanel = function (theName) {
         return this.getResourceForType('panels', theName);
-        // return this.res.panels[theName];
     }
-
 
     me.getResourceForType = function (theType, theName) {
         var tmpType = theType || 'controls';
@@ -2059,13 +2067,13 @@ var ActionAppCore = {};
         //--- ToDo, Show this after created
         var tmpMenuHTML = tmpEl.get(0).outerHTML;
         tmpMenuHTML = tmpMenuHTML
-        // .replace('hidden', '')
-        .replace('action="dropmenuopen"', '');
+            // .replace('hidden', '')
+            .replace('action="dropmenuopen"', '');
 
         ThisApp.loadSpot('flyover-menu', tmpMenuHTML);
-        
+
         var tmpDropMenu = $('[dropmenu="menu"]', ThisApp.getSpot('flyover-menu'))
-        console.log( 'tmpDropMenu', tmpDropMenu);
+        console.log('tmpDropMenu', tmpDropMenu);
         tmpDropMenu.show();
         tmpFO.css('width', tmpEl.css('width'));
         tmpFO.css('top', (tmpOffset.top - tmpPageOffset.top) + 'px');
@@ -5272,6 +5280,22 @@ License: MIT
                 .attr('appcomp', '');
         }
 
+        var tmpLayouts = ThisApp.getByAttr$({ ctlcomp: 'layout' }, tmpEl);
+
+        if (tmpLayouts.length) {
+            this.liveIndex.layouts = tmpLayouts;
+            tmpLayouts
+                .addClass('ctl-layout-frame')
+                .attr('ctlcomporig', 'layout')
+                .attr('ctlcomp', '')
+                .layout()
+                ;
+        }
+
+
+
+
+
         $.whenAll(tmpDefs).then(function (theReply) {
             dfd.resolve(true)
         })
@@ -5723,6 +5747,70 @@ License: MIT
 
     //----   COMMON ITEM CONTROLS =================================
 
+
+    me.ControlLayout = {
+        getInfo: function (theControlName) {
+
+            var tmpProps = getCommonControlProperties(['hidden']);
+            var tmpRet = {
+                name: theControlName,
+                title: "jQuery UI Layout Control",
+                category: "Common Items",
+                properties: tmpProps
+            };
+
+            return tmpRet;
+        },
+        getHTML: function (theControlName, theObject, theControlObj) {
+            var tmpObject = theObject || {};
+
+            var tmpHTML = [];
+            var tmpLevel = 3;
+            if (theObject.level) {
+                tmpLevel = theObject.level
+            }
+            var tmpHidden = '';
+            if (tmpObject.hidden === true) {
+                tmpHidden = 'display:none;';
+            }
+            var tmpStyle = tmpObject.style || tmpObject.styles || tmpObject.css || '';
+            if (tmpHidden) {
+                tmpStyle += tmpHidden;
+            }
+            if (tmpStyle) {
+                tmpStyle = ' style="' + tmpStyle + '" '
+            }
+
+            var tmpIcon = 'dropdown';
+            if (isStr(tmpObject.icon)) {
+                tmpIcon = tmpObject.icon;
+            }
+            var tmpClasses = ''
+
+
+            tmpHTML.push('<div ctlcomp="layout" ' + getItemAttrString(theObject) + ' class="' + tmpClasses + ' " ' + tmpStyle + '>')
+            //            tmpHTML.push(tmpObject.text || tmpObject.html || tmpObject.title || '')
+
+            // var tmpItems = tmpObject.items || tmpObject.content || [];
+            // tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+
+
+            tmpHTML.push('<div class="ui-layout-center">Center</div>')
+            tmpHTML.push('<div class="ui-layout-north">North</div>')
+            tmpHTML.push('<div class="ui-layout-south">South</div>')
+            tmpHTML.push('<div class="ui-layout-east">East</div>')
+            tmpHTML.push('<div class="ui-layout-west">West</div>')
+
+            tmpHTML.push('</div>')
+
+            tmpHTML = tmpHTML.join('');
+            return tmpHTML;
+
+        },
+        isField: false
+    }
+
+
     me.ControlDropMenu = {
         getInfo: function (theControlName) {
 
@@ -5757,7 +5845,7 @@ License: MIT
             }
 
             var tmpIcon = 'dropdown';
-            if( isStr(tmpObject.icon) ){
+            if (isStr(tmpObject.icon)) {
                 tmpIcon = tmpObject.icon;
             }
             var tmpClasses = ''
@@ -7440,7 +7528,7 @@ License: MIT
     me.webControls.add('td', me.ControlDOM);
 
     me.webControls.add('dropmenu', me.ControlDropMenu);
-    
+
 
     //=== Common Custom Web Controls ..
     me.webControls.add('cardfull', me.ControlFullCard);

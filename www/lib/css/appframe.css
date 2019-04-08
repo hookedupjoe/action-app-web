@@ -6,6 +6,11 @@ html, body {
   font-family: sans-serif;
 }
 
+.ctl-layout-frame {
+  position:relative !important;
+  height:100% !important;
+  width:100% !important;
+}
 
 .site-layout-north {
   overflow: hidden;
