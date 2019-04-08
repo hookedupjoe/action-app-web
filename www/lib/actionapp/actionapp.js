@@ -633,7 +633,7 @@ var ActionAppCore = {};
             this.res[theType][theName] = theResourceData;
         }
     }
-    
+
     CoreApp.layoutTemplates = {
         default: {
             spacing_closed: 8,
@@ -3925,7 +3925,7 @@ License: MIT
     var me = ThisPageController.prototype;
 
     me.layoutCounter = 0;
-    me.getNextLayoutName = function(){
+    me.getNextLayoutName = function () {
         me.layoutCounter++;
         return 'layout-' + meInstance.layoutCounter;
     }
@@ -4390,9 +4390,6 @@ License: MIT
         if (tmpOptions.proto) {
             tmpObj.extend(tmpOptions.proto);
         }
-
-
-
         return tmpObj
     }
 
@@ -4418,6 +4415,7 @@ License: MIT
         var tmpLayoutReq = this.getContentRequired();
         var tmpInitReq = ThisApp.loadResources.bind(this);
 
+        console.log('tmpLayoutReq', tmpLayoutReq);
         if (tmpLayoutReq) {
             tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
         }
@@ -5376,7 +5374,7 @@ License: MIT
                 ;
             //--- Assure all the elements to the next pane are 100%
             ThisApp.util.resizeToParent(tmpLayouts);
-            
+
             //--- Assure layouts index is in there
             this.liveIndex.layouts = this.liveIndex.layouts || {};
             //--- Loop to create each one, getting details if needed from el
@@ -5385,15 +5383,15 @@ License: MIT
                 var tmpOptions = defaultLayoutOptions;
                 var tmpLayoutTemplateName = tmpLayoutEntry.attr('template') || '';
                 var tmpLayoutOptions = defaultLayoutOptions;
-                if( tmpLayoutTemplateName && StaticApp.layoutTemplates[tmpLayoutTemplateName]){
+                if (tmpLayoutTemplateName && StaticApp.layoutTemplates[tmpLayoutTemplateName]) {
                     //--- Using custom template
                     tmpLayoutOptions = StaticApp.layoutTemplates[tmpLayoutTemplateName];
                 }
-                
+
                 tmpLayoutEntry.layout(tmpLayoutOptions);
             }
 
-            
+
             // //--- Enable layouts and save the handles
             //this.liveIndex.layouts = tmpLayouts.layout();
             //--- Tell the app to resize it's layouts
@@ -5569,7 +5567,6 @@ License: MIT
 
                 var tmpName = tmpItem.name;
 
-
                 if (tmpCtl == 'control' || tmpCtl == 'panel') {
                     tmpIndex.controls[tmpName] = tmpItem;
                     //--- If we have a control name and source is not parent, add to the list
@@ -5606,17 +5603,14 @@ License: MIT
                 }
             }
 
-            if (tmpItem.items) {
-                tmpThisObj.children = [];
-                me._loadContentIndex(tmpItem.items, tmpIndex, tmpThisObj.children);
-            }
-            if (tmpItem.tabs) {
-                tmpThisObj.children = [];
-                me._loadContentIndex(tmpItem.tabs, tmpIndex, tmpThisObj.children);
-            }
-            if (tmpItem.content) {
-                tmpThisObj.children = [];
-                me._loadContentIndex(tmpItem.content, tmpIndex, tmpThisObj.children);
+            //--- Get content items and run through those to create index items
+            var tmpContentItems = ['items', 'tabs', 'content', 'center', 'north', 'south', 'east', 'west'];
+            for (var aIndex in tmpContentItems) {
+                var tmpContentItem = tmpContentItems[aIndex];
+                if (tmpItem[tmpContentItem]) {
+                    tmpThisObj.children = [];
+                    me._loadContentIndex(tmpItem[tmpContentItem], tmpIndex, tmpThisObj.children);
+                }
             }
         }
 
@@ -5897,8 +5891,18 @@ License: MIT
 
             // var tmpItems = tmpObject.items || tmpObject.content || [];
             // tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+            var tmpCenter = theObject.center || '';
+            if (!(tmpCenter) || tmpCenter === true) {
+                tmpHTML.push('<div spot="center" class="ui-layout-center"></div>')
+            } else {
+                if (!Array.isArray(tmpCenter)) {
+                    tmpCenter = [tmpCenter]
+                }
+                tmpHTML.push('<div class="ui-layout-center">')
+                tmpHTML.push(getContentHTML(theControlName, tmpCenter, theControlObj))
+                tmpHTML.push('</div>')
+            }
 
-            tmpHTML.push('<div class="ui-layout-center">Center</div>')
             tmpHTML.push('<div class="ui-layout-north">North</div>')
             tmpHTML.push('<div class="ui-layout-south">South</div>')
             tmpHTML.push('<div class="ui-layout-east">East</div>')
