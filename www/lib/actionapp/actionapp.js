@@ -782,6 +782,10 @@ var ActionAppCore = {};
 
         return tmpSpot;
     }
+    me.spot$ = me.getSpot$; //shortcuts
+    me.spot = me.getSpot$; //shortcuts
+    me.getSpot = me.getSpot$; //shortcuts
+
 
     me.getPage = getPage;
     function getPage(thePageName) {
@@ -2051,18 +2055,25 @@ var ActionAppCore = {};
         //    ... so that pageaction works naturally
         tmpFOMask.detach().appendTo(tmpPageEl);
         //var tmpMenuHTML = tmpEl.parent().html();
+
+        //--- ToDo, Show this after created
         var tmpMenuHTML = tmpEl.get(0).outerHTML;
         tmpMenuHTML = tmpMenuHTML
-            .replace('hidden', '')
-            .replace('action="dropmenuopen"', '');
+        // .replace('hidden', '')
+        .replace('action="dropmenuopen"', '');
 
         ThisApp.loadSpot('flyover-menu', tmpMenuHTML);
+        
+        var tmpDropMenu = $('[dropmenu="menu"]', ThisApp.getSpot('flyover-menu'))
+        console.log( 'tmpDropMenu', tmpDropMenu);
+        tmpDropMenu.show();
         tmpFO.css('width', tmpEl.css('width'));
         tmpFO.css('top', (tmpOffset.top - tmpPageOffset.top) + 'px');
         tmpFO.css('left', (tmpOffset.left - tmpPageOffset.left) + 'px');
 
         tmpFOMask.removeClass('hidden');
         tmpFO.removeClass('hidden');
+        ThisApp.refreshLayouts();
     };
 
     me.clearFlyover = clearFlyover;
@@ -5761,10 +5772,10 @@ License: MIT
                 tmpHTML.push(' <i class="' + tmpIcon + ' icon"></i>')
             }
 
-            tmpHTML.push('	<div class="menu transition fluid hidden" tabindex="-1" style="display: block !important;">')
+            tmpHTML.push('	<div dropmenu="menu" style="display:none"><div class="menu transition fluid" tabindex="-1" style="display: block !important;">')
             var tmpItems = tmpObject.items || tmpObject.content || [];
             tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
-            tmpHTML.push('	</div>')
+            tmpHTML.push('	</div></div>')
 
             tmpHTML.push('</div>')
 
