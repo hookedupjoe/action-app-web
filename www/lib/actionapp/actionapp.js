@@ -4680,6 +4680,8 @@ License: MIT
         if (this.layout) {
             this.layout.resizeAll();
         }
+        //ToDo: Only do this if we have a layout?
+        ThisApp.refreshLayouts();
     }
 
 
@@ -5887,26 +5889,31 @@ License: MIT
 
 
             tmpHTML.push('<div ctlcomp="layout" ' + getItemAttrString(theObject) + ' class="' + tmpClasses + ' " ' + tmpStyle + '>')
-            //            tmpHTML.push(tmpObject.text || tmpObject.html || tmpObject.title || '')
 
-            // var tmpItems = tmpObject.items || tmpObject.content || [];
-            // tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
-            var tmpCenter = theObject.center || '';
-            if (!(tmpCenter) || tmpCenter === true) {
-                tmpHTML.push('<div spot="center" class="ui-layout-center"></div>')
-            } else {
-                if (!Array.isArray(tmpCenter)) {
-                    tmpCenter = [tmpCenter]
+            var tmpRegions = ['center','north', 'south', 'east', 'west'];
+            for (var i = 0; i < tmpRegions.length; i++) {
+                var tmpRegion = tmpRegions[i];
+                console.log( 'tmpRegion', tmpRegion);
+                var tmpRegionConfig = theObject[tmpRegion] || '';
+                var tmpUseDefault = false;
+                if( tmpRegionConfig === true ){
+                    tmpUseDefault = true;
+                } else if( (!(tmpRegionConfig)) && tmpRegion == 'center'){
+                    //--- Always use a center
+                    tmpUseDefault = true;
                 }
-                tmpHTML.push('<div class="ui-layout-center">')
-                tmpHTML.push(getContentHTML(theControlName, tmpCenter, theControlObj))
-                tmpHTML.push('</div>')
-            }
 
-            tmpHTML.push('<div class="ui-layout-north">North</div>')
-            tmpHTML.push('<div class="ui-layout-south">South</div>')
-            tmpHTML.push('<div class="ui-layout-east">East</div>')
-            tmpHTML.push('<div class="ui-layout-west">West</div>')
+                if (tmpUseDefault) {
+                    tmpHTML.push('<div myspot="' + tmpRegion + '" class="ui-layout-' + tmpRegion + '"></div>')
+                } else if( tmpRegionConfig ) {
+                    if (!Array.isArray(tmpRegionConfig)) {
+                        tmpRegionConfig = [tmpRegionConfig]
+                    }
+                    tmpHTML.push('<div class="ui-layout-' + tmpRegion + '">')
+                    tmpHTML.push(getContentHTML(theControlName, tmpRegionConfig, theControlObj))
+                    tmpHTML.push('</div>')
+                }
+            }
 
             tmpHTML.push('</div>')
 
