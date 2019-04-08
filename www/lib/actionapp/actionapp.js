@@ -633,6 +633,86 @@ var ActionAppCore = {};
             this.res[theType][theName] = theResourceData;
         }
     }
+    
+    CoreApp.layoutTemplates = {
+        default: {
+            spacing_closed: 8,
+            spacing_open: 6,
+            resizable: true,
+            togglerLength_open: 100,
+            togglerLength_closed: 100,
+            south__resizable: false,
+            south__closable: false,
+            south__slidable: false,
+            south__togglerLength_open: 0,
+            south__spacing_open: 0,
+            north__resizable: false,
+            north__closable: false,
+            north__slidable: false,
+            north__togglerLength_open: 0,
+            north__spacing_open: 0
+        },
+        defaultPage: {
+            spacing_closed: 8,
+            spacing_open: 6,
+            resizable: true,
+            togglerLength_open: 100,
+            togglerLength_closed: 100,
+            south__resizable: false,
+            south__closable: false,
+            south__slidable: false,
+            south__togglerLength_open: 0,
+            south__spacing_open: 0,
+            north__resizable: false,
+            north__closable: false,
+            north__slidable: false,
+            north__togglerLength_open: 0,
+            north__spacing_open: 0,
+            center__paneSelector: ".middle-center",
+            north__paneSelector: ".middle-north",
+            south__paneSelector: ".middle-south",
+            west__paneSelector: ".middle-west",
+            east: {
+                paneSelector: ".middle-east",
+                resizable: true,
+                resizeWhileDragging: true,
+                slidable: true
+            }
+        },
+        defaultControl: {
+            spacing_closed: 8,
+            spacing_open: 6,
+            resizable: true,
+            togglerLength_open: 100,
+            togglerLength_closed: 100,
+            south__resizable: false,
+            south__closable: false,
+            south__slidable: false,
+            south__togglerLength_open: 0,
+            south__spacing_open: 0,
+            north__resizable: false,
+            north__closable: false,
+            north__slidable: false,
+            north__togglerLength_open: 0,
+            north__spacing_open: 0
+        },
+        customDemo1: {
+            spacing_closed: 8,
+            spacing_open: 6,
+            resizable: true,
+            togglerLength_open: 100,
+            togglerLength_closed: 100,
+            south__resizable: false,
+            south__closable: false,
+            south__slidable: false,
+            south__togglerLength_open: 0,
+            south__spacing_open: 0,
+            north__resizable: true,
+            north__closable: true,
+            north__slidable: true
+        }
+    }
+
 
     /**
        * getUpdatedMarkupForNS
@@ -1611,6 +1691,7 @@ var ActionAppCore = {};
     //--- ========  ========== ========== ========== ========== ========== ========== ========== ========== ========== ========== 
 
 
+
     /**
      * AppAction: showPage
      * 
@@ -2576,35 +2657,8 @@ License: MIT
 
     var SiteMod = ActionAppCore.module("site");
     SiteMod.SitePage = SitePage;
-
-    var defaultLayoutOptions = {
-        spacing_closed: 8,
-        spacing_open: 6,
-        resizable: true,
-        togglerLength_open: 100,
-        togglerLength_closed: 100,
-        south__resizable: false,
-        south__closable: false,
-        south__slidable: false,
-        south__togglerLength_open: 0,
-        south__spacing_open: 0,
-        north__resizable: false,
-        north__closable: false,
-        north__slidable: false,
-        north__togglerLength_open: 0,
-        north__spacing_open: 0,
-        center__paneSelector: ".middle-center",
-        north__paneSelector: ".middle-north",
-        south__paneSelector: ".middle-south",
-        west__paneSelector: ".middle-west",
-        east: {
-            paneSelector: ".middle-east",
-            resizable: true,
-            resizeWhileDragging: true,
-            slidable: true
-        }
-    };
-
+    var StaticApp = SiteMod.CoreApp;
+    var defaultLayoutOptions = StaticApp.layoutTemplates.defaultPage;
 
     //--- Base class for application pages
     function SitePage(theOptions) {
@@ -3842,6 +3896,10 @@ License: MIT
         ns: "_controls"
     }
 
+    var SiteMod = ActionAppCore.module("site");
+    var StaticApp = SiteMod.CoreApp;
+    var defaultLayoutOptions = StaticApp.layoutTemplates.defaultControl;
+
     var MyMod = ActionAppCore.module("plugin");
     MyMod[pluginConfig.name] = ThisPageController;
 
@@ -3865,6 +3923,12 @@ License: MIT
     }
 
     var me = ThisPageController.prototype;
+
+    me.layoutCounter = 0;
+    me.getNextLayoutName = function(){
+        me.layoutCounter++;
+        return 'layout-' + meInstance.layoutCounter;
+    }
 
 
     //--- Private Actions
@@ -5312,8 +5376,26 @@ License: MIT
                 ;
             //--- Assure all the elements to the next pane are 100%
             ThisApp.util.resizeToParent(tmpLayouts);
-            //--- Enable layouts and save the handles
-            this.liveIndex.layouts = tmpLayouts.layout();
+            
+            //--- Assure layouts index is in there
+            this.liveIndex.layouts = this.liveIndex.layouts || {};
+            //--- Loop to create each one, getting details if needed from el
+            for (var iLayout = 0; iLayout < tmpLayouts.length; iLayout++) {
+                var tmpLayoutEntry = $(tmpLayouts.get(iLayout));
+                var tmpOptions = defaultLayoutOptions;
+                var tmpLayoutTemplateName = tmpLayoutEntry.attr('template') || '';
+                var tmpLayoutOptions = defaultLayoutOptions;
+                if( tmpLayoutTemplateName && StaticApp.layoutTemplates[tmpLayoutTemplateName]){
+                    //--- Using custom template
+                    tmpLayoutOptions = StaticApp.layoutTemplates[tmpLayoutTemplateName];
+                }
+                
+                tmpLayoutEntry.layout(tmpLayoutOptions);
+            }
+
+            
+            // //--- Enable layouts and save the handles
+            //this.liveIndex.layouts = tmpLayouts.layout();
             //--- Tell the app to resize it's layouts
             ThisApp.resizeLayouts();
         }
@@ -5815,7 +5897,6 @@ License: MIT
 
             // var tmpItems = tmpObject.items || tmpObject.content || [];
             // tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
-
 
             tmpHTML.push('<div class="ui-layout-center">Center</div>')
             tmpHTML.push('<div class="ui-layout-north">North</div>')
