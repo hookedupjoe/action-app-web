@@ -2285,6 +2285,25 @@ var ActionAppCore = {};
         return (typeof (theItem) == 'object')
     }
 
+    //--- Loop up until the next layout pane and set height to 100%
+    function resizeToParent(theEl) {
+        var tmpMax = 20;
+        var tmpAtEl = theEl.parent();
+
+        for (var iPos = 0; iPos < tmpMax; iPos++) {
+            if (tmpAtEl.hasClass('ui-layout-pane')) {
+                //Done
+                // console.log( 'resizeToParent went up: ', iPos);
+                return true;
+            }
+            tmpAtEl.css('height', '100%');
+            tmpAtEl = tmpAtEl.parent();
+        }
+        console.warn("Hit 20 times trying to find parent and never did in resizeToParent", theEl)
+        return false;
+    }
+
+
 
     function initAppMarkup() {
         initFlyoverMarkup();
@@ -2482,6 +2501,7 @@ var ActionAppCore = {};
         isElement: isElement,
         isjQuery: isjQuery,
         isArray: isArray,
+        resizeToParent: resizeToParent,
         stringToFunction: stringToFunction,
         functionToString: functionToString,
         convertToJsonLive: convertToJsonLive,
@@ -5283,18 +5303,20 @@ License: MIT
         var tmpLayouts = ThisApp.getByAttr$({ ctlcomp: 'layout' }, tmpEl);
 
         if (tmpLayouts.length) {
-            this.liveIndex.layouts = tmpLayouts;
             tmpLayouts
                 .addClass('ctl-layout-frame')
+                .css('min-height', '200px')
                 .attr('ctlcomporig', 'layout')
                 .attr('ctlcomp', '')
-                .layout()
+                // .layout()
                 ;
+            //--- Assure all the elements to the next pane are 100%
+            ThisApp.util.resizeToParent(tmpLayouts);
+            //--- Enable layouts and save the handles
+            this.liveIndex.layouts = tmpLayouts.layout();
+            //--- Tell the app to resize it's layouts
+            ThisApp.resizeLayouts();
         }
-
-
-
-
 
         $.whenAll(tmpDefs).then(function (theReply) {
             dfd.resolve(true)
@@ -7528,6 +7550,8 @@ License: MIT
     me.webControls.add('td', me.ControlDOM);
 
     me.webControls.add('dropmenu', me.ControlDropMenu);
+
+    me.webControls.add('layout', me.ControlLayout);
 
 
     //=== Common Custom Web Controls ..
