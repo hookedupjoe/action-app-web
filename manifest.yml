@@ -2,8 +2,6 @@ applications:
 - path: .
   memory: 128M
   buildpack: sdk-for-nodejs
-  instances: 2
-  domain: mybluemix.net
+  instances: 1
   name: action-app-home
-  host: action-app-home
   disk_quota: 512M

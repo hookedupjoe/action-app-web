@@ -361,14 +361,52 @@ var ActionAppCore = {};
                 ;
         }
 
-        var tmpLOs = me.getByAttr$({ appcomp: 'layout' }, theOptionalTarget)
-        if (tmpLOs && tmpLOs.length) {
-            me.getByAttr$({ appcomp: 'layout' }, theOptionalTarget)
-                .addClass('ctl-layout-frame')
-                .attr('appcomporig', 'layout')
-                .attr('appcomp', '')
-                .layout()
-                ;
+        var tmpLayouts = me.getByAttr$({ appcomp: 'layout' }, theOptionalTarget)
+        if (tmpLayouts) {
+
+
+            if (tmpLayouts.length) {
+                tmpLayouts
+                    .addClass('ctl-layout-frame')
+                    // .css('min-height', '200px')
+                    .css('height', '100%')
+                    .attr('appcomporig', 'layout')
+                    .attr('appcomp', '')
+                    // .layout()
+                    ;
+                //--- Assure all the elements to the next pane are 100%
+                ThisApp.util.resizeToParent(tmpLayouts);
+
+                //--- Assure layouts index is in there
+                this.liveIndex = this.liveIndex || {};
+                this.liveIndex.layouts = this.liveIndex.layouts || {};
+                //--- Loop to create each one, getting details if needed from el
+                for (var iLayout = 0; iLayout < tmpLayouts.length; iLayout++) {
+                    var tmpLayoutEntry = $(tmpLayouts.get(iLayout));
+                    var tmpOptions = {};
+                    var tmpLayoutTemplateName = tmpLayoutEntry.attr('template') || '';
+                    var tmpLayoutOptions = tmpOptions;
+                    if (tmpLayoutTemplateName && StaticApp.layoutTemplates[tmpLayoutTemplateName]) {
+                        //--- Using custom template
+                        tmpLayoutOptions = StaticApp.layoutTemplates[tmpLayoutTemplateName];
+                    }
+
+                    tmpLayoutEntry.layout(tmpLayoutOptions);
+                }
+
+
+                // //--- Enable layouts and save the handles
+                //this.liveIndex.layouts = tmpLayouts.layout();
+                //--- Tell the app to resize it's layouts
+                ThisApp.resizeLayouts();
+            }
+
+            // me.getByAttr$({ appcomp: 'layout' }, theOptionalTarget)
+            //     .addClass('ctl-layout-frame')
+            //     .attr('appcomporig', 'layout')
+            //     .attr('appcomp', '')
+            //     .layout()
+            //     ;
         }
     }
 
@@ -530,13 +568,14 @@ var ActionAppCore = {};
             try {
                 tmpResourceData = eval(tmpResourceData);
                 tmpResourceData = ThisApp.controls.newControl(tmpResourceData.specs, tmpResourceData.options || {})
-                tmpResourceData.controlConfig.parent = tmpThis;
+                tmpResourceData.parent = tmpThis;
             } catch (ex) {
                 console.warn("Could not convert control to object", tmpResourceData);
             }
         } else if (theType == 'panels') {
             try {
-                tmpResourceData = ThisApp.controls.newControl(tmpResourceData, { parent: tmpThis })
+                tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {})
+                tmpResourceData.parent = tmpThis;
             } catch (ex) {
                 console.warn("Could not convert panel to object");
             }
@@ -545,6 +584,9 @@ var ActionAppCore = {};
 
         if (me.resourceInitFlags[theFullPath] !== true) {
             me.resourceInitFlags[theFullPath] = true;
+            if (tmpResourceData.controlConfig) {
+                tmpResourceData.controlConfig.uri = theFullPath;
+            }
             if (tmpResourceData.controlConfig && tmpResourceData.controlConfig.options && tmpResourceData.controlConfig.options.css) {
                 var tmpCSS = tmpResourceData.controlConfig.options.css || '';
                 if (tmpCSS) {
@@ -999,7 +1041,6 @@ var ActionAppCore = {};
      */
     me.gotoTab = function (theOptions, theOptionalItemName, theOptionalPageName) {
         var tmpOptions = theOptions || {};
-
         if (typeof (theOptions) == 'string' && theOptionalItemName) {
             var tmpNewOptions = {
                 group: theOptions,
@@ -1060,6 +1101,7 @@ var ActionAppCore = {};
             appuse: 'cards',
             group: tmpGroupName
         }
+        
         me.getByAttr$(tmpSelector, tmpParent).addClass('hidden').transition('hide', 1);
         tmpSelector.item = tmpItemId;
         me.getByAttr$(tmpSelector, tmpParent).removeClass('hidden').transition(tmpAnimation + ' in', tmpAnimDuration);
@@ -1827,6 +1869,64 @@ var ActionAppCore = {};
         return commonDialog;
     }
 
+
+
+
+
+
+    me.apiCall = apiCall;
+    function apiCall(theOptions) {
+        var dfd = $.Deferred();
+
+        if (!theOptions) {
+            dfd.reject("No api call details provided");
+            return;
+        }
+
+        var tmpOptions = theOptions || '';
+        if (typeof (tmpOptions) == 'string') {
+            tmpOptions = { url: tmpOptions };
+        }
+
+
+        var tmpURL = tmpOptions.url;
+        if (!tmpURL) {
+            throw "No URL provided"
+        }
+
+        // var tmpRequest = {
+        //     cache: false,
+        //     success: function (theResponse) {
+        //         dfd.resolve(theResponse);
+        //     },
+        //     error: function (theError) {
+        //         dfd.reject(theError)
+        //     }
+        // };
+        //$.extend(tmpRequest, tmpOptions);
+        tmpOptions.cache = false;
+        tmpOptions.success = function (theResponse) {
+            dfd.resolve(theResponse);
+        }
+        tmpOptions.error = function (theError) {
+            dfd.reject(theError)
+        }
+
+        
+        //--- Auto Detect data, convert data and use POST
+        if (tmpOptions.data) {
+            if (typeof (tmpOptions.data) == 'object') {
+                tmpOptions.data = JSON.stringify(tmpOptions.data);
+            }
+            tmpOptions.method = 'POST';
+            tmpOptions.contentType = 'application/json';
+        }
+
+        $.ajax(tmpOptions);
+        return dfd.promise();
+    }
+
+
     me.hasSidebar = false;
 
     function initMenus() {
@@ -2128,7 +2228,6 @@ var ActionAppCore = {};
 
     };
 
-
     function dropMenuOpen(theParams, theTarget) {
         // var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['menuname'])
         var tmpEl = $(theTarget);
@@ -2154,7 +2253,6 @@ var ActionAppCore = {};
         ThisApp.loadSpot('flyover-menu', tmpMenuHTML);
 
         var tmpDropMenu = $('[dropmenu="menu"]', ThisApp.getSpot('flyover-menu'))
-        console.log('tmpDropMenu', tmpDropMenu);
         tmpDropMenu.show();
         tmpFO.css('width', tmpEl.css('width'));
         tmpFO.css('top', (tmpOffset.top - tmpPageOffset.top) + 'px');
@@ -2372,9 +2470,7 @@ var ActionAppCore = {};
         var tmpAtEl = theEl.parent();
 
         for (var iPos = 0; iPos < tmpMax; iPos++) {
-            if (tmpAtEl.hasClass('ui-layout-pane')) {
-                //Done
-                // console.log( 'resizeToParent went up: ', iPos);
+            if (tmpAtEl.hasClass('ui-layout-pane') || tmpAtEl.hasClass('app-layout-pane')) {
                 return true;
             }
             tmpAtEl.css('height', '100%');
@@ -2388,6 +2484,7 @@ var ActionAppCore = {};
 
     function initAppMarkup() {
         initFlyoverMarkup();
+        initPromptMarkup()
     }
 
     function initFlyoverMarkup() {
@@ -2403,6 +2500,24 @@ var ActionAppCore = {};
         tmpHTML.push('		<div style="clear:both"></div>')
         tmpHTML.push('	</div>')
         tmpHTML.push('</div>')
+
+        $('body').append(tmpHTML.join(''))
+    }
+
+
+    function initPromptMarkup() {
+        var tmpHTML = [];
+        // tmpHTML.push('<div appuse="promptermask" action="clearPrompter" class="pagemask hidden">')
+        // tmpHTML.push('	<div appuse="prompter" class="flyover hidden">')
+        // tmpHTML.push('		<div class="prompter-content" spot="prompter-content">')
+        // tmpHTML.push('		</div>')
+        // tmpHTML.push('		<div style="clear:both"></div>')
+        // tmpHTML.push('	</div>')
+        // tmpHTML.push('</div>')
+
+
+        tmpHTML.push('		<div class="prompter-content" spot="prompter-content">')
+        tmpHTML.push('		</div>')
 
         $('body').append(tmpHTML.join(''))
     }
@@ -3108,9 +3223,6 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.panels[tmpLTName];
-                if (tmpCtl && tmpCtl.controlConfig) {
-                    tmpCtl.controlConfig.parentRegionName = aName;
-                }
 
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
             }
@@ -3131,9 +3243,6 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.controls[tmpLTName];
-                if (tmpCtl && tmpCtl.controlConfig) {
-                    tmpCtl.controlConfig.parentRegionName = aName;
-                }
 
                 this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
             }
@@ -3461,7 +3570,7 @@ License: MIT
         tmpHTML.push('	<div appuse="_prompter:prompt-dialog-title" class="header"></div>')
         tmpHTML.push('	<div class="scrolling content">')
         tmpHTML.push('	<div appuse="_prompter:prompt-dialog-text-top" class="forms-top-content"></div>')
-        tmpHTML.push('	<div appuse="_prompter:prompt-dialog-text">')
+        tmpHTML.push('	<div appuse="_prompter:prompt-dialog-text" class="app-layout-pane">')
         tmpHTML.push('  </div>')
         tmpHTML.push('  </div>')
         tmpHTML.push('	<div class="actions">')
@@ -3480,7 +3589,7 @@ License: MIT
 
         tmpHTML.push('<div appuse="_prompter:ask-dialog" class="ui tiny modal">')
         tmpHTML.push('	<div appuse="_prompter:ask-dialog-title" class="header"></div>')
-        tmpHTML.push('	<div class="content" style="font-size:larger;font=weight:bolder;">')
+        tmpHTML.push('	<div class="content" style="font-size:larger;font-weight:bolder;">')
         tmpHTML.push('<div style="float:left;"><div style="margin-bottom:10px;"><i class="icon huge question circle blue" /></div></div>')
         tmpHTML.push('    <div appuse="_prompter:ask-dialog-text" class="description">')
         tmpHTML.push('    </div>')
@@ -3498,7 +3607,7 @@ License: MIT
 
         tmpHTML.push('<div appuse="_prompter:alert-dialog" class="ui tiny modal">')
         tmpHTML.push('	<div appuse="_prompter:alert-dialog-title" class="header"></div>')
-        tmpHTML.push('	<div class="content" style="font-size:larger;font=weight:bolder;">')
+        tmpHTML.push('	<div class="content" style="font-size:larger;font-weight:bolder;">')
         tmpHTML.push('<div style="float:left;"><div style="margin-bottom:10px;"><i appuse="_prompter:alert-dialog-icon" class="" /></div></div>')
         tmpHTML.push('    <div appuse="_prompter:alert-dialog-text" class="description">')
         tmpHTML.push('    </div>')
@@ -4286,6 +4395,7 @@ License: MIT
 
         var tmpData = {};
         var tmpControl = theControlEl;
+        var tmpIsMultiValue = false;
 
         if (tmpControl && tmpControl.length == 1) {
             var tmpFields = getControlFields(tmpControl, theOptionalFieldName);
@@ -4297,6 +4407,9 @@ License: MIT
 
                     if (tmpFN) {
                         if (tmpFT == 'radio' || tmpFT == 'checkbox') {
+                            if ( tmpFT == 'checkbox' ){
+                                tmpIsMultiValue = true;
+                            }
                             var tmpIsChecked = tmpField[0].checked;
                             var tmpVal = '';
                             if (tmpIsChecked) {
@@ -4309,6 +4422,9 @@ License: MIT
                                     tmpExistingVal += ","
                                 }
                                 tmpExistingVal += tmpVal;
+                            }
+                            if( tmpIsMultiValue ){
+                                tmpExistingVal = tmpExistingVal.split(',')
                             }
                             tmpData[tmpFN] = tmpExistingVal;
                         } else {
@@ -4378,13 +4494,18 @@ License: MIT
             }
         }
 
+        ///--- Move parent from config into base
+        if( theConfig.parent ){
+            this.parent = theConfig.parent
+            delete theConfig.parent;
+        }
         this.loadConfig(theConfig);
     }
 
     var meControl = Control.prototype;
     meControl.create = function (theControlName, theOptions) {
         var tmpOptions = theOptions || {};
-        tmpOptions.parent = tmpOptions.parent || this.controlConfig.parent
+        tmpOptions.parent = tmpOptions.parent || this.parent ; //|| this.controlConfig.parent
         tmpOptions.proto = tmpOptions.proto || this.controlConfig.proto || false;
         var tmpObj = new ControlInstance(this, theControlName, tmpOptions);
         if (tmpOptions.proto) {
@@ -4393,39 +4514,38 @@ License: MIT
         return tmpObj
     }
 
-    meControl.getContentRequired = function () {
-        var tmpRet = {}
-        var tmpReq = this.controlConfig.index.required;
-        if (tmpReq) {
-            return tmpReq;
-        }
-        return tmpRet;
-    }
+    // meControl.getContentRequired = function () {
+    //     var tmpRet = {}
+    //     var tmpReq = this.controlConfig.index.required;
+    //     if (tmpReq) {
+    //         return tmpReq;
+    //     }
+    //     return tmpRet;
+    // }
 
-    meControl.assureRequired = function () {
-        var dfd = jQuery.Deferred();
-        if (this.assureRequiredRun === true) {
-            dfd.resolve(true)
-            return dfd.promise();
-        }
-        this.assureRequiredRun = true;
-        this.options = this.options || {};
-        var tmpPromRequired = true;
-        var tmpPromLayoutReq = true;
-        var tmpLayoutReq = this.getContentRequired();
-        var tmpInitReq = ThisApp.loadResources.bind(this);
+    // meControl.assureRequired = function () {
+    //     var dfd = jQuery.Deferred();
+    //     // if (this.assureRequiredRun === true) {
+    //     //     dfd.resolve(true)
+    //     //     return dfd.promise();
+    //     // }
+    //     this.assureRequiredRun = true;
+    //     this.options = this.options || {};
+    //     var tmpPromRequired = true;
+    //     var tmpPromLayoutReq = true;
+    //     var tmpLayoutReq = this.getContentRequired();
+    //     var tmpInitReq = ThisApp.loadResources.bind(this);
 
-        console.log('tmpLayoutReq', tmpLayoutReq);
-        if (tmpLayoutReq) {
-            tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
-        }
+    //     if (tmpLayoutReq) {
+    //         tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
+    //     }
 
-        $.when(tmpPromRequired, tmpPromLayoutReq).then(function (theReply) {
-            dfd.resolve(true);
-        })
+    //     $.when(tmpPromRequired, tmpPromLayoutReq).then(function (theReply) {
+    //         dfd.resolve(true);
+    //     })
 
-        return dfd.promise();
-    }
+    //     return dfd.promise();
+    // }
 
 
     //--- ToDo: Review this, better way?  Just use prompt options?
@@ -4541,7 +4661,6 @@ License: MIT
             return;
         }
         this.controlConfig.index = me._loadContentIndex(this.controlConfig.content)
-
     }
 
 
@@ -4558,7 +4677,7 @@ License: MIT
 
     meControl.getHTML = function (theControlName, theInstance) {
 
-        var tmpHTML = getControlHTML(theControlName, this.controlConfig, theInstance);
+        var tmpHTML = getControlHTML(theControlName, (theInstance.controlConfig || this.controlConfig), theInstance);
 
         //--- If parent control is avail and has a ns implemented, use it
         //    ... to convert _page_: and pagespot, etc as usual
@@ -4582,10 +4701,21 @@ License: MIT
     function ControlInstance(theControlSpec, theControlName, theOptions) {
         var tmpOptions = theOptions || {};
         this.controlSpec = theControlSpec;
-
-        if (tmpOptions && tmpOptions.parent) {
-            this.parentControl = tmpOptions.parent ? tmpOptions.parent : false;
+        var tmpConfig = this.controlSpec.controlConfig;
+        tmpConfig.options = tmpConfig.options || {};
+        var tmpMyConfig  = {
+            options: {},
+            content: []
+        };
+        if( tmpConfig ){
+            tmpMyConfig.options = ThisApp.clone(tmpConfig.options);
+            tmpMyConfig.content = ThisApp.clone(tmpConfig.content);
         }
+        this.parent = theOptions.parent || theControlSpec.parent;
+        //--- ToDo: Review need for two of these
+        this.parentControl = this.parent;
+
+        this.loadConfig(tmpMyConfig);
 
         this.controlName = theControlName;
         this.actions = new Index();
@@ -4593,7 +4723,33 @@ License: MIT
         this.liveIndex = {};
         this.parts = {};
 
+        this.res = {
+            "panels": {},
+            "controls": {},
+            "html": {}
+        };
+
         this.initPubSub();
+
+          //--- Grab some common functionality from app ...
+          var tmpStuffToPullIn = [
+            , 'getResourceURIsForType'
+            , 'addResourceFromContent',
+            , 'loadResources',
+            , 'addResource'
+            , 'getPanel'
+            , 'getControl'
+            , 'getResourceForType'
+        ];
+
+        for (var iStuff = 0; iStuff < tmpStuffToPullIn.length; iStuff++) {
+            var tmpFuncName = tmpStuffToPullIn[iStuff];
+            var tmpFunc = ThisApp[tmpFuncName];
+            if (ThisApp.util.isFunc(tmpFunc)) {
+                this[tmpFuncName] = tmpFunc.bind(this);
+            }
+        }
+
     }
 
     var meInstance = ControlInstance.prototype;
@@ -4606,17 +4762,118 @@ License: MIT
     }
 
 
+    meInstance.refreshIndex = function () {
+        this.setupConfig();
+    }
+    
+    meInstance.getContentRequired = function () {
+        var tmpRet = {}
+        this.refreshIndex();
+        var tmpReq = this.controlConfig.index.required;
+        if (tmpReq) {
+            return tmpReq;
+        }
+        return tmpRet;
+    }
+
+    meInstance.assureRequired = function () {
+        var dfd = jQuery.Deferred();
+        // if (this.assureRequiredRun === true) {
+        //     dfd.resolve(true)
+        //     return dfd.promise();
+        // }
+        // this.assureRequiredRun = true;
+        this.options = this.options || {};
+        var tmpPromRequired = true;
+        var tmpPromLayoutReq = true;
+        var tmpLayoutReq = this.getContentRequired();
+        var tmpInitReq = ThisApp.loadResources.bind(this);
+
+        if (tmpLayoutReq) {
+            tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
+        }
+
+        $.when(tmpPromRequired, tmpPromLayoutReq).then(function (theReply) {
+            dfd.resolve(true);
+        })
+
+        return dfd.promise();
+    }
+
+
+    
+    meInstance.loadConfig = function (theConfig) {
+        if (!theConfig) {
+            throw "Config not provided"
+        }
+
+        this.controlConfig = theConfig;
+        this.setupConfig()
+    };
+    meInstance.setupConfig = function () {
+        if (!(this.controlConfig)) {
+            return;
+        }
+        if (!(this.controlConfig.content)) {
+            return;
+        }
+        this.controlConfig.index = me._loadContentIndex(this.controlConfig.content)
+    }
 
     // meInstance.prompt = meControl.prompt;
 
 
     //--- Return cached control element
     meInstance.getEl = function () {
-        if (!this.controlEl) {
-            this.ControlEl = me.getControlEl$(this.controlName);
-        }
-        return this.ControlEl
+        return this.parentEl
     }
+
+    meInstance.refreshUI = function (theOptions) {
+        var tmpOptions = theOptions || {};
+        var tmpThis = this;
+        var tmpConfig = this.controlConfig;
+
+        tmpConfig.options = tmpConfig.options || {};
+        if( typeof(tmpOptions.readonly) === 'boolean'){
+            tmpConfig.options.readonly = tmpOptions.readonly;
+        }
+        if( tmpOptions.doc){
+            tmpConfig.options.doc = tmpOptions.doc;
+        }
+        return this.loadToElement(this.parentEl, theOptions);
+    }
+
+    meInstance.refreshFromURI = function (theOptionalURI, theOptions) {
+        var dfd = jQuery.Deferred();
+        var tmpOptions = theOptions || {};
+
+        var tmpThisEl = this.getEl();
+        var tmpURI = theOptionalURI || this.controlSpec.baseURI || '';
+        if (!(tmpURI)) {
+            console.warn("Could not refresh - no URL provided or known");
+            dfd.resolve(false)
+            return;
+        }
+
+        var tmpThis = this;
+        ThisApp.apiCall({ url: tmpURI }).then(function (theReply) {
+            if (theReply && Array.isArray(theReply.content)) {
+                //--- Update internal content of this instnce only
+                tmpThis.loadConfig(theReply);
+                // this.controlConfig.options = (theReply.options || {});
+                // tmpConfig.content = theReply.content;
+                tmpThis.refreshUI(tmpOptions);
+                dfd.resolve(true)
+            } else {
+                dfd.resolve(false)
+            }
+
+        })
+
+
+        return dfd.promise();
+    }
+
 
     //--- Spot for spot related stuff
 
@@ -4695,7 +4952,12 @@ License: MIT
             specs: tmpSpecs
         }
     }
-
+    
+    meInstance.getItemEl = function (theItemName) {
+        var tmpEl = this.getElByName$(theItemName, 'item')
+        if (!(tmpEl)) { return false }        
+        return tmpEl;
+    }
 
     //--- end spots
 
@@ -4819,6 +5081,7 @@ License: MIT
         }
 
         var tmpFieldSpecs = this.getFieldSpecs(theFieldName);
+        
         if (tmpFieldSpecs) {
             var tmpCtl = tmpFieldSpecs.ctl || 'field';
             var tmpControl = me.webControls.get(tmpCtl);
@@ -4843,7 +5106,7 @@ License: MIT
         return this.controlSpec.getHTML(this.controlName, this);
     }
     meInstance.getConfig = function () {
-        return this.controlSpec.controlConfig || {};
+        return this.controlConfig || {};
     }
 
     meInstance.runItemAction = function (theName, theActionName, theOptionalParams) {
@@ -5116,28 +5379,28 @@ License: MIT
 
     meInstance.getIndex = function () {
         try {
-            return this.controlSpec.controlConfig.index;
+            return this.getConfig().index;
         } catch (ex) {
             return false;
         }
     }
     meInstance.getFieldSpecs = function (theFN) {
         try {
-            return this.controlSpec.controlConfig.index.fields[theFN];
+            return this.getConfig().index.fields[theFN];
         } catch (ex) {
             return false;
         }
     }
     meInstance.getItemSpecs = function (theFN) {
         try {
-            return this.controlSpec.controlConfig.index.items[theFN];
+            return this.getConfig().index.items[theFN];
         } catch (ex) {
             return false;
         }
     }
     meInstance.hasField = function (theName) {
         try {
-            if (isObj(this.controlSpec.controlConfig.index.fields[theName])) {
+            if (isObj(this.getConfig().index.fields[theName])) {
                 return true;
             }
         } catch (ex) {
@@ -5147,7 +5410,7 @@ License: MIT
     }
     meInstance.hasItem = function (theName) {
         try {
-            if (isObj(this.controlSpec.controlConfig.index.items[theName])) {
+            if (isObj(this.getConfig().index.items[theName])) {
                 return true;
             }
         } catch (ex) {
@@ -5411,7 +5674,8 @@ License: MIT
 
     meInstance.loadToElement = function (theEl, theOptions) {
         var dfd = jQuery.Deferred();
-
+        var tmpOptions = theOptions || {};
+        
         var tmpThis = this;
         tmpThis.parentEl = ThisApp.asSpot(theEl);
         var tmpHTML = tmpThis.getHTML();
@@ -5420,11 +5684,16 @@ License: MIT
         tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this))
 
 
-        this.controlSpec.assureRequired().then(function () {
+        tmpThis.getConfig().options = tmpThis.getConfig().options || {};
+        this.assureRequired().then(function () {
             var tmpInitResults = tmpThis.initControlComponents();
             if (tmpInitResults && tmpInitResults.then) {
                 tmpThis.initControlComponents().then(function (theReply) {
                     tmpThis.refreshControl();
+                    var tmpDoc = tmpOptions.doc || tmpThis.getConfig().options.doc || false;
+                    if( tmpDoc ){
+                        tmpThis.loadData(tmpDoc);
+                    }
                     dfd.resolve(true)
                 });
             } else {
@@ -5586,13 +5855,14 @@ License: MIT
 
                 //=== type is index or field
                 var tmpToAdd = tmpItem;
-                if (tmpType == 'items') {
-                    //--- Only push in control type along with name for items
-                    var tmpDetail = tmpItem.text || tmpItem.title || tmpItem.label || '';
-                    if (tmpCtl != 'button') {
-                        tmpToAdd = { ctl: tmpCtl, detail: tmpDetail }
-                    }
-                }
+                //--- Always add reference, is by pointer anyway
+                // if (tmpType == 'items') {
+                //     //--- Only push in control type along with name for items
+                //     var tmpDetail = tmpItem.text || tmpItem.title || tmpItem.label || '';
+                //     if (tmpCtl != 'button') {
+                //         tmpToAdd = { ctl: tmpCtl, detail: tmpDetail }
+                //     }
+                // }
                 if (tmpIndex[tmpType][tmpName]) {
                     //--- If exists, create array and push item in
                     tmpIndex[tmpType][tmpName] = [tmpIndex[tmpType][tmpName]];
@@ -5890,22 +6160,21 @@ License: MIT
 
             tmpHTML.push('<div ctlcomp="layout" ' + getItemAttrString(theObject) + ' class="' + tmpClasses + ' " ' + tmpStyle + '>')
 
-            var tmpRegions = ['center','north', 'south', 'east', 'west'];
+            var tmpRegions = ['center', 'north', 'south', 'east', 'west'];
             for (var i = 0; i < tmpRegions.length; i++) {
                 var tmpRegion = tmpRegions[i];
-                console.log( 'tmpRegion', tmpRegion);
                 var tmpRegionConfig = theObject[tmpRegion] || '';
                 var tmpUseDefault = false;
-                if( tmpRegionConfig === true ){
+                if (tmpRegionConfig === true) {
                     tmpUseDefault = true;
-                } else if( (!(tmpRegionConfig)) && tmpRegion == 'center'){
+                } else if ((!(tmpRegionConfig)) && tmpRegion == 'center') {
                     //--- Always use a center
                     tmpUseDefault = true;
                 }
 
                 if (tmpUseDefault) {
                     tmpHTML.push('<div myspot="' + tmpRegion + '" class="ui-layout-' + tmpRegion + '"></div>')
-                } else if( tmpRegionConfig ) {
+                } else if (tmpRegionConfig) {
                     if (!Array.isArray(tmpRegionConfig)) {
                         tmpRegionConfig = [tmpRegionConfig]
                     }
@@ -6618,7 +6887,16 @@ License: MIT
             if (theControlName == 'pagespot') {
                 tmpSpotAttr = 'pagespot'
             }
-            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpSpotAttr + '="' + tmpName + '"></div>')
+            tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="' + tmpClasses + '" style="' + tmpStyles + '" ' + tmpSpotAttr + '="' + tmpName + '">')
+
+            tmpHTML.push(tmpObject.text || tmpObject.html || '')
+
+            var tmpItems = tmpObject.items || tmpObject.content || [];
+            if (tmpItems) {
+                tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
+            }
+
+            tmpHTML.push('</div>')
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
 
@@ -6699,11 +6977,12 @@ License: MIT
             };
             return tmpRet;
         },
-        getHTML: function (theControlName, theObject, theControlObj) {
+        getHTML: function (theControlName, theObject, theControlObj) {            
             var tmpObject = theObject || {};
             var tmpHTML = [];
             //---> ToDo: Add value and default value to other fields *****
             var tmpValue = tmpObject.value || tmpObject.default || '';
+            var tmpDispValue = tmpValue;
             var tmpSizeName = '';
             if (tmpObject.size && tmpObject.size > 0 && tmpObject.size < 17) {
                 tmpSizeName = getNumName(tmpObject.size)
@@ -6714,6 +6993,8 @@ License: MIT
                 tmpReq = ' required ';
             }
 
+
+            
             var tmpItems = tmpObject.items || tmpObject.content || [];
 
             if (tmpValue) {
@@ -6739,6 +7020,28 @@ License: MIT
             tmpClasses += getValueIfTrue(theObject, ['compact', 'fluid']);
             tmpClasses += getValueIfThere(theObject, ['color', 'size']);
 
+
+            // theControlObj.readonly = true;
+            var tmpDispOnly = (tmpObject.readonly === true);
+            var tmpSpecs = theControlObj.getConfig();
+            if (tmpSpecs && tmpSpecs.options && tmpSpecs.options.readonly === true) {
+                tmpDispOnly = true;
+            }
+            if (theControlObj.readonly === true) {
+                tmpDispOnly = true;
+            }
+
+            var tmpReadOnly = '';
+            var tmpFieldType = 'text';
+            if (tmpDispOnly) {
+                //tmpFieldType = 'hidden';
+                tmpReq = '';
+                tmpReadOnly = ' readonly '
+            }
+            if( theControlName == 'hidden' ){
+                tmpFieldType = 'hidden';
+            }
+
             tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpClasses + tmpSizeName + tmpReq + ' ui ' + tmpFieldOrInput + '">')
             if (theObject.label) {
                 tmpHTML.push('<label>')
@@ -6754,9 +7057,8 @@ License: MIT
                 }
                 tmpPH = ' placeholder="' + tmpPH + ' ';
             }
-            tmpHTML.push('<input ' + tmpInputClasses + ' type="text" controls field ' + tmpValue + ' name="' + theObject.name + '" ' + tmpPH + '">')
 
-
+            tmpHTML.push('<input ' + tmpReadOnly + tmpInputClasses + ' type="' + tmpFieldType + '" controls field ' + tmpValue + ' name="' + theObject.name + '" ' + tmpPH + '">')
             tmpHTML.push('</input>')
             tmpHTML.push(getNoteMarkup(theObject));
 
@@ -6800,6 +7102,22 @@ License: MIT
             if (tmpObject.multi === true) {
                 tmpMulti = 'multiple';
             }
+
+            var tmpDispOnly = (tmpObject.readonly === true);
+            var tmpSpecs = theControlObj.getConfig();
+            if (tmpSpecs && tmpSpecs.options && tmpSpecs.options.readonly === true) {
+                tmpDispOnly = true;
+            }
+            if (theControlObj.readonly === true) {
+                tmpDispOnly = true;
+            }
+
+            var tmpDDAttr = '';
+
+            if (tmpDispOnly) {
+                tmpDDAttr += ' disabled full ';
+                tmpReq = '';
+            }
             var tmpSizeName = '';
             if (tmpObject.size && tmpObject.size > 0 && tmpObject.size < 17) {
                 tmpSizeName = getNumName(tmpObject.size)
@@ -6822,7 +7140,7 @@ License: MIT
             }
             //--- Add field specific content here
 
-            tmpHTML.push('\n            <div ctlcomp="dropdown" class="ui selection ' + tmpMulti + ' dropdown">')
+            tmpHTML.push('\n            <div ctlcomp="dropdown" class="ui selection ' + tmpDDAttr + tmpMulti + ' dropdown">')
             tmpHTML.push('\n                <div class="default text">Select one</div>')
             tmpHTML.push('\n                <i class="dropdown icon"></i>')
             tmpHTML.push('\n                <input controls field type="hidden" name="' + theObject.name + '" >')
@@ -6858,7 +7176,12 @@ License: MIT
             //--- Really this can be left out and it will use this by default
             //--   adding this to show how to return values for custom fields that are not based on simple / standard form logic
             if (theControlEl && theFieldSpecs) {
-                return me._getControlData(theControlEl, theFieldSpecs.name);
+                var tmpData = me._getControlData(theControlEl, theFieldSpecs.name);
+                // console.log( 'getFieldValue theFieldSpecs', theFieldSpecs);
+                if( theFieldSpecs.multi === true && isStr(tmpData) ){
+                    tmpData = tmpData.split(',');
+                }
+                return tmpData;
             }
             return '';
         },
@@ -7603,6 +7926,7 @@ License: MIT
 
     me.webControls.add('fieldrow', me.ControlFieldRow);
     me.webControls.add('field', me.ControlField);
+    me.webControls.add('hidden', me.ControlField);
     me.webControls.add('dropdown', me.ControlDropDown);
     me.webControls.add('checkboxlist', me.ControlCheckboxList);
     me.webControls.add('radiolist', me.ControlRadioList);
