@@ -477,6 +477,8 @@ var ActionAppCore = {};
             if (tmpURI.uri.startsWith('design/')) {
                 tmpExists = false;
             }
+            //--- ToDo: Revisit cachine / using cache versions
+            //tmpExists = false;
 
 
             if ((!tmpExists)) {
@@ -3070,14 +3072,12 @@ License: MIT
                 tmpLTFound = true;
                 tmpAnyFound = true;
 
-                var tmpInstanceName = aName;
                 var tmpLT = tmpLTs[aName];
                 var tmpLTName = '';
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
                 } else {
                     tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;
-                    tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 tmpHTMLNode.map[tmpLTName] = tmpLTName;
             }
@@ -3101,7 +3101,6 @@ License: MIT
                 tmpLTFound = true;
                 tmpAnyFound = true;
 
-                var tmpInstanceName = aName;
                 var tmpLT = tmpLTs[aName];
 
                 var tmpLTName = '';
@@ -3109,7 +3108,6 @@ License: MIT
                     tmpLTName = tmpLT;
                 } else {
                     tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;
-                    tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
 
                 if (tmpLT.source) {
@@ -3142,16 +3140,23 @@ License: MIT
                 tmpLTFound = true;
                 tmpAnyFound = true;
 
-                var tmpInstanceName = aName;
                 var tmpLT = tmpLTs[aName];
                 var tmpLTName = '';
                 if (typeof (tmpLT) == 'string') {
                     tmpLTName = tmpLT;
                 } else {
                     tmpLTName = tmpLT.control || tmpLT.value || tmpLT.panel || tmpLT.html;
-                    tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
-                tmpControlsNode.map[tmpLTName] = tmpLTName;
+
+                if (tmpLT.source) {
+                    tmpControlsNode.map[tmpLTName] = {
+                        source: tmpLT.source,
+                        name: tmpLTName
+                    };
+                } else {
+                    tmpControlsNode.map[tmpLTName] = tmpLTName;
+                }
+                
             }
 
             if (tmpLTFound) {
@@ -3223,8 +3228,16 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.panels[tmpLTName];
-
-                this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
+                
+                if( !(tmpCtl) && tmpLT.source ){
+                    tmpCtl = ThisApp.getPanel(tmpLT.source + "/" + tmpLTName)
+                }
+                if( !(tmpCtl) ){
+                    console.error( 'Panel Missing', tmpLTName);
+                    alert("There was an issues showing this page, contact support")
+                } else {
+                    this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
+                }
             }
         }
 
@@ -3243,8 +3256,15 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.controls[tmpLTName];
-
-                this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
+                if( !(tmpCtl) && tmpLT.source ){
+                    tmpCtl = ThisApp.getControl(tmpLT.source + "/" + tmpLTName)
+                }
+                if( !(tmpCtl) ){
+                    console.error( 'Control Missing', tmpLTName);
+                    alert("There was an issues showing this page, contact support")
+                } else {
+                    this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
+                }
             }
         }
 
@@ -4474,6 +4494,9 @@ License: MIT
     me.Control = Control;
     function Control(theConfig) {
         this.controlConfig = false;
+
+        this.actions = {}; //--- A place for actions
+
         this.res = {
             "panels": {},
             "controls": {},
@@ -5501,8 +5524,8 @@ License: MIT
             if (!(tmpSpecs)) { return true };
             var tmpOnClick = tmpSpecs.onClick || false;
             if (isObj(tmpOnClick)) {
-                var tmpActionName = tmpOnClick.run;
-                if (tmpActionName == 'publish') {
+                var tmpToRun = tmpOnClick.run;
+                if (tmpToRun == 'publish') {
                     var tmpEvent = tmpOnClick.event || 'click';
                     var tmpIsValid = true;
                     var tmpPubParams = tmpOnClick.params || '';
@@ -5513,6 +5536,34 @@ License: MIT
                     }
                     if (tmpIsValid) {
                         this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
+                    }
+                // } else if (tmpToRun == 'action') {
+                //     var tmpAction = tmpOnClick.action || 'click';
+                //     console.log("Run action", tmpAction);
+                // } else if (tmpToRun == 'pageaction') {
+                //     var tmpAction = tmpOnClick.action || 'click';
+                //     console.log("Run pageaction", tmpAction);
+                } else if (tmpToRun == 'action') {
+                    var tmpAction = tmpOnClick.action || 'click';
+                    var tmpSource = tmpOnClick.source || "control";
+                    //Note: Can use tmpOnClick.source, "page","app", "control"
+                    //       default is "control" if not provided
+
+                    //ToDo: Page and App Actions
+                    if( tmpSource == "control"){
+                        var tmpActions = this.actions || {};
+                        var tmpToRun = tmpActions[tmpAction] || this[tmpAction];
+
+                        if (isFunc(tmpToRun)) {
+                            var tmpActParams = ThisApp.clone(tmpOnClick);
+                            //--- Run action with only the params object, not target
+                            //---  run in a way that it binds to this control when run
+                            return tmpToRun.apply(this,tmpActParams);
+                        } else {
+                            console.warn("Action not found for " + tmpAction)
+                        }
+                    } else {
+                        console.warn("Not yet implemented for source " + tmpSource)
                     }
                 }
                 //--- Not a known internal action
@@ -7182,7 +7233,6 @@ License: MIT
             //--   adding this to show how to return values for custom fields that are not based on simple / standard form logic
             if (theControlEl && theFieldSpecs) {
                 var tmpData = me._getControlData(theControlEl, theFieldSpecs.name);
-                // console.log( 'getFieldValue theFieldSpecs', theFieldSpecs);
                 if( theFieldSpecs.multi === true && isStr(tmpData) ){
                     tmpData = tmpData.split(',');
                 }
