@@ -6,8 +6,8 @@
     'HomePage', 
     'DocsPage', 
     'PromptsPage', 
+    'JsonHelperPage', 
     'UsingControlsPage', 
-    'JsonPage', 
     'LogsPage'
   ];
 
