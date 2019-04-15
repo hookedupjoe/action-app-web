@@ -168,6 +168,11 @@ var ActionAppCore = {};
 
         me.components = {};
 
+        me.context = {
+            controller: me,
+            data: {}
+        }
+
         me.resCacheFlags = {
             'catalog': true
         }
@@ -548,7 +553,7 @@ var ActionAppCore = {};
         var tmpName = theName;
         theType = resourceAlias[theType] || theType;
         //tmpName = resourceAlias[tmpName] || tmpName;
-        var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || '';
+        var tmpNS = tmpOptions.ns || tmpOptions.pageNamespace || tmpOptions.pageName || '';
         if (!tmpNS) {
             //--- Auto sense a namespace function, use it if present
             if (ThisApp.util.isFunc(tmpThis.ns)) {
@@ -583,9 +588,15 @@ var ActionAppCore = {};
             }
         }
         tmpResourceData.baseURI = theFullPath;
+        var tmpCheckPath = theFullPath;
+        var tmpCheckPos = tmpCheckPath.indexOf("?");
+        if( tmpCheckPos > -1){
+            tmpCheckPath = tmpCheckPath.substr(0,tmpCheckPos);
+        }
 
-        if (me.resourceInitFlags[theFullPath] !== true) {
-            me.resourceInitFlags[theFullPath] = true;
+        //--- If the base element (with no params) is not loaded, get the CSS and load it
+        if (me.resourceInitFlags[tmpCheckPath] !== true) {
+            me.resourceInitFlags[tmpCheckPath] = true;
             if (tmpResourceData.controlConfig) {
                 tmpResourceData.controlConfig.uri = theFullPath;
             }
@@ -595,7 +606,6 @@ var ActionAppCore = {};
                     if (Array.isArray(tmpCSS)) {
                         tmpCSS = tmpCSS.join('\n');
                     }
-                    console.info("Added css to header for control " + theFullPath)
                     $('head').append('<style>' + tmpCSS + '</style>');
                 }
             }
@@ -890,7 +900,7 @@ var ActionAppCore = {};
     /**
    * getSpot$
    *  - Returns jQuery element for the spot name provided
-   *  - Optionally pass a parent element as the scope to look in
+   *  - Optionally pass a parent element as the DOM to look in
    * 
    * Example: 
    *   var tmpEl = ThisApp.getSpot('main:out')
@@ -1103,7 +1113,7 @@ var ActionAppCore = {};
             appuse: 'cards',
             group: tmpGroupName
         }
-        
+
         me.getByAttr$(tmpSelector, tmpParent).addClass('hidden').transition('hide', 1);
         tmpSelector.item = tmpItemId;
         me.getByAttr$(tmpSelector, tmpParent).removeClass('hidden').transition(tmpAnimation + ' in', tmpAnimDuration);
@@ -1726,6 +1736,21 @@ var ActionAppCore = {};
     }
 
 
+    /**
+    * getContext
+    *    - Returns the application level context
+    *
+    * @param  {Object} theOptions  The details on the page and control the context should be created in
+    * @return void
+    */
+    me.getContext = function () {
+        var tmpOptions = theOptions || {};
+        var tmpRet = {}
+        tmpRet.app = ThisApp.context
+        return tmpRet;
+    }
+
+
     //======================================
     //======================================
     //======================================
@@ -1780,6 +1805,8 @@ var ActionAppCore = {};
             console.error("No pagename provided");
         }
     }
+
+
 
 
 
@@ -1914,7 +1941,7 @@ var ActionAppCore = {};
             dfd.reject(theError)
         }
 
-        
+
         //--- Auto Detect data, convert data and use POST
         if (tmpOptions.data) {
             if (typeof (tmpOptions.data) == 'object') {
@@ -2196,9 +2223,7 @@ var ActionAppCore = {};
         var tmpEl = $(theTarget);
         //var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
         var tmpSelect = tmpEl.attr('select') || '';
-        var tmpScope = tmpEl.attr('scope') || '';
 
-        //tmpScope == 'children' && ??
         if (tmpSelect) {
             var tmpShow = tmpSelect == 'true';
             var tmpContainer = tmpEl.closest('tr').next();
@@ -2308,9 +2333,6 @@ var ActionAppCore = {};
 
         //--- Put your stuff here
         this.common = {};
-
-        //--- Application level scope, another place to put stuff
-        this.scope = {};
 
         //--- ToDo: Support options in theAppConfig to control this        
         me.siteLayout = $('body').layout({
@@ -2551,8 +2573,7 @@ var ActionAppCore = {};
             } else if (isFunc(tmpEntry)) {
                 //--- Convert to string to save
                 tmpRet[aName] = {
-                    isStoredFunction: true,
-                    "_func": tmpEntry.toString()
+                    "[function]": tmpEntry.toString()
                 }
             } else if (isPage(tmpEntry)) {
                 //--- Ignore if page in object
@@ -2635,8 +2656,9 @@ var ActionAppCore = {};
                 if (tmpIsArray) {
                     tmpRet.push(myConvertFromJsonLive(tmpEntry));
                 } else {
-                    if (tmpEntry.isStoredFunction && tmpEntry.hasOwnProperty('_func')) {
-                        tmpRet[aName] = stringToFunction(tmpEntry._func);
+                    //tmpEntry.isStoredFunction && 
+                    if (tmpEntry['[function]']) {
+                        tmpRet[aName] = stringToFunction(tmpEntry['[function]']);
                     } else {
                         tmpRet[aName] = tmpEntry;
                     }
@@ -2685,7 +2707,7 @@ var ActionAppCore = {};
     }
     function stringToFunction(theString) {
         try {
-            return eval("window.__funcmyConvert = " + theString)
+            return eval("window._FunctionConverter = " + theString)
         } catch (ex) {
             return false;
         }
@@ -2693,6 +2715,7 @@ var ActionAppCore = {};
 
     //ThisApp.util...
     var utilFunctions = {
+        isPage: isPage,
         isStr: isStr,
         isFunc: isFunc,
         isObj: isObj,
@@ -2721,19 +2744,25 @@ var ActionAppCore = {};
             if (typeof (theItem) == 'string') {
                 return JSON.parse(theItem)
             } else if (typeof (theItem) == 'object') {
-                try {
-                    return JSON.stringify(theItem, null, '\t')
-                } catch (ex) {
-                    if (theAutoCleanIfNeeded) {
-                        var tmpClean = convertToJsonLive(theItem);
-                        try {
-                            return JSON.stringify(tmpClean, null, '\t')
-                        } catch (ex2) {
-                            throw ("Could not convert object " + ex2)
-                        }
-                    } else {
+                // try {
+                //     return JSON.stringify(theItem, null, '\t')
+                // } catch (ex) {
+
+                // }
+                if (theAutoCleanIfNeeded) {
+                    var tmpClean = convertToJsonLive(theItem);
+                    try {
+                        return JSON.stringify(tmpClean, null, '\t')
+                    } catch (ex2) {
+                        throw ("Could not convert object " + ex2)
+                    }
+                } else {
+                    try {
+                        return JSON.stringify(theItem, null, '\t')
+                    } catch (ex) {
                         throw ("Error processing json convert " + ex)
                     }
+
                 }
             } else {
                 throw ("Need a string or object")
@@ -2787,6 +2816,16 @@ License: MIT
         this.pageActions = {}; //--- A place for actions
         this.pageTitle = this.options.pageTitle || '';
 
+        this.context = {
+            app: ThisApp.context,
+            page: {
+                controller: this,
+                data: this.options.contextData || {}
+            }
+        };
+        //--- Quick access to context data
+        this.contextData = this.context.page.data;
+
         this.res = {
             "panels": {},
             "controls": {},
@@ -2794,8 +2833,6 @@ License: MIT
         };
 
         this.common = {};
-        this.scope = {};
-
 
         this.layoutTemplates = this.options.layoutTemplates || false;
 
@@ -2840,9 +2877,8 @@ License: MIT
             //--- In this case we can just load the element control because it was required in the layout / required area
             this.loadLayoutControl = function (theRegion, theControl, theInstanceName) {
                 var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
-                var tmpInstance = this.createInstance(theControl, theInstanceName)
+                var tmpInstance = this.createInstance(theControl, theInstanceName);
                 tmpInstance.loadToElement(tmpRegionSpotName);
-
             }
             this.loadRegion = function (theRegion, theContent, theOptionalTemplateName) {
                 var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
@@ -3156,7 +3192,7 @@ License: MIT
                 } else {
                     tmpControlsNode.map[tmpLTName] = tmpLTName;
                 }
-                
+
             }
 
             if (tmpLTFound) {
@@ -3228,12 +3264,12 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.panels[tmpLTName];
-                
-                if( !(tmpCtl) && tmpLT.source ){
+
+                if (!(tmpCtl) && tmpLT.source) {
                     tmpCtl = ThisApp.getPanel(tmpLT.source + "/" + tmpLTName)
                 }
-                if( !(tmpCtl) ){
-                    console.error( 'Panel Missing', tmpLTName);
+                if (!(tmpCtl)) {
+                    console.error('Panel Missing', tmpLTName);
                     alert("There was an issues showing this page, contact support")
                 } else {
                     this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
@@ -3256,11 +3292,11 @@ License: MIT
                     tmpInstanceName = tmpLT.partname || tmpLT.name;
                 }
                 var tmpCtl = this.res.controls[tmpLTName];
-                if( !(tmpCtl) && tmpLT.source ){
+                if (!(tmpCtl) && tmpLT.source) {
                     tmpCtl = ThisApp.getControl(tmpLT.source + "/" + tmpLTName)
                 }
-                if( !(tmpCtl) ){
-                    console.error( 'Control Missing', tmpLTName);
+                if (!(tmpCtl)) {
+                    console.error('Control Missing', tmpLTName);
                     alert("There was an issues showing this page, contact support")
                 } else {
                     this.loadLayoutControl(aName, tmpCtl, tmpInstanceName);
@@ -3295,7 +3331,7 @@ License: MIT
         return this.loadSpot(tmpName, theContent, theOptionalTemplateName);
     }
 
-    //--- Calls parent loadSpot with this scope and refreshes layouts
+    //--- Calls parent loadSpot within this page DOM and refreshes layouts
     me.loadSpot = function (theName, theContent, theOptionalTemplateName) {
         ThisApp.loadSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'pagespot');
         try {
@@ -3305,7 +3341,7 @@ License: MIT
         }
     }
 
-    //--- Calls parent loadSpot with this scope and refreshes layouts
+    //--- Calls parent loadSpot within this page DOM and refreshes layouts
     me.addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend) {
         ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, thePrepend, this.getParent$(), 'pagespot');
         try {
@@ -3905,7 +3941,6 @@ License: MIT
                     var tmpFunc = tmpOptions.onBeforeLoad.bind(tmpControlObject);
                     tmpFunc(tmpControlObject, this);
                 }
-
                 tmpControlObject.loadToElement(me.promptDialogText.get(0))
 
                 if (ThisApp.util.isObj(tmpOptions.doc)) {
@@ -4427,7 +4462,7 @@ License: MIT
 
                     if (tmpFN) {
                         if (tmpFT == 'radio' || tmpFT == 'checkbox') {
-                            if ( tmpFT == 'checkbox' ){
+                            if (tmpFT == 'checkbox') {
                                 tmpIsMultiValue = true;
                             }
                             var tmpIsChecked = tmpField[0].checked;
@@ -4437,7 +4472,7 @@ License: MIT
                             }
                             tmpData[tmpFN] = tmpData[tmpFN] || '';
                             var tmpExistingVal = tmpData[tmpFN];
-                            if (Array.isArray(tmpExistingVal)){
+                            if (Array.isArray(tmpExistingVal)) {
                                 tmpExistingVal = tmpExistingVal.join(",");
                             }
                             if (tmpVal) {
@@ -4446,8 +4481,8 @@ License: MIT
                                 }
                                 tmpExistingVal += tmpVal;
                             }
-                            if( tmpIsMultiValue ){
-                                if( (typeof(tmpExistingVal) == 'string')){
+                            if (tmpIsMultiValue) {
+                                if ((typeof (tmpExistingVal) == 'string')) {
                                     tmpExistingVal = tmpExistingVal.split(',')
                                 }
                             }
@@ -4523,7 +4558,7 @@ License: MIT
         }
 
         ///--- Move parent from config into base
-        if( theConfig.parent ){
+        if (theConfig.parent) {
             this.parent = theConfig.parent
             delete theConfig.parent;
         }
@@ -4533,7 +4568,7 @@ License: MIT
     var meControl = Control.prototype;
     meControl.create = function (theControlName, theOptions) {
         var tmpOptions = theOptions || {};
-        tmpOptions.parent = tmpOptions.parent || this.parent ; //|| this.controlConfig.parent
+        tmpOptions.parent = tmpOptions.parent || this.parent; //|| this.controlConfig.parent
         tmpOptions.proto = tmpOptions.proto || this.controlConfig.proto || false;
         var tmpObj = new ControlInstance(this, theControlName, tmpOptions);
         if (tmpOptions.proto) {
@@ -4731,11 +4766,11 @@ License: MIT
         this.controlSpec = theControlSpec;
         var tmpConfig = this.controlSpec.controlConfig;
         tmpConfig.options = tmpConfig.options || {};
-        var tmpMyConfig  = {
+        var tmpMyConfig = {
             options: {},
             content: []
         };
-        if( tmpConfig ){
+        if (tmpConfig) {
             tmpMyConfig.options = ThisApp.clone(tmpConfig.options);
             tmpMyConfig.content = ThisApp.clone(tmpConfig.content);
         }
@@ -4751,6 +4786,27 @@ License: MIT
         this.liveIndex = {};
         this.parts = {};
 
+        this.context = {
+            app: ThisApp.context,
+            this: {
+                controller: this,
+                data: {}
+            }
+        };
+
+        if (tmpMyConfig && tmpMyConfig.options && isObj(tmpMyConfig.options.contextData)) {
+            this.context.this.data = tmpMyConfig.options.contextData;
+        }
+        //--- Pull in references for easy access to context items
+        if (this.parent && this.parent.context) {
+            if (isObj(this.parent.context.page)) {
+                this.context.page = this.parent.context.page;
+            }
+            if (!(ThisApp.util.isPage(this.parent))) {
+                this.context.control = this.parent.context;
+            }
+        }
+
         this.res = {
             "panels": {},
             "controls": {},
@@ -4759,8 +4815,8 @@ License: MIT
 
         this.initPubSub();
 
-          //--- Grab some common functionality from app ...
-          var tmpStuffToPullIn = [
+        //--- Grab some common functionality from app ...
+        var tmpStuffToPullIn = [
             , 'getResourceURIsForType'
             , 'addResourceFromContent',
             , 'loadResources',
@@ -4793,7 +4849,7 @@ License: MIT
     meInstance.refreshIndex = function () {
         this.setupConfig();
     }
-    
+
     meInstance.getContentRequired = function () {
         var tmpRet = {}
         this.refreshIndex();
@@ -4829,7 +4885,7 @@ License: MIT
     }
 
 
-    
+
     meInstance.loadConfig = function (theConfig) {
         if (!theConfig) {
             throw "Config not provided"
@@ -4862,13 +4918,14 @@ License: MIT
         var tmpConfig = this.controlConfig;
 
         tmpConfig.options = tmpConfig.options || {};
-        if( typeof(tmpOptions.readonly) === 'boolean'){
+        if (typeof (tmpOptions.readonly) === 'boolean') {
             tmpConfig.options.readonly = tmpOptions.readonly;
         }
-        if( tmpOptions.doc){
+        if (tmpOptions.doc) {
             tmpConfig.options.doc = tmpOptions.doc;
         }
-        return this.loadToElement(this.parentEl, theOptions);
+
+        return this.loadToElement(this.parentEl, tmpOptions);
     }
 
     meInstance.refreshFromURI = function (theOptionalURI, theOptions) {
@@ -4909,7 +4966,7 @@ License: MIT
 
 
 
-    //--- Calls parent loadSpot with this scope and refreshes layouts
+    //--- Calls parent loadSpot with this instance DOM and refreshes layouts
     meInstance.loadSpot = function (theName, theContent, theOptionalTemplateName) {
         ThisApp.loadSpot(theName, theContent, theOptionalTemplateName, this.getParent$(), 'myspot');
         try {
@@ -4918,7 +4975,7 @@ License: MIT
 
         }
     }
-    //--- Calls parent loadSpot with this scope and refreshes layouts
+    //--- Calls parent loadSpot with this instance DOM and refreshes layouts
     meInstance.addToSpot = addToSpot = function (theName, theContent, theOptionalTemplateName, thePrepend) {
         ThisApp.addToSpot(theName, theContent, theOptionalTemplateName, thePrepend, this.getParent$(), 'myspot');
         try {
@@ -4980,10 +5037,10 @@ License: MIT
             specs: tmpSpecs
         }
     }
-    
+
     meInstance.getItemEl = function (theItemName) {
         var tmpEl = this.getElByName$(theItemName, 'item')
-        if (!(tmpEl)) { return false }        
+        if (!(tmpEl)) { return false }
         return tmpEl;
     }
 
@@ -5109,7 +5166,7 @@ License: MIT
         }
 
         var tmpFieldSpecs = this.getFieldSpecs(theFieldName);
-        
+
         if (tmpFieldSpecs) {
             var tmpCtl = tmpFieldSpecs.ctl || 'field';
             var tmpControl = me.webControls.get(tmpCtl);
@@ -5324,11 +5381,13 @@ License: MIT
 
 
         if (tmpIsValid) {
-            var tmpOnValidate = this._onValidate || this.onValidate || tmpConfig._onValidate || tmpConfig.onValidate;
+            var tmpConfigOptions = tmpConfig.options || {};
+            var tmpOnValidate = this._onValidate || this.onValidate || tmpConfigOptions._onValidate || tmpConfigOptions.onValidate;
 
             if (isObj(tmpOnValidate)) {
-                if (tmpOnValidate.isStoredFunction && tmpOnValidate._func) {
-                    tmpOnValidate = ThisApp.util.stringToFunction(tmpOnValidate._func);
+                //tmpOnValidate.isStoredFunction && 
+                if (tmpOnValidate['[function]']) {
+                    tmpOnValidate = ThisApp.util.stringToFunction(tmpOnValidate['[function]']);
                 } else {
                     var tmpName = tmpOnValidate.run;
                     var tmpToRun = me.validations.get(tmpName)
@@ -5537,12 +5596,6 @@ License: MIT
                     if (tmpIsValid) {
                         this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
                     }
-                // } else if (tmpToRun == 'action') {
-                //     var tmpAction = tmpOnClick.action || 'click';
-                //     console.log("Run action", tmpAction);
-                // } else if (tmpToRun == 'pageaction') {
-                //     var tmpAction = tmpOnClick.action || 'click';
-                //     console.log("Run pageaction", tmpAction);
                 } else if (tmpToRun == 'action') {
                     var tmpAction = tmpOnClick.action || 'click';
                     var tmpSource = tmpOnClick.source || "control";
@@ -5550,7 +5603,7 @@ License: MIT
                     //       default is "control" if not provided
 
                     //ToDo: Page and App Actions
-                    if( tmpSource == "control"){
+                    if (tmpSource == "control") {
                         var tmpActions = this.actions || {};
                         var tmpToRun = tmpActions[tmpAction] || this[tmpAction];
 
@@ -5558,7 +5611,7 @@ License: MIT
                             var tmpActParams = ThisApp.clone(tmpOnClick);
                             //--- Run action with only the params object, not target
                             //---  run in a way that it binds to this control when run
-                            return tmpToRun.apply(this,tmpActParams);
+                            return tmpToRun.apply(this, tmpActParams);
                         } else {
                             console.warn("Action not found for " + tmpAction)
                         }
@@ -5731,9 +5784,11 @@ License: MIT
     meInstance.loadToElement = function (theEl, theOptions) {
         var dfd = jQuery.Deferred();
         var tmpOptions = theOptions || {};
-        
+
         var tmpThis = this;
         tmpThis.parentEl = ThisApp.asSpot(theEl);
+
+        //--- Load dynamic content into
         var tmpHTML = tmpThis.getHTML();
         tmpThis.parentEl.html(tmpHTML);
         tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this))
@@ -5747,7 +5802,7 @@ License: MIT
                 tmpThis.initControlComponents().then(function (theReply) {
                     tmpThis.refreshControl();
                     var tmpDoc = tmpOptions.doc || tmpThis.getConfig().options.doc || false;
-                    if( tmpDoc ){
+                    if (tmpDoc) {
                         tmpThis.loadData(tmpDoc);
                     }
                     dfd.resolve(true)
@@ -6055,13 +6110,58 @@ License: MIT
 
     }
 
+    me.processDynamicContent = processDynamicContent
+    function processDynamicContent(theControlName, theObject, theControlObj) {
+        var tmpRet = ThisApp.clone(theObject);
+        var tmpIsDyno = false;
+        var tmpContext = theControlObj.context || ThisApp.getContext();
+
+        for (var aFN in tmpRet) {
+            var tmpObj = tmpRet[aFN];
+            var tmpCompKey = '[computed]';
+            if (isObj(tmpObj) && tmpObj.hasOwnProperty(tmpCompKey)) {
+                var tmpComputed = tmpObj[tmpCompKey];
+
+                if (isStr(tmpComputed)) {
+                    tmpComputed = {
+                        "context": tmpComputed
+                    }
+                }
+
+                if (isObj(tmpComputed)) {
+                    var tmpCompValue = '';
+                    var tmpCompContext = tmpComputed.context || '';
+                    if (tmpCompContext) {
+                        try {
+                            var context = tmpContext;
+                            tmpCompValue = eval(tmpCompContext)
+                        } catch (ex) {
+                            console.warn("Attempt to us computed context value failed ", ex)
+                        }
+                    } else {
+                        console.warn("No context passed for computed value, see documentation for details.")
+                    }
+                    tmpRet[aFN] = tmpCompValue;
+                }
+                tmpIsDyno = true;
+
+            }
+
+        }
+        return tmpRet
+    }
+
     me.getHTMLForControl = getHTMLForControl
     function getHTMLForControl(theControlName, theObject, theControlObj) {
+        // console.log( 'getHTMLForControl theObject', theObject);
+
         var tmpHTML = [];
         tmpHTML.push('')
         if (!(theControlName)) {
             return '';
         }
+
+        var tmpDataObject = me.processDynamicContent(theControlName, theObject, theControlObj);
 
         var tmpControl = me.webControls.get(theControlName);
         // if( isFunc(tmpControl) ){
@@ -6071,7 +6171,8 @@ License: MIT
             console.warn("No HTML for " + theControlName)
             return '';
         }
-        tmpHTML.push(tmpControl.getHTML(theControlName, theObject, theControlObj))
+
+        tmpHTML.push(tmpControl.getHTML(theControlName, tmpDataObject, theControlObj))
 
         return tmpHTML.join('');
     }
@@ -6920,7 +7021,7 @@ License: MIT
                 name: "spotname",
                 label: "Spot Name",
                 type: "string",
-                notes: "The unique name of this spot (in scope)"
+                notes: "The unique name of this spot in this control"
             }
 
             var tmpRet = {
@@ -7033,7 +7134,7 @@ License: MIT
             };
             return tmpRet;
         },
-        getHTML: function (theControlName, theObject, theControlObj) {            
+        getHTML: function (theControlName, theObject, theControlObj) {
             var tmpObject = theObject || {};
             var tmpHTML = [];
             //---> ToDo: Add value and default value to other fields *****
@@ -7050,7 +7151,7 @@ License: MIT
             }
 
 
-            
+
             var tmpItems = tmpObject.items || tmpObject.content || [];
 
             if (tmpValue) {
@@ -7094,7 +7195,7 @@ License: MIT
                 tmpReq = '';
                 tmpReadOnly = ' readonly '
             }
-            if( theControlName == 'hidden' ){
+            if (theControlName == 'hidden') {
                 tmpFieldType = 'hidden';
             }
 
@@ -7233,7 +7334,7 @@ License: MIT
             //--   adding this to show how to return values for custom fields that are not based on simple / standard form logic
             if (theControlEl && theFieldSpecs) {
                 var tmpData = me._getControlData(theControlEl, theFieldSpecs.name);
-                if( theFieldSpecs.multi === true && isStr(tmpData) ){
+                if (theFieldSpecs.multi === true && isStr(tmpData)) {
                     tmpData = tmpData.split(',');
                 }
                 return tmpData;
@@ -7739,8 +7840,7 @@ License: MIT
                                 ctl: "i",
                                 attr: {
                                     action: "outlineDisplay",
-                                    select: "false",
-                                    scope: "children"
+                                    select: "false"
                                 },
                                 classes: "icon square minus large toright"
                             },
@@ -7748,8 +7848,7 @@ License: MIT
                                 ctl: "i",
                                 attr: {
                                     action: "outlineDisplay",
-                                    select: "true",
-                                    scope: "children"
+                                    select: "true"
                                 },
                                 classes: "icon square plus large toright"
                             }
