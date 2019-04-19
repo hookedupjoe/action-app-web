@@ -490,9 +490,13 @@ var ActionAppCore = {};
             //--- ToDo: Revisit cachine / using cache versions
             
             if( !(tmpExists) ){
-                var tmpURL = tmpURI.uri + me.getExtnForType(tmpURI.type);
+                
+                var tmpURL = tmpURI.uri;
+                if( !(tmpURI.uri.endsWith('/') || tmpURI.uri.endsWith('?open') || tmpURI.uri.endsWith('.xsp')) ){
+                    //--- Do not add extn to flat items
+                    tmpURL += me.getExtnForType(tmpURI.type);
+                } 
                 tmpURL = assureRelative(tmpURL);
-
                 //ThisApp.appMessage("Getting " + tmpURL);
 
                 tmpRequests.push(tmpURI);
@@ -2957,7 +2961,6 @@ License: MIT
                 tmpOpts[tmpRegion] = true;
             }
         }
-
         return theLayoutOptions;
 
     }
@@ -4488,6 +4491,7 @@ License: MIT
                             var tmpExistingVal = tmpData[tmpFN];
                             if (Array.isArray(tmpExistingVal)) {
                                 tmpExistingVal = tmpExistingVal.join(",");
+                                
                             }
                             if (tmpVal) {
                                 if (tmpExistingVal) {
@@ -4497,7 +4501,12 @@ License: MIT
                             }
                             if (tmpIsMultiValue) {
                                 if ((typeof (tmpExistingVal) == 'string')) {
-                                    tmpExistingVal = tmpExistingVal.split(',')
+                                    if( tmpExistingVal ){
+                                        tmpExistingVal = tmpExistingVal.split(',');
+                                    } else {
+                                        tmpExistingVal = [];
+                                    }
+                                    
                                 }
                             }
                             tmpData[tmpFN] = tmpExistingVal;
@@ -5336,10 +5345,17 @@ License: MIT
             if (tmpIsAvail) {
                 var tmpFieldSpec = tmpConfig.index.fields[tmpFN];
                 if (tmpFieldSpec.req === true) {
-                    if (!(tmpDetails.data[tmpFN])) {
+                    var tmpFieldData = tmpDetails.data[tmpFN];
+                    if (!(tmpFieldData)) {
                         tmpFieldIsValid = false;
                         //--- ToDo: Add required field message option
                         tmpRetFields.push({ name: tmpFN, text: '' })
+                    } else {
+                        if( Array.isArray(tmpFieldData)){
+                            if( tmpFieldData.length == 0 ){
+                                tmpFieldIsValid = false;
+                            }
+                        }
                     }
                 }
                 if (tmpFieldIsValid) {
@@ -6178,7 +6194,6 @@ License: MIT
 
     me.getHTMLForControl = getHTMLForControl
     function getHTMLForControl(theControlName, theObject, theControlObj) {
-        // console.log( 'getHTMLForControl theObject', theObject);
 
         var tmpHTML = [];
         tmpHTML.push('')
@@ -6189,9 +6204,6 @@ License: MIT
         var tmpDataObject = me.processDynamicContent(theControlName, theObject, theControlObj);
 
         var tmpControl = me.webControls.get(theControlName);
-        // if( isFunc(tmpControl) ){
-
-        // }
         if (!(tmpControl && tmpControl.getHTML)) {
             console.warn("No HTML for " + theControlName)
             return '';
@@ -7359,7 +7371,12 @@ License: MIT
             if (theControlEl && theFieldSpecs) {
                 var tmpData = me._getControlData(theControlEl, theFieldSpecs.name);
                 if (theFieldSpecs.multi === true && isStr(tmpData)) {
-                    tmpData = tmpData.split(',');
+                    if( tmpData ){
+                        tmpData = tmpData.split(',');
+                    } else {
+                        tmpData = [];
+                    }
+                    
                 }
                 return tmpData;
             }
