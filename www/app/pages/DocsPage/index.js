@@ -38,7 +38,7 @@ License: MIT
         north: {html: "page-header"},
         center: {html: "page-body"},
         west: {html: "page-west"},
-        south: false
+        south: {html: "page-footer"}
     }
 
     //--- Customize default layout configuration
@@ -79,7 +79,7 @@ License: MIT
     ThisPage._onFirstActivate = function (theApp) {
         ThisPage.initOnFirstLoad().then(            
             function () {
-                ThisApp.subscribe("_app:gotoTab", ThisPage.tabChanged)
+                ThisApp.subscribe("gotoTab", ThisPage.tabChanged)
 
                 var tmpDocsList = ['index.json'];
                 showContentInPreviewPane('about-action-app')
