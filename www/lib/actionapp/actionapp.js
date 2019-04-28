@@ -1519,6 +1519,7 @@ var ActionAppCore = {};
 
 
 
+    
 
     /**
      * runAppAction
@@ -2058,7 +2059,7 @@ var ActionAppCore = {};
         if (tmpAction) {
             theEvent.preventDefault();
             theEvent.stopPropagation();
-            runAppAction(tmpAction, tmpObj);
+            ThisApp.runAppAction(tmpAction, tmpObj);
         }
         return false;
     }
@@ -2168,11 +2169,15 @@ var ActionAppCore = {};
     me.runAction = runAction;
     function runAction(theAction, theSourceObject) {
         var tmpAction = theAction || '';
-        tmpAction = tmpAction.replace((this.pageNamespace + ":"), '');
-        if (typeof (this[tmpAction]) == 'function') {
-            this[tmpAction](tmpAction, theSourceObject);
-        } else if (typeof (me[tmpAction]) == 'function') {
-            me[tmpAction](tmpAction, theSourceObject);
+        var tmpActionName = tmpAction;
+        if( ThisApp.util.isObj(tmpActionName)){
+            tmpActionName = tmpActionName.action;
+        }
+
+        if (typeof (this[tmpActionName]) == 'function') {
+            (this[tmpActionName]).call(this, tmpAction, theSourceObject);
+        } else if (typeof (me[tmpActionName]) == 'function') {
+            (me[tmpActionName]).call(this,tmpAction, theSourceObject);
         }
     }
 
@@ -3493,10 +3498,10 @@ License: MIT
             var tmpAppActionDetails = ThisApp.getActionFromObj(tmpObj, 'action');
             if ((tmpAppActionDetails.hasOwnProperty('action') && tmpAppActionDetails.hasOwnProperty('el'))) {
                 if (tmpAppActionDetails.action == 'selectMe') {
+                    //--- ToDo: Revisit how this works, make generic, etc
                     this.publish('selectMe', [this, tmpAppActionDetails.el])
                 }
             }
-    
             return;
         }
         var tmpAction = tmpActionDetails.action;
@@ -3520,15 +3525,20 @@ License: MIT
     me.runAction = runAction;
     function runAction(theAction, theSourceObject) {
         var tmpAction = theAction || '';
-        tmpAction = tmpAction.replace((this.pageNamespace + ":"), '');
+        var tmpActionName = tmpAction;
+        if( ThisApp.util.isObj(tmpActionName)){
+            tmpActionName = tmpActionName.action;
+        }
         var tmpMyActions = this.pageActions || {};
-
-        if (typeof (tmpMyActions[tmpAction]) == 'function') {
-            tmpMyActions[tmpAction](tmpAction, theSourceObject);
-        } else if (typeof (this[tmpAction]) == 'function') {
-            this[tmpAction](tmpAction, theSourceObject);
-        } else if (typeof (me[tmpAction]) == 'function') {
-            me[tmpAction](tmpAction, theSourceObject);
+        if (typeof (tmpMyActions[tmpActionName]) == 'function') {
+            (tmpMyActions[tmpActionName]).call(this, tmpAction, theSourceObject);
+        } else if (typeof (this[tmpActionName]) == 'function') {
+            (this[tmpActionName]).call(this, tmpAction, theSourceObject);
+        } else if (typeof (me[tmpActionName]) == 'function') {
+            (me[tmpActionName]).call(this, tmpAction, theSourceObject);
+        } else {
+            console.warn( 'Page Action Not Found', tmpActionName);
+            ThisApp.runAction(theAction, theSourceObject);
         }
     }
 
@@ -3630,10 +3640,10 @@ License: MIT
 
     function runAction(theAction, theSourceObject) {
         if (typeof (act[theAction]) == 'function') {
-            act[theAction](theAction, theSourceObject);
+            (act[theAction]).call(this,theAction, theSourceObject);
         }
         if (typeof (me[theAction]) == 'function') {
-            me[theAction](theAction, theSourceObject);
+            (me[theAction]).call(this,theAction, theSourceObject);
         }
     }
 
@@ -4148,10 +4158,10 @@ License: MIT
 
     function runAction(theAction, theSourceObject) {
         if (typeof (act[theAction]) == 'function') {
-            act[theAction](theAction, theSourceObject);
+            (act[theAction]).call(this, theAction, theSourceObject);
         }
         if (typeof (me[theAction]) == 'function') {
-            me[theAction](theAction, theSourceObject);
+            (me[theAction]).call(this, theAction, theSourceObject);
         }
     }
 
@@ -5617,7 +5627,6 @@ License: MIT
         }
     }
     meInstance.onItemClick = function (theEvent) {
-
         var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
         var tmpActionDetails = ThisApp.getActionFromObj(tmpObj, 'myaction');
         var tmpTargetHit = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
@@ -5644,7 +5653,9 @@ License: MIT
                 var tmpSpecs = this.getItemSpecs(tmpName);
                 if (!(tmpSpecs)) { return true };
                 var tmpOnClick = tmpSpecs.onClick || false;
+
                 if (isObj(tmpOnClick)) {
+
                     var tmpToRun = tmpOnClick.run;
                     if (tmpToRun == 'publish') {
                         var tmpEvent = tmpOnClick.event || 'click';
@@ -5658,14 +5669,30 @@ License: MIT
                         if (tmpIsValid) {
                             this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
                         }
-                    } else if (tmpToRun == 'action') {
-                        var tmpAction = tmpOnClick.action || 'click';
+                    } else if (tmpToRun == 'action' || tmpToRun == 'pageaction') {
+                        var tmpAction = tmpOnClick.action || '';
+                        var tmpPageAction = tmpOnClick.pageaction || '';
+                        var tmpAppAction = tmpOnClick.appaction || '';
+
                         var tmpSource = tmpOnClick.source || "control";
+                        if( tmpPageAction ){
+                            tmpSource = 'page'
+                        };
+                        if( tmpSource == 'app' && !tmpAppAction ){
+                            tmpAppAction = tmpAction;
+                        }
+
                         //Note: Can use tmpOnClick.source, "page","app", "control"
                         //       default is "control" if not provided
 
                         //ToDo: Page and App Actions
-                        if (tmpSource == "control") {
+                        if (tmpSource == "page") {
+                            tmpOnClick.action = tmpPageAction || tmpAction;
+                            this.context.page.controller.runAction(ThisApp.clone(tmpOnClick));
+                        } else if (tmpSource == "app") {
+                            tmpOnClick.action = tmpAction;
+                            ThisApp.runAppAction(tmpAction, ThisApp.clone(tmpOnClick));
+                        } else if (tmpSource == "control") {
                             var tmpActions = this.actions || {};
                             var tmpToRun = tmpActions[tmpAction] || this[tmpAction];
 
@@ -5675,6 +5702,7 @@ License: MIT
                                 //---  run in a way that it binds to this control when run
                                 return tmpToRun.apply(this, [tmpActParams]);
                             } else {
+                                //--- Automatically run up the chain to find action
                                 console.warn("Action not found for " + tmpAction)
                             }
                         } else {
