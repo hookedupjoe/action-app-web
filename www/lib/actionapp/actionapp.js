@@ -23,7 +23,7 @@ var ActionAppCore = {};
     //--- Create module
     ActionAppCore.createModule = function (theModName, theOptionalModuleContent) {
         if (modules.hasOwnProperty(theModName)) {
-            throw { error: "Module already exists", module: theModName }
+            throw { error: "Module already exists", module: theModName };
         }
         modules[theModName] = theOptionalModuleContent || {};
         return modules[theModName];
@@ -31,10 +31,10 @@ var ActionAppCore = {};
     //--- get / use module
     ActionAppCore.module = function (theModName) {
         if (!modules.hasOwnProperty(theModName)) {
-            throw { error: "Module does not exists", module: theModName }
+            throw { error: "Module does not exists", module: theModName };
         }
         return modules[theModName];
-    }
+    };
 
 })(ActionAppCore, $);
 
@@ -128,13 +128,13 @@ var ActionAppCore = {};
         } else {
             tmpEl.addClass('hidden');
         }
-    }
+    };
     me.show = function (theEl) {
         me.setDisplay(theEl, true);
-    }
+    };
     me.hide = function (theEl) {
         me.setDisplay(theEl, false);
-    }
+    };
 
     ExtendMod.SetDisplay = me;
 
@@ -160,7 +160,7 @@ var ActionAppCore = {};
 
         me.isDom = function (element) {
             return element instanceof Element;
-        }
+        };
 
         me.options = theOptions || {};
         me.actions = me.options.actions || {};
@@ -171,11 +171,11 @@ var ActionAppCore = {};
         me.context = {
             controller: me,
             data: {}
-        }
+        };
 
         me.resCacheFlags = {
             'catalog': true
-        }
+        };
         //--- Full Path Index
         me.resCache = {
             "panels": {},
@@ -201,11 +201,11 @@ var ActionAppCore = {};
 
         me.getNavConfig = function (theName) {
             return me.navConfig[theName];
-        }
+        };
 
 
         me.registerNavLink = function (theNavObject) {
-            if (!(theNavObject)) { return false };
+            if (!(theNavObject)) { return false }
             var tmpName = theNavObject.name || '';
             me.navConfig[tmpName] = theNavObject;
             var tmpOpts = theNavObject.options || {};
@@ -213,31 +213,31 @@ var ActionAppCore = {};
             theNavObject.isTopLink = (tmpOpts.topLink);
             theNavObject.iconHTML = tmpOpts.iconHTML || '';
             if (tmpOpts.icon) {
-                theNavObject.iconHTML = '<i class="' + tmpOpts.icon + ' icon"></i>'
+                theNavObject.iconHTML = '<i class="' + tmpOpts.icon + ' icon"></i>';
             }
-            me.config.navlinks.push(theNavObject)
+            me.config.navlinks.push(theNavObject);
             return true;
-        }
+        };
 
         me._messageOptions = {
             show: true
-        }
+        };
         me.setMessagesOption = function (theOption, theValue) {
-            ThisApp._messageOptions[theOption] = theValue
-        }
+            ThisApp._messageOptions[theOption] = theValue;
+        };
         me.setMessagesOptions = function (theOptions) {
             $.extend(ThisApp._messageOptions, theOptions);
-        }
+        };
         me.getMessages = function () {
             return me.messages;
-        }
+        };
         me.getMessageCount = function () {
             return me.messagesAt;
-        }
+        };
         me.clearMessages = function () {
             me.messages = [];
             me.messagesAt = 0;
-        }
+        };
 
         /**
          * appMessage
@@ -293,9 +293,9 @@ var ActionAppCore = {};
                 title: tmpOptions.title || '',
                 pos: tmpMsgPos,
                 data: tmpOptionalData
-            }
+            };
 
-            me.messages.push(tmpMsgObj)
+            me.messages.push(tmpMsgObj);
             var tmpIsShow = me._messageOptions.show;
             if (typeof (tmpOptions.show) == 'boolean') {
                 tmpIsShow = tmpOptions.show;
@@ -309,7 +309,7 @@ var ActionAppCore = {};
             }
 
             me.publish("message:sent", tmpMsgObj);
-        }
+        };
 
         /**
           * subscribe / unsubscribe / publish
@@ -344,10 +344,10 @@ var ActionAppCore = {};
         var tmpMS = theMS || 1000;
         var dfd = jQuery.Deferred();
         setTimeout(function () {
-            dfd.resolve(true)
-        }, tmpMS)
+            dfd.resolve(true);
+        }, tmpMS);
         return dfd.promise();
-    }
+    };
 
     me.initAppComponents = function (theOptionalTarget) {
         var tmpDDs = me.getByAttr$({ appcomp: 'dropdown' }, theOptionalTarget);
@@ -355,15 +355,13 @@ var ActionAppCore = {};
             tmpDDs.attr('appcomp', '')
                 .dropdown({
                     showOnFocus: false
-                })
-                ;
+                });
         }
 
         var tmpCBs = me.getByAttr$({ appcomp: 'checkbox' }, theOptionalTarget);
         if (tmpCBs && tmpCBs.length) {
             tmpCBs.attr('appcomp', '')
-                .checkbox()
-                ;
+                .checkbox();
         }
 
         var tmpLayouts = me.getByAttr$({ appcomp: 'layout' }, theOptionalTarget)
@@ -486,16 +484,16 @@ var ActionAppCore = {};
             //--- ToDo: Implement App Caching Rules            
             if (tmpURI.uri.startsWith('design/')) {
                 tmpExists = false;
-            }            
+            }
             //--- ToDo: Revisit cachine / using cache versions
-            
-            if( !(tmpExists) ){
-                
+
+            if (!(tmpExists)) {
+
                 var tmpURL = tmpURI.uri;
-                if( !(tmpURI.uri.endsWith('/') || tmpURI.uri.endsWith('?open') || tmpURI.uri.endsWith('.xsp')) ){
+                if (!(tmpURI.uri.endsWith('/') || (tmpURI.uri.indexOf('?') > -1) || tmpURI.uri.endsWith('.xsp'))) {
                     //--- Do not add extn to flat items
                     tmpURL += me.getExtnForType(tmpURI.type);
-                } 
+                }
                 tmpURL = assureRelative(tmpURL);
                 //ThisApp.appMessage("Getting " + tmpURL);
 
@@ -599,8 +597,8 @@ var ActionAppCore = {};
         tmpResourceData.baseURI = theFullPath;
         var tmpCheckPath = theFullPath;
         var tmpCheckPos = tmpCheckPath.indexOf("?");
-        if( tmpCheckPos > -1){
-            tmpCheckPath = tmpCheckPath.substr(0,tmpCheckPos);
+        if (tmpCheckPos > -1) {
+            tmpCheckPath = tmpCheckPath.substr(0, tmpCheckPos);
         }
 
         //--- If the base element (with no params) is not loaded, get the CSS and load it
@@ -757,7 +755,28 @@ var ActionAppCore = {};
             north__closable: false,
             north__slidable: false,
             north__togglerLength_open: 0,
-            north__spacing_open: 0
+            north__spacing_open: 0,
+            east__size: "50%",
+            west__size: "300"
+        },
+        bigWest: {
+            spacing_closed: 8,
+            spacing_open: 6,
+            resizable: true,
+            togglerLength_open: 100,
+            togglerLength_closed: 100,
+            south__resizable: false,
+            south__closable: false,
+            south__slidable: false,
+            south__togglerLength_open: 0,
+            south__spacing_open: 0,
+            north__resizable: false,
+            north__closable: false,
+            north__slidable: false,
+            north__togglerLength_open: 0,
+            north__spacing_open: 0,
+            east__size: "15%",
+            west__size: "40%"
         },
         customDemo1: {
             spacing_closed: 8,
@@ -1170,7 +1189,7 @@ var ActionAppCore = {};
         //--- Remove the 'active' class from all matching items for this group that are tablinks
         //--- Note: The getByAttr$ returns the elements, jQuery's removeClass 
         //          returns the elements being effected for chaining
-        me.getByAttr$(tmpSelector)
+        me.getByAttr$(tmpSelector, tmpParent)
             .removeClass('active');
 
 
@@ -1178,7 +1197,7 @@ var ActionAppCore = {};
         tmpSelector.item = tmpItemId;
         //--- Add the 'active' class to the one item we have
         //--- Note: This calls me.getByAttr$ not ThisApp.getByAttr$, which by default only searches this tab page content
-        me.getByAttr$(tmpSelector).addClass('active');
+        me.getByAttr$(tmpSelector, tmpParent).addClass('active');
     }
 
 
@@ -1198,9 +1217,16 @@ var ActionAppCore = {};
         if (!theEl) {
             return tmpRet;
         }
-        var tmpAttrList = theAttrList || {};
+        var tmpAttrList = theAttrList || [];
         if (typeof (tmpAttrList) == 'string') {
             tmpAttrList = [tmpAttrList];
+        }
+        if( isObj(tmpAttrList) && !Array.isArray(tmpAttrList)){
+            var tmpNewList = [];
+            for( var aName in tmpAttrList){
+                tmpNewList.push(aName);
+            }
+            tmpAttrList = tmpNewList;
         }
         var tmpEl = $(theEl);
         for (aAttrPos in tmpAttrList) {
@@ -1802,14 +1828,14 @@ var ActionAppCore = {};
      * @param  {Object} theTargetObj   [target object with details about the page to open]
      * @return this
      */
-    var showSubPage = function (theAction, theTargetObj) {
+    var showSubPage = function (theAction, theTargetObj, theOptionalParent) {
         if (!theTargetObj) {
             theTargetObj = theAction;
         }
-        var tmpPage = $(theTargetObj).attr("item") || '';
-        var tmpGroupName = $(theTargetObj).attr("group") || '';
+        var tmpPage = $(theTargetObj, theOptionalParent).attr("item") || '';
+        var tmpGroupName = $(theTargetObj, theOptionalParent).attr("group") || '';
         if (tmpPage && tmpGroupName) {
-            me.gotoTab({ group: tmpGroupName, item: tmpPage });
+            me.gotoTab({ group: tmpGroupName, item: tmpPage, parent: theOptionalParent });
         } else {
             console.error("No pagename provided");
         }
@@ -2053,6 +2079,7 @@ var ActionAppCore = {};
     me.refreshLayouts = function (theTargetEl) {
         me.siteLayout.resizeAll();
 
+
     }
     me.resizeLayouts = function (name, $pane, paneState) {
         try {
@@ -2197,21 +2224,21 @@ var ActionAppCore = {};
         var tmpDefs = [];
         var tmpThis = this;
 
-        
-        
+
+
         if (theAppConfig.pages && theAppConfig.pages.length) {
             var tmpPageNames = theAppConfig.pages;
             for (var iPageName = 0; iPageName < tmpPageNames.length; iPageName++) {
                 var tmpPageName = tmpPageNames[iPageName];
                 var tmpPage = ThisApp.getPage(tmpPageName);
-                if( !(tmpPage)){
+                if (!(tmpPage)) {
                     var tmpURL = './app/pages/' + tmpPageName + '/index.js'
                     tmpDefs.push($.ajax({
                         url: tmpURL,
                         dataType: "script"
                     }));
                 }
-               
+
             }
         }
 
@@ -2307,7 +2334,7 @@ var ActionAppCore = {};
     };
 
     me.clearFlyover = clearFlyover;
-    function clearFlyover(theParams, theTarget) {
+    function clearFlyover(theParams, theTarget, theOptionalParent) {
         var tmpMask = ThisApp.getByAttr$({ appuse: 'flyovermask' });
         var tmpFOFade = ThisApp.getByAttr$({ appuse: 'flyoverfade' });
         tmpMask.animate({ scrollTop: 0 }, 2, function () {
@@ -2318,10 +2345,14 @@ var ActionAppCore = {};
     }
 
     me.toggleMe = toggleMe;
-    function toggleMe(theParams, theTarget) {
+    function toggleMe(theParams, theTarget, theOptionalParent) {
         var tmpEl = $(theTarget);
-        var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
-        var tmpIcon = tmpEl.find('i');
+        var tmpTR = tmpEl.parent();
+        if (theTarget.tagName.toLowerCase() == 'tr') {
+            tmpTR = tmpEl;
+        }
+        var tmpNext = tmpTR.next(['group="' + tmpEl.attr('group') + '"']);
+        var tmpIcon = tmpTR.find('td:last > i');
         var tmpIsVis = tmpNext.is(":visible");
         if (tmpIsVis) {
             tmpNext.hide();
@@ -2362,11 +2393,7 @@ var ActionAppCore = {};
             , spacing_open: 6 // ALL panes
             , spacing_closed: 8 // ALL panes
             , onready: ThisApp.resizeLayouts
-            , north__onresize: ThisApp.resizeLayouts
-            , south__onresize: ThisApp.resizeLayouts
-            , east__onresize: ThisApp.resizeLayouts
-            , west__onresize: ThisApp.resizeLayouts
-            , center__onresize: ThisApp.resizeLayouts
+            , onresize: ThisApp.resizeLayouts
         });
 
         if (theAppConfig && theAppConfig.hideHeader == true) {
@@ -2387,22 +2414,7 @@ var ActionAppCore = {};
         me.showPage = showPage;
         me.showSubPage = showSubPage;
         me.selectMe = showSubPage
-        // me.registerAction("showPage", showPage);
-        // me.registerAction("showSubPage", showSubPage);
-        // me.registerAction("selectMe", showSubPage);
-  
-        // me.registerAction("toggleMe", toggleMe);
-        // me.registerAction("outlineDisplay", outlineDisplay);
 
-        // me.registerAction("dropmenuopen", dropMenuOpen);
-        // me.registerAction("clearFlyover", clearFlyover);
-
-        //--- No need to register, they are part of me
-        // me.registerAction("closeCommonDialog", me.closeCommonDialog);
-        // me.registerAction("gotoTab", me.gotoTab);
-        // me.registerAction("showPopup", me.showPopup);
-
-      
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
 
         for (var aName in me.components) {
@@ -2531,42 +2543,29 @@ var ActionAppCore = {};
 
     function initAppMarkup() {
         initFlyoverMarkup();
-        initPromptMarkup()
+        initPromptMarkup();
     }
 
     function initFlyoverMarkup() {
-
         var tmpHTML = [];
-        // tmpHTML.push('<div appuse="flyoverfade" class="pagemaskfade hidden"></div>')
-        tmpHTML.push('<div appuse="flyovermask" action="clearFlyover" class="pagemask hidden">')
-        tmpHTML.push('	<div appuse="flyover" class="flyover hidden">')
-        tmpHTML.push('		<div class="ui content form">')
-        tmpHTML.push('			<div class="ui field" spot="flyover-menu">')
-        tmpHTML.push('			</div>')
-        tmpHTML.push('		</div>')
-        tmpHTML.push('		<div style="clear:both"></div>')
-        tmpHTML.push('	</div>')
-        tmpHTML.push('</div>')
-
+        tmpHTML.push('<div appuse="flyovermask" action="clearFlyover" class="pagemask hidden">');
+        tmpHTML.push('	<div appuse="flyover" class="flyover hidden">');
+        tmpHTML.push('		<div class="ui content form">');
+        tmpHTML.push('			<div class="ui field" spot="flyover-menu">');
+        tmpHTML.push('			</div>');
+        tmpHTML.push('		</div>');
+        tmpHTML.push('		<div style="clear:both"></div>');
+        tmpHTML.push('	</div>');
+        tmpHTML.push('</div>');
         $('body').append(tmpHTML.join(''))
     }
 
 
     function initPromptMarkup() {
         var tmpHTML = [];
-        // tmpHTML.push('<div appuse="promptermask" action="clearPrompter" class="pagemask hidden">')
-        // tmpHTML.push('	<div appuse="prompter" class="flyover hidden">')
-        // tmpHTML.push('		<div class="prompter-content" spot="prompter-content">')
-        // tmpHTML.push('		</div>')
-        // tmpHTML.push('		<div style="clear:both"></div>')
-        // tmpHTML.push('	</div>')
-        // tmpHTML.push('</div>')
-
-
-        tmpHTML.push('		<div class="prompter-content" spot="prompter-content">')
-        tmpHTML.push('		</div>')
-
-        $('body').append(tmpHTML.join(''))
+        tmpHTML.push('		<div class="prompter-content" spot="prompter-content">');
+        tmpHTML.push('		</div>');
+        $('body').append(tmpHTML.join(''));
     }
 
     var myConvertLiveLoops = 0;
@@ -2578,7 +2577,7 @@ var ActionAppCore = {};
     var myConvertToJsonLive = function (theObject) {
         myConvertLiveLoops++;
         if (myConvertLiveLoops > 1000) {
-            console.warn("Too many loops, stopping json conversion")
+            console.warn("Too many loops, stopping json conversion");
             return {};
         }
         var tmpIsArray = Array.isArray(theObject);
@@ -2597,27 +2596,21 @@ var ActionAppCore = {};
                 //--- Convert to string to save
                 tmpRet[aName] = {
                     "[function]": tmpEntry.toString()
-                }
+                };
             } else if (isPage(tmpEntry)) {
-                //--- Ignore if page in object
-
-
                 //--- Ignore if page in object    
             } else if (isObj(tmpEntry)) {
-
                 if (tmpIsArray) {
                     tmpRet.push(myConvertToJsonLive(tmpEntry));
                 } else {
                     tmpRet[aName] = myConvertToJsonLive(tmpEntry);
                 }
-
             } else {
                 if (tmpIsArray) {
                     tmpRet.push(tmpEntry);
                 } else {
                     tmpRet[aName] = tmpEntry;
                 }
-
             }
         }
         try {
@@ -2632,7 +2625,6 @@ var ActionAppCore = {};
                     processEntry(tmpEntry);
                 }
             }
-
         }
         catch (e) {
             throw e;
@@ -2651,7 +2643,7 @@ var ActionAppCore = {};
         }
         myConvertLiveLoops++;
         if (myConvertLiveLoops > 1000) {
-            console.warn("Too many loops, stopping json conversion")
+            console.warn("Too many loops, stopping json conversion");
             return {};
         }
         var tmpIsArray = Array.isArray(theObject);
@@ -2668,11 +2660,8 @@ var ActionAppCore = {};
                 //--- Do not add or convert
             } else if (isFunc(tmpEntry)) {
                 //--- Convert to string to save
-                tmpRet[aName] = tmpEntry
+                tmpRet[aName] = tmpEntry;
             } else if (isPage(tmpEntry)) {
-                //--- Ignore if page in object
-
-
                 //--- Ignore if page in object    
             } else if (isObj(tmpEntry)) {
 
@@ -2717,20 +2706,20 @@ var ActionAppCore = {};
         return (theObject instanceof SiteMod.SitePage)
     }
     function isElement(theObject) {
-        return (theObject instanceof Element)
+        return (theObject instanceof Element);
     }
     function isjQuery(theObject) {
-        return (theObject instanceof jQuery)
+        return (theObject instanceof jQuery);
     }
     function isArray(theObject) {
-        return Array.isArray(theObject)
+        return Array.isArray(theObject);
     }
     function functionToString(theFunction) {
         return theFunction.toString();
     }
     function stringToFunction(theString) {
         try {
-            return eval("window._FunctionConverter = " + theString)
+            return eval("window._FunctionConverter = " + theString);
         } catch (ex) {
             return false;
         }
@@ -2757,15 +2746,15 @@ var ActionAppCore = {};
             //--- Convert to JSON and back to create a copy
             var tmpClone = theObj;
             try {
-                tmpClone = this.json(this.json(theObj))
+                tmpClone = this.json(this.json(theObj));
             } catch (ex) {
-                console.warn("Could not clone, error " + ex)
+                console.warn("Could not clone, error " + ex);
             }
             return tmpClone
         },
         json: function (theItem, theAutoCleanIfNeeded) {
             if (typeof (theItem) == 'string') {
-                return JSON.parse(theItem)
+                return JSON.parse(theItem);
             } else if (typeof (theItem) == 'object') {
                 // try {
                 //     return JSON.stringify(theItem, null, '\t')
@@ -2775,15 +2764,15 @@ var ActionAppCore = {};
                 if (theAutoCleanIfNeeded) {
                     var tmpClean = convertToJsonLive(theItem);
                     try {
-                        return JSON.stringify(tmpClean, null, '\t')
+                        return JSON.stringify(tmpClean, null, '\t');
                     } catch (ex2) {
-                        throw ("Could not convert object " + ex2)
+                        throw ("Could not convert object " + ex2);
                     }
                 } else {
                     try {
-                        return JSON.stringify(theItem, null, '\t')
+                        return JSON.stringify(theItem, null, '\t');
                     } catch (ex) {
-                        throw ("Error processing json convert " + ex)
+                        throw ("Error processing json convert " + ex);
                     }
 
                 }
@@ -2794,25 +2783,6 @@ var ActionAppCore = {};
     }
 
 })(ActionAppCore, $);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2829,6 +2799,9 @@ License: MIT
     var StaticApp = SiteMod.CoreApp;
     var defaultLayoutOptions = StaticApp.layoutTemplates.defaultPage;
 
+    var ExtendMod = ActionAppCore.module("extension");
+    $.extend(SitePage.prototype, ExtendMod.PubSub)
+
     //--- Base class for application pages
     function SitePage(theOptions) {
         this.options = theOptions || {};
@@ -2839,7 +2812,7 @@ License: MIT
         this.pageActions = {}; //--- A place for actions
         this.pageTitle = this.options.pageTitle || '';
 
-        
+        this.initPubSub();
 
         this.res = {
             "panels": {},
@@ -2868,9 +2841,19 @@ License: MIT
 
             this.layoutConfig.onresize = (
                 function (thePane, theElement, theState, theOptions, theName) {
+
                     if (typeof (this._onResizeLayout) == 'function') {
                         this._onResizeLayout(thePane, theElement, theState, theOptions, theName);
                     }
+
+                    try {
+                        if (this.publish) {
+                            this.publish('resizeLayout', [this, thePane, theElement, theState, theOptions, theName]);
+                        }
+                    } catch (ex) {
+                        console.error('error on resize', ex);
+                    }
+                    return true;
                 }
             ).bind(this);
 
@@ -2970,15 +2953,14 @@ License: MIT
             }
         }
         return theLayoutOptions;
-
     }
+
     me.initOnFirstLoad = function () {
         var dfd = jQuery.Deferred();
         var tmpThis = this;
         this.options = this.options || {};
         me.controls = {};
         var tmpThis = this;
-
 
         //--- Deprecated - backward compat functionality until apps are upgraded
         if (this.options.pageTemplates) {
@@ -3006,7 +2988,6 @@ License: MIT
         var tmpLayoutReq = this.getLayoutRequired();
 
         var tmpInitReq = ThisApp.loadResources.bind(this);
-
 
         if (this.options.required) {
             tmpPromRequired = tmpInitReq(this.options.required, { nsParent: this })
@@ -3431,7 +3412,7 @@ License: MIT
         };
         //--- Quick access to context data
         this.contextData = this.context.page.data;
-        
+
         //--- Grab some common functionality from app ...
         var tmpStuffToPullIn = [
             , 'getResourceURIsForType'
@@ -3498,7 +3479,6 @@ License: MIT
             if (this.layoutOptions && this.layoutConfig) {
                 this.layoutSpot = ThisApp.getByAttr$({ group: ThisApp.pagesGroup, "item": this.pageName });
                 this.layout = this.layoutSpot.layout(this.layoutConfig);
-                //Todo: On refresh, publish
             };
 
         }
@@ -3509,16 +3489,30 @@ License: MIT
         var tmpActionDetails = ThisApp.getActionFromObj(tmpObj, 'pageaction');
         if (!(tmpActionDetails.hasOwnProperty('action') && tmpActionDetails.hasOwnProperty('el'))) {
             //--- OK, just clicked somewhere with nothing to catch it, but not an action
+            //--- but check to see if we have a regularlaction
+            var tmpAppActionDetails = ThisApp.getActionFromObj(tmpObj, 'action');
+            if ((tmpAppActionDetails.hasOwnProperty('action') && tmpAppActionDetails.hasOwnProperty('el'))) {
+                if (tmpAppActionDetails.action == 'selectMe') {
+                    this.publish('selectMe', [this, tmpAppActionDetails.el])
+                }
+            }
+    
             return;
         }
         var tmpAction = tmpActionDetails.action;
         tmpObj = tmpActionDetails.el;
 
+        //--- ToDo: May want fly-over to stay open for multi-click options
         ThisApp.clearFlyover();
+
+
         if (tmpAction) {
             theEvent.preventDefault();
             theEvent.stopPropagation();
             this.runAction(tmpAction, tmpObj);
+            if ( tmpAction == 'selectMe' ) {
+                this.publish('selectMe', [this, tmpObj])
+            }
         }
         return false;
 
@@ -4113,6 +4107,35 @@ License: MIT
 
     var me = ThisPageController.prototype;
 
+    me.detailsIndex = {
+        "getDetails": function (theName) {
+            return this[this.getUnifiedName(theName)];
+        },
+        "getUnifiedName": function (theName) {
+            if (!isStr(theName)) {
+                return "";
+            }
+            var tmpNameCheck = theName.toLowerCase();
+            if (tmpNameCheck == 'control' || tmpNameCheck == 'controls') {
+                return 'Control';
+            }
+            if (tmpNameCheck == 'panel' || tmpNameCheck == 'panels') {
+                return 'Panel';
+            }
+            if (tmpNameCheck == 'html') {
+                return 'HTML';
+            }
+            if (tmpNameCheck == 'template' || tmpNameCheck == 'templates') {
+                return 'Template';
+            }
+
+        },
+        "Control": {name: "Control", category: 'Controls', dir: "controls", icon: 'newspaper', lang: 'javascript'},
+        "Panel": {name: "Panel", category: 'Panels', dir: "panels", icon: 'newspaper outline', lang: 'javascript', type: 'json'},
+        "HTML": {name: "HTML", category: 'HTML', dir: "html", icon: 'code', lang: 'html'},
+        "Template": {name: "Template", category: 'Templates', dir: "tpl", icon: 'object group outline', lang: 'html'}
+    }
+
     me.layoutCounter = 0;
     me.getNextLayoutName = function () {
         me.layoutCounter++;
@@ -4499,7 +4522,7 @@ License: MIT
                             var tmpExistingVal = tmpData[tmpFN];
                             if (Array.isArray(tmpExistingVal)) {
                                 tmpExistingVal = tmpExistingVal.join(",");
-                                
+
                             }
                             if (tmpVal) {
                                 if (tmpExistingVal) {
@@ -4509,12 +4532,12 @@ License: MIT
                             }
                             if (tmpIsMultiValue) {
                                 if ((typeof (tmpExistingVal) == 'string')) {
-                                    if( tmpExistingVal ){
+                                    if (tmpExistingVal) {
                                         tmpExistingVal = tmpExistingVal.split(',');
                                     } else {
                                         tmpExistingVal = [];
                                     }
-                                    
+
                                 }
                             }
                             tmpData[tmpFN] = tmpExistingVal;
@@ -4607,45 +4630,6 @@ License: MIT
         }
         return tmpObj
     }
-
-    // meControl.getContentRequired = function () {
-    //     var tmpRet = {}
-    //     var tmpReq = this.controlConfig.index.required;
-    //     if (tmpReq) {
-    //         return tmpReq;
-    //     }
-    //     return tmpRet;
-    // }
-
-    // meControl.assureRequired = function () {
-    //     var dfd = jQuery.Deferred();
-    //     // if (this.assureRequiredRun === true) {
-    //     //     dfd.resolve(true)
-    //     //     return dfd.promise();
-    //     // }
-    //     this.assureRequiredRun = true;
-    //     this.options = this.options || {};
-    //     var tmpPromRequired = true;
-    //     var tmpPromLayoutReq = true;
-    //     var tmpLayoutReq = this.getContentRequired();
-    //     var tmpInitReq = ThisApp.loadResources.bind(this);
-
-    //     if (tmpLayoutReq) {
-    //         tmpPromLayoutReq = tmpInitReq(tmpLayoutReq, { nsParent: this.parentControl })
-    //     }
-
-    //     $.when(tmpPromRequired, tmpPromLayoutReq).then(function (theReply) {
-    //         dfd.resolve(true);
-    //     })
-
-    //     return dfd.promise();
-    // }
-
-
-    //--- ToDo: Review this, better way?  Just use prompt options?
-    //     also have options: prompt: {} in the control options JSON
-
-    //Control / Form prompting
 
     /*  
     Prompt options: 
@@ -4794,6 +4778,8 @@ License: MIT
     me.ControlInstance = ControlInstance;
     function ControlInstance(theControlSpec, theControlName, theOptions) {
         var tmpOptions = theOptions || {};
+        this.initPubSub();
+
         this.controlSpec = theControlSpec;
         var tmpConfig = this.controlSpec.controlConfig;
         tmpConfig.options = tmpConfig.options || {};
@@ -4832,9 +4818,22 @@ License: MIT
         if (this.parent && this.parent.context) {
             if (isObj(this.parent.context.page)) {
                 this.context.page = this.parent.context.page;
+                if (this.context.page.controller) {
+                    if (this.context.page.controller.subscribe) {
+                        var tmpThis = this;
+                        this.context.page.controller.subscribe('resizeLayout', function () {
+                            if (isFunc(tmpThis._onParentResize)) {
+                                tmpThis._onParentResize.call(tmpThis)
+                            }
+
+                        })
+                    } else {
+                        console.warn('this.context.page.controller no subscribe');
+                    }
+                }
             }
             if (!(ThisApp.util.isPage(this.parent))) {
-                this.context.control = this.parent.context;
+                this.context.control = {context: this.parent.context};
             }
         }
 
@@ -4844,7 +4843,7 @@ License: MIT
             "html": {}
         };
 
-        this.initPubSub();
+
 
         //--- Grab some common functionality from app ...
         var tmpStuffToPullIn = [
@@ -4893,11 +4892,6 @@ License: MIT
 
     meInstance.assureRequired = function () {
         var dfd = jQuery.Deferred();
-        // if (this.assureRequiredRun === true) {
-        //     dfd.resolve(true)
-        //     return dfd.promise();
-        // }
-        // this.assureRequiredRun = true;
         this.options = this.options || {};
         var tmpPromRequired = true;
         var tmpPromLayoutReq = true;
@@ -4942,6 +4936,17 @@ License: MIT
     meInstance.getEl = function () {
         return this.parentEl
     }
+
+    meInstance.setItemDisabled = function (theEntryName, theIsDisabled) {
+        var tmpEl = this.getItemEl(theEntryName) || this.getFieldEl(theEntryName);
+        var tmpHasClass = tmpEl.hasClass('disabled');
+        if (!tmpHasClass && theIsDisabled) {
+            tmpEl.addClass('disabled');
+        } else if (tmpHasClass && !theIsDisabled) {
+            tmpEl.removeClass('disabled');
+        }
+    }
+    meInstance.setFieldDisabled = meInstance.setItemDisabled;
 
     meInstance.refreshUI = function (theOptions) {
         var tmpOptions = theOptions || {};
@@ -5071,6 +5076,11 @@ License: MIT
 
     meInstance.getItemEl = function (theItemName) {
         var tmpEl = this.getElByName$(theItemName, 'item')
+        if (!(tmpEl)) { return false }
+        return tmpEl;
+    }
+    meInstance.getFieldEl = function (theFieldName) {
+        var tmpEl = this.getElByName$(theFieldName, 'field')
         if (!(tmpEl)) { return false }
         return tmpEl;
     }
@@ -5359,8 +5369,8 @@ License: MIT
                         //--- ToDo: Add required field message option
                         tmpRetFields.push({ name: tmpFN, text: '' })
                     } else {
-                        if( Array.isArray(tmpFieldData)){
-                            if( tmpFieldData.length == 0 ){
+                        if (Array.isArray(tmpFieldData)) {
+                            if (tmpFieldData.length == 0) {
                                 tmpFieldIsValid = false;
                             }
                         }
@@ -5581,7 +5591,7 @@ License: MIT
                 }
             }
         }
-        this.publish('field-change',[this,tmpFN,this.getFieldValue(tmpFN)])
+        this.publish('field-change', [this, tmpFN, this.getFieldValue(tmpFN)])
     }
 
     meInstance.refreshControl = function () {
@@ -5607,80 +5617,124 @@ License: MIT
         }
     }
     meInstance.onItemClick = function (theEvent) {
-        //--- A field changed in this control
-        var tmpTarget = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
+
+        var tmpObj = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
+        var tmpActionDetails = ThisApp.getActionFromObj(tmpObj, 'myaction');
+        var tmpTargetHit = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
+        tmpTargetHit = $(tmpTargetHit);
         //--- Get the acdtual control, not sub item like icon
-        tmpTarget = tmpTarget.closest('[name][controls]')
+        var tmpTarget = $(tmpTargetHit).closest('[name][controls]')
         var tmpParams = ThisApp.getAttrs(tmpTarget, ['name', 'controls']);
-        if (tmpParams.controls && tmpParams.name) {
-            var tmpName = tmpParams.name;
-            tmpTarget = $(tmpTarget);
-            var tmpItem = tmpTarget.attr('item');
-            if (!isStr(tmpItem)) { return true };
-            var tmpSpecs = this.getItemSpecs(tmpName);
-            if (!(tmpSpecs)) { return true };
-            var tmpOnClick = tmpSpecs.onClick || false;
-            if (isObj(tmpOnClick)) {
-                var tmpToRun = tmpOnClick.run;
-                if (tmpToRun == 'publish') {
-                    var tmpEvent = tmpOnClick.event || 'click';
-                    var tmpIsValid = true;
-                    var tmpPubParams = tmpOnClick.params || '';
 
-                    if (tmpOnClick.validate === true) {
-                        var tmpValidation = this.validate();
-                        tmpIsValid = tmpValidation.isValid;
-                    }
-                    if (tmpIsValid) {
-                        this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
-                    }
-                } else if (tmpToRun == 'action') {
-                    var tmpAction = tmpOnClick.action || 'click';
-                    var tmpSource = tmpOnClick.source || "control";
-                    //Note: Can use tmpOnClick.source, "page","app", "control"
-                    //       default is "control" if not provided
+        var tmpAppActionDetails = ThisApp.getActionFromObj(tmpObj, 'action');
 
-                    //ToDo: Page and App Actions
-                    if (tmpSource == "control") {
-                        var tmpActions = this.actions || {};
-                        var tmpToRun = tmpActions[tmpAction] || this[tmpAction];
-
-                        if (isFunc(tmpToRun)) {
-                            var tmpActParams = ThisApp.clone(tmpOnClick);
-                            //--- Run action with only the params object, not target
-                            //---  run in a way that it binds to this control when run
-                            return tmpToRun.apply(this, [tmpActParams]);
-                        } else {
-                            console.warn("Action not found for " + tmpAction)
-                        }
-                    } else {
-                        console.warn("Not yet implemented for source " + tmpSource)
-                    }
-                }
-                //--- Not a known internal action
+        if ((tmpAppActionDetails.hasOwnProperty('action') && tmpAppActionDetails.hasOwnProperty('el'))) {
+            if (tmpAppActionDetails.action == 'selectMe') {
+                this.publish('selectMe', [this, tmpAppActionDetails.el])
             }
         }
 
-        return true;
-    }
-    meInstance.onFieldChange = function (theEvent) {
+        if (!(tmpActionDetails.hasOwnProperty('action') && tmpActionDetails.hasOwnProperty('el'))) {
+            //--- Look for object spec based actions (specific to controls)
+            if (tmpParams.controls && tmpParams.name) {
+                var tmpName = tmpParams.name;
+                tmpTarget = $(tmpTarget);
+                var tmpItem = tmpTarget.attr('item');
+                if (!isStr(tmpItem)) { return true };
+                var tmpSpecs = this.getItemSpecs(tmpName);
+                if (!(tmpSpecs)) { return true };
+                var tmpOnClick = tmpSpecs.onClick || false;
+                if (isObj(tmpOnClick)) {
+                    var tmpToRun = tmpOnClick.run;
+                    if (tmpToRun == 'publish') {
+                        var tmpEvent = tmpOnClick.event || 'click';
+                        var tmpIsValid = true;
+                        var tmpPubParams = tmpOnClick.params || '';
 
+                        if (tmpOnClick.validate === true) {
+                            var tmpValidation = this.validate();
+                            tmpIsValid = tmpValidation.isValid;
+                        }
+                        if (tmpIsValid) {
+                            this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
+                        }
+                    } else if (tmpToRun == 'action') {
+                        var tmpAction = tmpOnClick.action || 'click';
+                        var tmpSource = tmpOnClick.source || "control";
+                        //Note: Can use tmpOnClick.source, "page","app", "control"
+                        //       default is "control" if not provided
+
+                        //ToDo: Page and App Actions
+                        if (tmpSource == "control") {
+                            var tmpActions = this.actions || {};
+                            var tmpToRun = tmpActions[tmpAction] || this[tmpAction];
+
+                            if (isFunc(tmpToRun)) {
+                                var tmpActParams = ThisApp.clone(tmpOnClick);
+                                //--- Run action with only the params object, not target
+                                //---  run in a way that it binds to this control when run
+                                return tmpToRun.apply(this, [tmpActParams]);
+                            } else {
+                                console.warn("Action not found for " + tmpAction)
+                            }
+                        } else {
+                            console.warn("Not yet implemented for source " + tmpSource)
+                        }
+                    }
+                    //--- Not a known internal action
+                }
+            }
+            return;
+        }
+
+        //--- We have a control level action to run, run it
+        var tmpAction = tmpActionDetails.action;
+        tmpObj = tmpActionDetails.el;
+
+        if (tmpAction) {
+            theEvent.preventDefault();
+            theEvent.stopPropagation();
+            this.runAction(tmpAction, tmpObj);
+            if (tmpAction == 'selectMe') {
+                this.publish('selectMe', [this, tmpObj])
+            }
+            return;
+        }
+        return;
+    }
+
+    meInstance.runAction = function (theAction, theTarget) {
+        var tmpAction = theAction || '';
+        if (!(tmpAction)) {
+            console.warn("Action not provided for target el" + theTarget)
+            return;
+        }
+        var tmpToRun = this.actions[tmpAction] || this[tmpAction] || ThisApp[tmpAction];
+
+        if (isFunc(tmpToRun)) {
+            //---  run in a way that it binds to this control when run
+            //       and run with this control as the optional parent item
+            return tmpToRun.apply(this, [theAction, theTarget, this.getEl()]);
+        } else {
+            console.warn("Action not found for " + tmpAction)
+            return;
+        }
+
+    }
+
+    meInstance.onFieldChange = function (theEvent) {
         //--- A field changed in this control
         var tmpTarget = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
-
         var tmpParams = ThisApp.getAttrs(tmpTarget, ['name', 'controls']);
-
         if (tmpParams.controls && tmpParams.name) {
             var tmpFN = tmpParams.name;
             this.refreshForField(tmpFN);
         }
-
     }
 
     meInstance.destroy = function () {
         this.parentEl.off('change');
         this.parentEl.off('click');
-
         //--- ToDo: Destory panel and control objects
         if (this.liveIndex) {
             if (this.liveIndex.dropdown) {
@@ -5694,19 +5748,13 @@ License: MIT
 
     meInstance.initControlComponents = function () {
         var dfd = jQuery.Deferred();
-
         var tmpEl = this.parentEl;
-
         var tmpDefs = [];
-
-
         var tmpControls = ThisApp.getByAttr$({ ctlcomp: 'control' }, tmpEl);
         if (tmpControls.length) {
             for (var iControl = 0; iControl < tmpControls.length; iControl++) {
-
                 var tmpControlEl = $(tmpControls[iControl]);
                 var tmpControlName = tmpControlEl.attr('controlname');
-
                 var tmpPartName = tmpControlEl.attr('partname') || tmpControlEl.attr('name') || tmpControlName;
                 if (tmpControlName && tmpPartName) {
 
@@ -5720,12 +5768,8 @@ License: MIT
                         tmpDefs.push(tmpPart.loadToElement(tmpControlEl));
                     }
                 }
-
             }
         }
-
-
-
 
         var tmpPanels = ThisApp.getByAttr$({ ctlcomp: 'panel' }, tmpEl);
         if (tmpPanels.length) {
@@ -5749,11 +5793,6 @@ License: MIT
 
             }
         }
-
-
-
-
-
 
         var tmpDDs = ThisApp.getByAttr$({ ctlcomp: 'dropdown' }, tmpEl);
 
@@ -5783,7 +5822,6 @@ License: MIT
                 .css('min-height', '200px')
                 .attr('ctlcomporig', 'layout')
                 .attr('ctlcomp', '')
-                // .layout()
                 ;
             //--- Assure all the elements to the next pane are 100%
             ThisApp.util.resizeToParent(tmpLayouts);
@@ -5800,62 +5838,54 @@ License: MIT
                     //--- Using custom template
                     tmpLayoutOptions = StaticApp.layoutTemplates[tmpLayoutTemplateName];
                 }
-
                 tmpLayoutEntry.layout(tmpLayoutOptions);
             }
-
-
-            // //--- Enable layouts and save the handles
-            //this.liveIndex.layouts = tmpLayouts.layout();
             //--- Tell the app to resize it's layouts
             ThisApp.resizeLayouts();
         }
-
         $.whenAll(tmpDefs).then(function (theReply) {
             dfd.resolve(true)
         })
-
-
         return dfd.promise();
-
     }
 
     meInstance.loadToElement = function (theEl, theOptions) {
         var dfd = jQuery.Deferred();
         var tmpOptions = theOptions || {};
-
         var tmpThis = this;
         tmpThis.parentEl = ThisApp.asSpot(theEl);
-
-        //--- Load dynamic content into
         var tmpHTML = tmpThis.getHTML();
         tmpThis.parentEl.html(tmpHTML);
-        tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this))
-        tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this))
-
-
+        tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this));
+        tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this));
         tmpThis.getConfig().options = tmpThis.getConfig().options || {};
+        if (isFunc(tmpThis._onPreInit)) {
+            tmpThis._onPreInit();
+        }
+        
+        
         this.assureRequired().then(function () {
             tmpThis.initControlComponents().then(function (theReply) {
+
+                if (isFunc(tmpThis._onInit)) {
+                    tmpThis._onInit();
+                }
+                
                 tmpThis.refreshControl();
                 var tmpDoc = tmpOptions.doc || tmpThis.getConfig().options.doc || false;
                 if (tmpDoc) {
                     tmpThis.loadData(tmpDoc);
                 }
-                dfd.resolve(true)
+                if (isFunc(tmpThis._onLoad)) {
+                    tmpThis._onLoad();
+                }
+
+
+                dfd.resolve(true);
             });
-
-        })
-
-
-
+        });
         return dfd.promise();
-
-    }
-
-
-
-
+    };
 
     //==== HTML Control Builder ======  ======  ======  ======  ======  ======  ======  ======  ======  ======     
 
@@ -5893,9 +5923,6 @@ License: MIT
         if (!(tmpItems && tmpItems.length)) {
             return '';
         }
-
-       
-
         for (var iPos = 0; iPos < tmpItems.length; iPos++) {
             var tmpItem = tmpItems[iPos];
             var tmpCtl = tmpItem.ctl || 'field'
@@ -5910,10 +5937,16 @@ License: MIT
                 }
                 var tmpUseLayout = (tmpItem.layout === true);
                 var tmpTabClasses = ' bottom attached slim ' + tmpColor + ' segment ';
-               
-                if( tmpUseLayout ){
+
+                if (tmpUseLayout) {
                     tmpTabClasses = tmpColor;
                 }
+
+                var tmpSlim = '';
+                if (tmpItem.slim === true) {
+                    tmpSlim = 'slim'
+                }
+
                 tmpTabsHTML.push('<div class=" ui ' + tmpTabClasses + '  " >');
                 for (var iTab = 0; iTab < tmpItem.tabs.length; iTab++) {
                     var tmpTab = tmpItem.tabs[iTab];
@@ -5927,34 +5960,27 @@ License: MIT
                     tmpTabsHTML.push('<div controls tab appuse="cards" group="' + tmpTabName + '" item="' + tmpTab.name + '" class="pad0 ' + tmpHidden + '">');
                     tmpTabsHTML.push(getContentHTML(theControlName, tmpTab.content, theControlObj))
                     tmpTabsHTML.push('</div>');
-
-                    tmpTabs.push('<a appuse="tablinks" group="' + tmpTabName + '" item="' + tmpTab.name + '" action="showSubPage" class="item ' + tmpColor + tmpActive + '">' + tmpTab.label + '</a>')
-
+                    tmpTabs.push('<a appuse="tablinks" group="' + tmpTabName + '" item="' + tmpTab.name + '" myaction="showSubPage" class="item ' + tmpColor + tmpActive + '">' + tmpTab.label + '</a>')
                 }
                 tmpTabsHTML.push('</div>');
-
-                
                 tmpTabs = tmpTabs.join('');
                 if (tmpTabs) {
-                    tmpTabs = '<div controls tabs class="pad0 ui top attached tabular menu" style="">' + tmpTabs + '</div>';
-                    if( tmpUseLayout ){
+                    tmpTabs = '<div controls tabs class="pad0 ui top attached tabular menu ' + tmpSlim + '" style="">' + tmpTabs + '</div>';
+                    if (tmpUseLayout) {
                         tmpTabs = '<div ctlcomp="layout"><div class="ui-layout-north">' + tmpTabs + '</div>';
                     }
                 }
                 tmpHTML.push(tmpTabs);
                 tmpTabsHTML = tmpTabsHTML.join('');
-                if( tmpUseLayout ){
+                if (tmpUseLayout) {
                     tmpTabsHTML = '<div class="ui-layout-center">' + tmpTabsHTML + '</div>';
                     tmpTabsHTML += '</div>';
                 }
                 tmpHTML.push(tmpTabsHTML);
-
             } else {
                 tmpHTML.push(getHTMLForControl(tmpCtl, tmpItem, theControlObj))
             }
-
         }
-
         tmpHTML = tmpHTML.join('');
         return tmpHTML;
     }
@@ -5972,70 +5998,41 @@ License: MIT
             outline: []
         }
         var tmpOL = theOptionalOutline || tmpIndex.outline;
-
         var tmpItems = theItems || [];
         if (!(tmpItems && tmpItems.length)) {
             return tmpIndex;
         }
-
         for (var iPos = 0; iPos < tmpItems.length; iPos++) {
             var tmpItem = tmpItems[iPos];
             var tmpCtl = tmpItem.ctl || 'field';
-
             var tmpThisObj = {
                 ctl: tmpCtl,
                 name: tmpItem.name || ''
             }
-
             tmpOL.push(tmpThisObj)
-
             var tmpControl = me.getWebControl(tmpCtl)
             var tmpType = me.getControlType(tmpCtl)
-
             tmpType = tmpType + 's';
-
             if (tmpItem.name) {
-
                 var tmpName = tmpItem.name;
-
                 if (tmpCtl == 'control' || tmpCtl == 'panel') {
                     tmpIndex.controls[tmpName] = tmpItem;
-                    //--- If we have a control name and source is not parent, add to the list
-                    //---   if source is parent, it will go up the chain and find it there
-                    //---   must be loaded by name by the parent
-                    //---   ** When used - can have a basic name, not full heirarchy
-                    //         ... and can also replace out any full with short name as alias
                     if (tmpControl && tmpItem.controlname && (!(tmpItem.source === 'parent'))) {
-                        //--- Create a node for this required item
                         tmpIndex.required[tmpCtl] = tmpIndex.required[tmpCtl] || {};
                         tmpIndex.required[tmpCtl].list = tmpIndex.required[tmpCtl].list || [];
                         tmpIndex.required[tmpCtl].list.push(tmpItem.controlname)
                     }
                 }
-
-                //=== type is index or field
                 var tmpToAdd = tmpItem;
-                //--- Always add reference, is by pointer anyway
-                // if (tmpType == 'items') {
-                //     //--- Only push in control type along with name for items
-                //     var tmpDetail = tmpItem.text || tmpItem.title || tmpItem.label || '';
-                //     if (tmpCtl != 'button') {
-                //         tmpToAdd = { ctl: tmpCtl, detail: tmpDetail }
-                //     }
-                // }
                 if (tmpIndex[tmpType][tmpName]) {
-                    //--- If exists, create array and push item in
                     tmpIndex[tmpType][tmpName] = [tmpIndex[tmpType][tmpName]];
                     console.warn("Control content has the same name more than once for " + tmpName);
                     tmpIndex[tmpType][tmpName].push(tmpToAdd);
                 } else {
                     tmpIndex[tmpType][tmpName] = tmpToAdd;
-                    //--- add to fieldList or itemList
                     tmpIndex[tmpType + 'List'].push(tmpName)
                 }
             }
-
-            //--- Get content items and run through those to create index items
             var tmpContentItems = ['items', 'tabs', 'content', 'center', 'north', 'south', 'east', 'west'];
             for (var aIndex in tmpContentItems) {
                 var tmpContentItem = tmpContentItems[aIndex];
@@ -6045,15 +6042,9 @@ License: MIT
                 }
             }
         }
-
-
         return tmpIndex;
     }
 
-
-
-
-    //--- Bubble Global Helpers
     var checkBoxAt = 0;
     var numLookup = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen"]
 
@@ -6222,14 +6213,8 @@ License: MIT
         return tmpHTML.join('');
     }
 
-
-
-
-
     //--- Common Controls =========== =========== =========== =========== =========== ===========
     //--- =========== =========== =========== =========== =========== ===========
-
-
 
     //----   COMMON ITEM CONTROLS - INFORMATION =================================
 
@@ -6299,8 +6284,6 @@ License: MIT
         notes: "From 1 to 16 using Fields / Form grid"
     })
 
-
-
     me.getCommonControlProperties = getCommonControlProperties;
     function getCommonControlProperties(theCommonList) {
         var tmpCommonList = theCommonList || ['hidden'];
@@ -6318,7 +6301,6 @@ License: MIT
 
 
     //----   COMMON ITEM CONTROLS =================================
-
 
     me.ControlLayout = {
         getInfo: function (theControlName) {
@@ -6607,13 +6589,11 @@ License: MIT
             var tmpClasses = ''
             tmpClasses += getValueIfTrue(theObject, ['basic', 'compact', 'fluid', 'right', 'labeled', 'circular', 'disabled']);
             tmpClasses += getValueIfThere(theObject, ['color', 'size', 'floated']);
-
-            if (tmpObject.toright === true) {
+            if ((tmpObject.toright || tmpObject.toRight) === true) {
                 tmpClasses += ' right floated'
-            } else if (tmpObject.toleft === true) {
+            } else if ((tmpObject.toleft || tmpObject.toLeft) === true) {
                 tmpClasses += ' left floated'
             }
-
 
             if (tmpObject.icon || tmpObject.labeled) {
                 tmpClasses += ' icon ';
@@ -6628,6 +6608,8 @@ License: MIT
                 }
             } else if (isStr(tmpObject.pageaction)) {
                 tmpAction = ' pageaction="' + tmpObject.pageaction.trim() + '" ';
+            } else if (isStr(tmpObject.myaction)) {
+                tmpAction = ' myaction="' + tmpObject.myaction.trim() + '" ';
             }
             tmpHTML.push('<button ' + tmpAction + getItemAttrString(theObject) + ' class="ui button ' + tmpClasses + ' " ' + tmpStyle + '>')
 
@@ -7129,7 +7111,8 @@ License: MIT
             return tmpHTML.join('');
         },
         isField: false
-    }
+    };
+
     me.ControlTab = {
         getInfo: function (theControlName) {
 
@@ -7152,20 +7135,9 @@ License: MIT
             return tmpHTML.join('');;
         },
         isField: false
-    }
-
-
-
-
-
-
-
-
-
-
+    };
 
     //----   COMMON FIELD CONTROLS =================================
-
 
     me.ControlField = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
@@ -7194,11 +7166,7 @@ License: MIT
             if (tmpObject.req === true) {
                 tmpReq = ' required ';
             }
-
-
-
             var tmpItems = tmpObject.items || tmpObject.content || [];
-
             if (tmpValue) {
                 tmpValue = ' value="' + tmpValue + '" ';
             }
@@ -7206,18 +7174,15 @@ License: MIT
             if (theObject.input === true) {
                 tmpFieldOrInput = 'input';
             }
-
             //--- All input fields with content (buttons) are input style
             if (tmpItems && tmpItems.length > 0) {
                 tmpFieldOrInput = 'input'
             }
-
             var tmpInputClasses = tmpObject.inputClasses || '';
             tmpInputClasses += getValueIfTrue(theObject, ['fit']);
             if (tmpInputClasses) {
                 tmpInputClasses = ' class="' + tmpInputClasses + '" '
             }
-
             var tmpClasses = ''
             tmpClasses += getValueIfTrue(theObject, ['compact', 'fluid']);
             tmpClasses += getValueIfThere(theObject, ['color', 'size']);
@@ -7232,24 +7197,22 @@ License: MIT
             if (theControlObj.readonly === true) {
                 tmpDispOnly = true;
             }
-
             var tmpReadOnly = '';
             var tmpFieldType = 'text';
             if (tmpDispOnly) {
                 //tmpFieldType = 'hidden';
                 tmpReq = '';
-                tmpReadOnly = ' readonly '
-                
+                tmpReadOnly = ' readonly ';
             }
             if (theControlName == 'hidden') {
                 tmpFieldType = 'hidden';
             }
 
-            tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpClasses + tmpSizeName + tmpReq + ' ui ' + tmpFieldOrInput + '">')
+            tmpHTML.push('<div controls fieldwrap name="' + theObject.name + '" class="' + tmpClasses + tmpSizeName + tmpReq + ' ui ' + tmpFieldOrInput + '">');
             if (theObject.label) {
-                tmpHTML.push('<label>')
-                tmpHTML.push(theObject.label || '')
-                tmpHTML.push('</label>')
+                tmpHTML.push('<label>');
+                tmpHTML.push(theObject.label || '');
+                tmpHTML.push('</label>');
             }
             var tmpPH = '';
             if ((!tmpDispOnly) && theObject.placeholder !== false) {
@@ -7258,18 +7221,11 @@ License: MIT
                 }
                 tmpPH = ' placeholder="' + tmpPH + ' ';
             }
-
             tmpHTML.push('<input ' + tmpReadOnly + tmpInputClasses + ' type="' + tmpFieldType + '" controls field ' + tmpValue + ' name="' + theObject.name + '" ' + tmpPH + '">')
             tmpHTML.push('</input>')
             tmpHTML.push(getNoteMarkup(theObject));
-
-
-            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
-
-
-            tmpHTML.push('</div>')
-
-
+            tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj));
+            tmpHTML.push('</div>');
             tmpHTML = tmpHTML.join('');
             return tmpHTML;
         },
@@ -7379,12 +7335,12 @@ License: MIT
             if (theControlEl && theFieldSpecs) {
                 var tmpData = me._getControlData(theControlEl, theFieldSpecs.name);
                 if (theFieldSpecs.multi === true && isStr(tmpData)) {
-                    if( tmpData ){
+                    if (tmpData) {
                         tmpData = tmpData.split(',');
                     } else {
                         tmpData = [];
                     }
-                    
+
                 }
                 return tmpData;
             }
@@ -7609,11 +7565,6 @@ License: MIT
         },
         isField: true
     }
-
-
-
-
-
 
 
 
@@ -7850,7 +7801,7 @@ License: MIT
             var tmpObject = theObject || {};
             var tmpNewContent = [];
 
-            var tmpFuncGetHeaderAndContent = function (theType, theDetails, theMeta, theContent, theLevel, theGroup, theItem, theIcon, theColor) {
+          var tmpFuncGetHeaderAndContent = function (theType, theDetails, theMeta, theContent, theLevel, theGroup, theItem, theIcon, theColor) {
                 var tmpIconNode = false;
                 var tmpColSpanDetails = "3";
                 var tmpHasContent = true;
@@ -7954,22 +7905,29 @@ License: MIT
 
                 }
 
-
+                var tmpAttrAction = 'selectMe';
+                if( !theItem ){
+                    tmpAttrAction = 'toggleMe';
+                    if( theLevel == 3 ){
+                        tmpAttrAction = 'outlineDisplay';
+                    }
+                }
                 var tmpFinalContent = [
                     {
                         ctl: "tr",
                         classes: "",
-                        attr: {
-                            action: "selectMe",
+                        attr: $.extend({
+                            action: tmpAttrAction,
+                            select: "false",
                             group: theGroup,
                             item: theItem,
                             type: theType,
                             oluse: tmpOLUse
-                        },
+                        }, (tmpObject.attr || {})),
                         content: tmpBodyCols
                     }
                 ]
-
+               
                 if (tmpHasContent) {
                     tmpFinalContent.push(tmpFinalNode)
                 }
@@ -7987,6 +7945,7 @@ License: MIT
 
                 return tmpHeaderAndContent;
             }
+
 
 
             tmpNewContent.push(tmpFuncGetHeaderAndContent(
