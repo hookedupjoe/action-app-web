@@ -46,6 +46,22 @@ var ActionAppCore = {};
     ActionAppCore.createModule("extension");
 })(ActionAppCore, $);
 
+//--- PolyFill
+(function (ActionAppCore, $) {
+  
+    if (typeof String.prototype.endsWith !== 'function') {
+        String.prototype.endsWith = function(suffix) {
+            return this.indexOf(suffix, this.length - suffix.length) !== -1;
+        };
+    }
+    if (typeof String.prototype.startsWith !== 'function') {
+        String.prototype.startsWith = function(suffix) {
+            return this.indexOf(suffix) === 0;
+        };
+    }
+
+})(ActionAppCore, $);
+
 //--- Common Functionality Extensions
 
 /**
@@ -554,6 +570,40 @@ var ActionAppCore = {};
         "control": "controls",
         "panel": "panels"
     }
+
+    
+    me.loadWebResouces = function(theControl, thePath, theFullPath){
+        var tmpResourceData = theControl;
+        var tmpCheckPath = thePath;
+        //--- If the base element (with no params) is not loaded, get the CSS and load it
+        if (!(tmpCheckPath) || (me.resourceInitFlags[tmpCheckPath] !== true)) {
+            if( tmpCheckPath ){
+                me.resourceInitFlags[tmpCheckPath] = true;
+                if (tmpResourceData.controlConfig) {
+                    tmpResourceData.controlConfig.uri = theFullPath;
+                }
+            }
+            if (tmpResourceData.controlConfig && tmpResourceData.controlConfig.options && tmpResourceData.controlConfig.options.css) {
+                var tmpCSS = tmpResourceData.controlConfig.options.css || '';
+                if (tmpCSS) {
+                    me.addCSS({css: tmpCSS, path: tmpCheckPath})                    
+                }
+            }
+        }
+		
+    }
+    me.addCSS = function(theOptions){
+        var tmpOptions = theOptions || {};
+        var tmpCSS = tmpOptions.css || '';
+        var tmpPath = tmpOptions.path || '';
+        if (Array.isArray(tmpCSS)) {
+            tmpCSS = tmpCSS.join('\n');
+        }
+        if( (tmpCSS) ){
+            $('head').append('<style>' + tmpCSS + '</style>');
+        }
+    }
+
     me.addResourceFromContent = function (theType, theName, theContent, theFullPath, theOptions) {
         var tmpOptions = theOptions || {};
         var tmpThis = this;
@@ -588,7 +638,7 @@ var ActionAppCore = {};
             }
         } else if (theType == 'panels') {
             try {
-                tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {})
+                tmpResourceData = ThisApp.controls.newControl(tmpResourceData, {});
                 tmpResourceData.parent = tmpThis;
             } catch (ex) {
                 console.warn("Could not convert panel to object");
@@ -601,21 +651,9 @@ var ActionAppCore = {};
             tmpCheckPath = tmpCheckPath.substr(0, tmpCheckPos);
         }
 
-        //--- If the base element (with no params) is not loaded, get the CSS and load it
-        if (me.resourceInitFlags[tmpCheckPath] !== true) {
-            me.resourceInitFlags[tmpCheckPath] = true;
-            if (tmpResourceData.controlConfig) {
-                tmpResourceData.controlConfig.uri = theFullPath;
-            }
-            if (tmpResourceData.controlConfig && tmpResourceData.controlConfig.options && tmpResourceData.controlConfig.options.css) {
-                var tmpCSS = tmpResourceData.controlConfig.options.css || '';
-                if (tmpCSS) {
-                    if (Array.isArray(tmpCSS)) {
-                        tmpCSS = tmpCSS.join('\n');
-                    }
-                    $('head').append('<style>' + tmpCSS + '</style>');
-                }
-            }
+        //ToDo: Where to do this?  In control on create - check it?
+        if( isObj(tmpResourceData) && isObj(tmpResourceData.parent) ){
+            ThisApp.loadWebResouces(tmpResourceData, tmpCheckPath, theFullPath);
         }
 
         tmpThis.addResource(theType, tmpName, theFullPath, tmpResourceData);
@@ -1048,7 +1086,24 @@ var ActionAppCore = {};
         return me.sidebarSetDisplay(true);
     }
 
+    me.getHTMLForTabs = function(theGroup, theItem, theTabText){
+        var tmpGroup = theGroup || '';
+        var tmpItem = theItem || '';
+        if( !(tmpItem && tmpGroup) ){
+            return ''
+        }
+        
+        var tmpCardHTML = '<div appuse="cards" group="' + tmpGroup + '" item="' + tmpItem+ '" class="hidden"></div>';
+        var tmpTabHTML = '<div action="selectdMe" class="item active" appuse="tablinks" group="' + tmpGroup + '" item="' + tmpItem+ '" >' + theTabText + '</div>';
 
+        var tmpRet = {
+            card: tmpCardHTML,
+            tab: tmpTabHTML
+        }
+      
+        return tmpRet;
+
+    }
 
     /**
      * gotoTab
@@ -1322,7 +1377,7 @@ var ActionAppCore = {};
             if (isStr(theParams)) {
                 return { default: theParams }
             } else {
-                return theParams;
+                return theParams || {};
             }
         }
         var tmpRet = {};
@@ -1681,7 +1736,7 @@ var ActionAppCore = {};
 
         var tmpOutHeight = tmpHeader.get(0).clientHeight + tmpFooter.get(0).clientHeight;
         tmpOutHeight = tmpOutHeight + 80;
-        var tmpWiHeight = $(window).height(); //$( window ).height();
+        var tmpWiHeight = $(window).height(); 
         var tmpBodyNewH = (tmpWiHeight - tmpOutHeight) + 'px';
         tmpBody.css({ "height": tmpBodyNewH, "overflow": "auto" });
     }
@@ -1771,6 +1826,14 @@ var ActionAppCore = {};
         }
     }
 
+
+    me.resizeToLayout = function(theEl){
+        if( !isjQuery(theEl) ){
+            theEl = $(theEl);
+        }
+        var tmpH = theEl.closest('.ui-layout-pane').height();
+        theEl.css('height', '' + tmpH + 'px');
+    }
 
     /**
     * getContext
@@ -2880,7 +2943,7 @@ License: MIT
             //--- In this case we can just load the element control because it was required in the layout / required area
             this.loadLayoutControl = function (theRegion, theControl, theInstanceName) {
                 var tmpRegionSpotName = this.layoutOptions.spotPrefix + ":" + theRegion;
-                var tmpInstance = this.createInstance(theControl, theInstanceName);
+                var tmpInstance = this.createInstance(theControl, (theInstanceName || theRegion));
                 tmpInstance.loadToElement(tmpRegionSpotName);
             }
             this.loadRegion = function (theRegion, theContent, theOptionalTemplateName) {
