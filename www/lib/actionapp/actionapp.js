@@ -5210,7 +5210,9 @@ License: MIT
                 }
                 return true;
             } else {
-                if (tmpControl.setFieldValue(tmpFieldEl, theValue, tmpFieldSpecs)) {
+                var tmpThisOptions = this.getConfig().options || {};
+                var tmpIsReadOnly = tmpFieldSpecs.readonly || tmpThisOptions.readonly || false;
+                if (tmpControl.setFieldValue(tmpFieldEl, theValue, tmpFieldSpecs, tmpIsReadOnly)) {
                     if (!tmpSetOnly) {
                         tmpFieldEl.trigger('change');
                     }
@@ -7493,8 +7495,12 @@ License: MIT
             };
             return tmpRet;
         },
-        setFieldValue: function (theFieldEl, theValue) {
+        setFieldValue: function (theFieldEl, theValue, theFieldSpecs, theIsReadOnly) {
             var tmpValues = theValue || '';
+            if( theIsReadOnly ){
+                theFieldEl.val(theValue);
+                return;
+            }            
             if (isStr(tmpValues)) {
                 tmpValues = tmpValues.split(",")
             }
@@ -7525,7 +7531,11 @@ License: MIT
             };
             return tmpRet;
         },
-        setFieldValue: function (theFieldEl, theValue) {
+        setFieldValue: function (theFieldEl, theValue, theFieldSpecs, theIsReadOnly) {
+            if( theIsReadOnly ){
+                theFieldEl.val(theValue);
+                return;
+            }     
             if (theFieldEl.length) {
                 for (var iPos = 0; iPos < theFieldEl.length; iPos++) {
                     var tmpEl = (theFieldEl[iPos]);
@@ -7613,8 +7623,13 @@ License: MIT
         }
 
         if( tmpDispOnly ){
+
             tmpHTML.push('	<div class="field">')
-            tmpHTML.push(theControlObj.getFieldValue(tmpObject.name))
+
+            var tmpValue = theControlObj.getFieldValue(tmpObject.name);
+            tmpHTML.push('<input readonly type="text" controls field value="' + tmpValue + '" name="' + tmpObject.name + '">')
+            tmpHTML.push('</input>')
+
             tmpHTML.push('	</div>')
         } else {
             tmpHTML.push('  <div class="fields ' + tmpGorI + '">')
@@ -7702,7 +7717,9 @@ License: MIT
             }
             if( tmpDispOnly ){
                 tmpHTML.push('<field disabled readonly class="ui field">')
-                tmpHTML.push(theControlObj.getFieldValue(tmpObject.name));
+                var tmpValue = theControlObj.getFieldValue(tmpObject.name);
+                tmpHTML.push('<input readonly type="text" controls field value="' + tmpValue + '" name="' + tmpObject.name + '">')
+                tmpHTML.push('</input>')
                 tmpHTML.push('</field>')
             } else {
                 var tmpPH = '';
@@ -8406,7 +8423,6 @@ License: MIT
             }
             for (var iName = 0; iName < tmpNameList.length; iName++) {
                 var tmpEntryName = tmpNameList[iName];
-                console.log( 'tmpEntryName', tmpEntryName);
                 if (tmpValuePos == iPos) {
                     
                     tmpShowIndex[tmpEntryName] = true;
