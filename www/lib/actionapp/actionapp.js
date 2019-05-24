@@ -749,7 +749,8 @@ var ActionAppCore = {};
             north__closable: false,
             north__slidable: false,
             north__togglerLength_open: 0,
-            north__spacing_open: 0
+            north__spacing_open: 0,
+            enableCursorHotkey: false
         },
         defaultPage: {
             spacing_closed: 8,
@@ -776,7 +777,8 @@ var ActionAppCore = {};
                 resizable: true,
                 resizeWhileDragging: true,
                 slidable: true
-            }
+            },
+            enableCursorHotkey: false
         },
         defaultControl: {
             spacing_closed: 8,
@@ -795,7 +797,8 @@ var ActionAppCore = {};
             north__togglerLength_open: 0,
             north__spacing_open: 0,
             east__size: "50%",
-            west__size: "300"
+            west__size: "300",
+            enableCursorHotkey: false
         },
         bigWest: {
             spacing_closed: 8,
@@ -814,7 +817,8 @@ var ActionAppCore = {};
             north__togglerLength_open: 0,
             north__spacing_open: 0,
             east__size: "15%",
-            west__size: "40%"
+            west__size: "40%",
+            enableCursorHotkey: false
         },
         customDemo1: {
             spacing_closed: 8,
@@ -829,11 +833,31 @@ var ActionAppCore = {};
             south__spacing_open: 0,
             north__resizable: true,
             north__closable: true,
-            north__slidable: true
+            north__slidable: true,
+            enableCursorHotkey: false
         }
     }
 
+    me.waitForFinalEvent = (function () {
+        var timers = {};
+        return function (callback, ms, uniqueId) {
+          if (!uniqueId) {
+            uniqueId = "shouldUseID";
+          }
+          if (timers[uniqueId]) {
+            clearTimeout (timers[uniqueId]);
+          }
+          timers[uniqueId] = setTimeout(callback, ms);
+        };
+      })();
 
+      //--- Example usage
+    //   $(window).resize(function () {
+    //     ThisApp.waitForFinalEvent(function(){
+    //       console.log('Resize...');
+    //       //...
+    //     }, 500, "ThisAppResize");
+    // });
     /**
        * getUpdatedMarkupForNS
        *  - Returns HTML content that has the been prefixed with "namespace:"
@@ -2035,10 +2059,18 @@ var ActionAppCore = {};
         // };
         //$.extend(tmpRequest, tmpOptions);
         tmpOptions.cache = false;
+        var tmpLoadingEl = false;
+        if (tmpOptions.loading !== false) {
+            if (ThisApp.util.isjQuery(tmpOptions.loading))
+                tmpLoadingEl = tmpOptions.loading;
+        }
+        var tmpLoaderOptions = { el: tmpLoadingEl };
         tmpOptions.success = function (theResponse) {
+            ThisApp.hideLoading(tmpLoaderOptions);
             dfd.resolve(theResponse);
         }
         tmpOptions.error = function (theError) {
+            ThisApp.hideLoading(tmpLoaderOptions);
             dfd.reject(theError)
         }
 
@@ -2057,6 +2089,9 @@ var ActionAppCore = {};
                 }
                 tmpOptions.contentType = 'application/json';
             }
+        }
+        if ((tmpOptions.loading !== false)) {
+            ThisApp.showLoading(tmpLoaderOptions);
         }
 
         $.ajax(tmpOptions);
@@ -2150,20 +2185,18 @@ var ActionAppCore = {};
     me.siteLayout = null;
 
     me.refreshLayouts = function (theTargetEl) {
+        if (isFunc(ThisApp._onResizeLayouts)) {
+            ThisApp._onResizeLayouts(name, $pane, paneState)
+        } 
         me.siteLayout.resizeAll();
-
-
     }
     me.resizeLayouts = function (name, $pane, paneState) {
         try {
-            var tmpIsAll = (!($pane));
-
             if (isFunc(ThisApp._onResizeLayouts)) {
                 ThisApp._onResizeLayouts(name, $pane, paneState)
             }
             var tmpH = $pane.get(0).clientHeight - $pane.get(0).offsetTop - 1;
             me.getByAttr$({ appuse: "cards", group: "app:pages", item: '' }).css("height", tmpH + "px");;
-
         } catch (ex) {
 
         }
@@ -2301,6 +2334,10 @@ var ActionAppCore = {};
         var tmpDefs = [];
         var tmpThis = this;
 
+        me.headerPanel = $('.site-layout-north');
+        me.centerPanel = $('.site-layout-center');
+        me.headerPanel.addClass('ui segment nopad');
+        me.centerPanel.addClass('ui segment nopad');
 
 
         if (theAppConfig.pages && theAppConfig.pages.length) {
@@ -2325,10 +2362,10 @@ var ActionAppCore = {};
                     alert("Could not setup application, contact support")
                     dfd.resolve(false)
                 } else {
-                    tmpThis.postInit(theAppConfig)
+                    ThisApp.hideLoading();
+                    tmpThis.postInit(theAppConfig);
                     dfd.resolve(true)
                 }
-
             });
         });
 
@@ -2443,6 +2480,26 @@ var ActionAppCore = {};
 
     };
 
+    me.showLoading = function (theOptions) {
+        var tmpOptions = theOptions || {};
+        if (tmpOptions.el) {
+            tmpOptions.el.addClass('loading');
+        } else {
+            me.headerPanel.addClass('loading');
+            me.centerPanel.addClass('loading');
+        }
+    }
+
+    me.hideLoading = function (theOptions) {
+        var tmpOptions = theOptions || {};
+        if (tmpOptions.el) {
+            tmpOptions.el.removeClass('loading');
+        } else {
+            me.headerPanel.removeClass('loading');
+            me.centerPanel.removeClass('loading');
+        }
+    }
+
     me.postInit = postInit;
     function postInit(theAppConfig) {
 
@@ -2460,10 +2517,9 @@ var ActionAppCore = {};
         //--- Put your stuff here
         this.common = {};
 
-        //--- ToDo: Support options in theAppConfig to control this        
-        me.siteLayout = $('body').layout({
+
+        var tmpLOSpecs = {
             center__paneSelector: ".site-layout-center"
-            , north__paneSelector: ".site-layout-north"
             , north__spacing_open: 0
             , north__spacing_closed: 0
             , north__resizable: false
@@ -2471,7 +2527,14 @@ var ActionAppCore = {};
             , spacing_closed: 8 // ALL panes
             , onready: ThisApp.resizeLayouts
             , onresize: ThisApp.resizeLayouts
-        });
+            , enableCursorHotkey: false
+        }
+        if( theAppConfig.customHeader !== true){
+            tmpLOSpecs.north__paneSelector = ".site-layout-north";
+        }
+
+        //--- ToDo: Support options in theAppConfig to control this        
+        me.siteLayout = $('body').layout(tmpLOSpecs);
 
         if (theAppConfig && theAppConfig.hideHeader == true) {
             me.siteLayout.toggle('north');
@@ -2480,6 +2543,8 @@ var ActionAppCore = {};
             me.getByAttr$({ semaction: "showsidebar" }).hide();
 
         }
+
+
 
         me.config = me.config || {};
         if (theAppConfig) {
@@ -2936,12 +3001,16 @@ License: MIT
                 function (thePane, theElement, theState, theOptions, theName) {
 
                     if (typeof (this._onResizeLayout) == 'function') {
-                        this._onResizeLayout(thePane, theElement, theState, theOptions, theName);
+                        if (thePane == 'center') {
+                            this._onResizeLayout(thePane, theElement, theState, theOptions, theName);
+                        }
                     }
 
                     try {
                         if (this.publish) {
-                            this.publish('resizeLayout', [this, thePane, theElement, theState, theOptions, theName]);
+                            if (thePane == 'center') {
+                                this.publish('resizeLayout', [this, thePane, theElement, theState, theOptions, theName]);
+                            }
                         }
                     } catch (ex) {
                         console.error('error on resize', ex);
@@ -3552,7 +3621,7 @@ License: MIT
                 for (var i = 0; i < tmpAll.length; i++) {
                     var tmpArea = tmpAll[i];
                     if (this.layoutOptions[tmpArea] !== false) {
-                        tmpRet += '<div spot="' + tmpPre + ':' + tmpArea + '" class="middle-' + tmpArea + '"></div>';
+                        tmpRet += '<div spot="' + tmpPre + ':' + tmpArea + '" class="ui segment nopad middle-' + tmpArea + '"></div>';
                     }
                 }
                 return tmpRet;
@@ -3560,12 +3629,10 @@ License: MIT
 
             this.parentEl = this.app.getByAttr$({ group: "app:pages", item: this.pageName });
             this.parentEl.html(this.getLayoutHTML());
-
-
             this.parentEl.on("click", itemClicked.bind(this))
 
-
             if (typeof (this._onInit) == 'function') {
+                this.parentEl.removeClass('loading');
                 this._onInit(this.app)
             };
 
@@ -4058,7 +4125,7 @@ License: MIT
                     var tmpFunc = tmpOptions.onBeforeLoad.bind(tmpControlObject);
                     tmpFunc(tmpControlObject, this);
                 }
-                if( typeof(tmpOptions.readonly) == 'boolean'){
+                if (typeof (tmpOptions.readonly) == 'boolean') {
                     var tmpConfig = tmpControlObject.getConfig();
                     tmpConfig.options = tmpConfig.options || {};
                     tmpConfig.options.readonly = tmpOptions.readonly;
@@ -4803,9 +4870,16 @@ License: MIT
             }
         }
 
+        var tmpCustomSize = tmpExtraOptions.size || '';
         if (tmpOptions) {
-            $.extend(tmpPromptOptions, tmpExtraOptions)
+            $.extend(tmpPromptOptions, tmpExtraOptions); // not a typo
         }
+        
+        //-- Default to large if not specified when prompting forms
+        if( !(tmpCustomSize)){
+            tmpPromptOptions.size = 'large';
+        }
+
 
         ThisApp.prompter.prompt(tmpPromptOptions).then(function (theReply, theControl) {
             var tmpData = {};
@@ -4894,6 +4968,10 @@ License: MIT
             tmpMyConfig.options = ThisApp.clone(tmpConfig.options);
             tmpMyConfig.content = ThisApp.clone(tmpConfig.content);
         }
+        if( tmpMyConfig.options.hasOwnProperty('mobileAt')){
+            this.mobileAt = tmpMyConfig.options.mobileAt;
+        }
+
         this.parent = theOptions.parent || theControlSpec.parent;
         //--- ToDo: Review need for two of these
         this.parentControl = this.parent;
@@ -4923,13 +5001,24 @@ License: MIT
                 this.context.page = this.parent.context.page;
                 if (this.context.page.controller) {
                     if (this.context.page.controller.subscribe) {
-                        var tmpThis = this;
-                        this.context.page.controller.subscribe('resizeLayout', function () {
-                            if (isFunc(tmpThis._onParentResize)) {
-                                tmpThis._onParentResize.call(tmpThis)
-                            }
+                        var tmpOnResize = (function () {
+                            var tmpEl = this.parentEl;
+                            if (isFunc(this._onParentResize)) {
+                                this._onParentResize.call(this)
+                            }                           
+                            // if( tmpEl ){
+                            //     var tmpWidth = tmpEl.width();
+                            //     if( this.mobileAt !== false){
+                            //         if (tmpWidth < (this.mobileAt || 450)) {
+                            //             tmpEl.addClass('mobile');
+                            //         } else {
+                            //             tmpEl.removeClass('mobile');
+                            //         }
+                            //     }
+                            // }
 
-                        })
+                        }).bind(this);
+                        this.context.page.controller.subscribe('resizeLayout', tmpOnResize);
                     } else {
                         console.warn('this.context.page.controller no subscribe');
                     }
@@ -5056,6 +5145,7 @@ License: MIT
         var tmpThis = this;
         var tmpConfig = this.controlConfig;
 
+        tmpThis.clearEvents();
         tmpConfig.options = tmpConfig.options || {};
         if (typeof (tmpOptions.readonly) === 'boolean') {
             tmpConfig.options.readonly = tmpOptions.readonly;
@@ -5086,8 +5176,8 @@ License: MIT
                 tmpThis.loadConfig(theReply);
                 // this.controlConfig.options = (theReply.options || {});
                 // tmpConfig.content = theReply.content;
-                var tmpRefreshOptions = $.extend({},tmpOptions);
-                if( theReply && theReply.options && typeof(theReply.options.doc) == 'object' ){
+                var tmpRefreshOptions = $.extend({}, tmpOptions);
+                if (theReply && theReply.options && typeof (theReply.options.doc) == 'object') {
                     tmpRefreshOptions.doc = theReply.options.doc;
                 }
                 tmpThis.refreshUI(tmpRefreshOptions);
@@ -5860,18 +5950,26 @@ License: MIT
     }
 
     meInstance.destroy = function () {
-        this.parentEl.off('change');
-        this.parentEl.off('click');
-        //--- ToDo: Destory panel and control objects
-        if (this.liveIndex) {
-            if (this.liveIndex.dropdown) {
-                this.liveIndex.dropdown.dropdown('destroy');
+        try {
+            if( this.parentEl ){
+                this.parentEl.off('change');
+                this.parentEl.off('click');
             }
-            if (this.liveIndex.checkbox) {
-                this.liveIndex.checkbox.checkbox('destroy');
+            //--- ToDo: Destory panel and control objects
+            if (this.liveIndex) {
+                if (this.liveIndex.dropdown) {
+                    this.liveIndex.dropdown.dropdown('destroy');
+                }
+                if (this.liveIndex.checkbox) {
+                    this.liveIndex.checkbox.checkbox('destroy');
+                }
             }
+        } catch (ex) {
+            
         }
+       
     }
+    meInstance.clearEvents = meInstance.destroy;
 
     meInstance.initControlComponents = function () {
         var dfd = jQuery.Deferred();
@@ -6030,14 +6128,27 @@ License: MIT
         }
 
         tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj));
-        var tmpAttr = '';
-        if (tmpSpecOptions.padding !== false) {
-            tmpAttr = ' segment basic slim ';
+        var tmpAttr = ' segment ';
+        if (tmpSpecOptions.padding === false) {
+            tmpAttr += ' nopad ';
+        } else {
+            tmpAttr += '  slim ';
+        }
+        if (tmpSpecOptions.basic == true) {
+            tmpAttr += ' basic '
+        }
+
+        if (tmpSpecOptions.segment === false) {
+            tmpAttr = ''
         }
         var tmpForm = 'form';
         if (tmpSpecOptions.formClass === false) {
             tmpForm = ''
         }
+        if (tmpSpecOptions.initLoading === true) {
+            tmpAttr += ' loading ';
+        }
+
         tmpHTML = tmpHTML.join('');
         if (tmpHTML) {
             tmpHTML = '<div class="ui ' + tmpAttr + ' ' + tmpForm + '" controls control name="' + tmpControlName + '">' + tmpHTML + '</div>';
@@ -6448,10 +6559,6 @@ License: MIT
             var tmpObject = theObject || {};
 
             var tmpHTML = [];
-            var tmpLevel = 3;
-            if (theObject.level) {
-                tmpLevel = theObject.level
-            }
             var tmpHidden = '';
             if (tmpObject.hidden === true) {
                 tmpHidden = 'display:none;';
@@ -6463,14 +6570,8 @@ License: MIT
             if (tmpStyle) {
                 tmpStyle = ' style="' + tmpStyle + '" '
             }
-
-            var tmpIcon = 'dropdown';
-            if (isStr(tmpObject.icon)) {
-                tmpIcon = tmpObject.icon;
-            }
+        
             var tmpClasses = ''
-
-
             tmpHTML.push('<div ctlcomp="layout" ' + getItemAttrString(theObject) + ' class="' + tmpClasses + ' " ' + tmpStyle + '>')
 
             var tmpRegions = ['center', 'north', 'south', 'east', 'west'];
@@ -6556,7 +6657,7 @@ License: MIT
                 tmpHTML.push(' <i class="' + tmpIcon + ' icon"></i>')
             }
 
-            tmpHTML.push('	<div dropmenu="menu" style="display:none"><div class="menu transition fluid" tabindex="-1" style="display: block !important;">')
+            tmpHTML.push('	<div dropmenu="menu" style="display:none"><div class="menu fluid" tabindex="-1" style="display: block !important;">')
             var tmpItems = tmpObject.items || tmpObject.content || [];
             tmpHTML.push(getContentHTML(theControlName, tmpItems, theControlObj))
             tmpHTML.push('	</div></div>')
@@ -7088,6 +7189,7 @@ License: MIT
 
             }
 
+
             tmpHTML.push('<div ' + getItemAttrString(theObject) + ' class="field ' + tmpReq + tmpType + '">')
 
             if (isStr(theObject.label)) {
@@ -7096,8 +7198,8 @@ License: MIT
                 tmpHTML.push('</label>')
             }
 
-
-            tmpHTML.push('  <div class="' + getNumName(tmpFieldCount) + ' ' + tmpType + ' fields">');
+//getNumName(tmpFieldCount) + 
+            tmpHTML.push('  <div class="' + ' ' + tmpType + ' fields">');
             for (var iPos = 0; iPos < tmpObject.items.length; iPos++) {
                 var tmpItem = tmpObject.items[iPos];
                 var tmpCtl = tmpItem.ctl || 'field'
@@ -7370,7 +7472,7 @@ License: MIT
         },
         isField: true
     }
-	
+
 
     me.ControlDropDown = {
         setFieldNote: commonSetFieldNote, setFieldMessage: commonSetFieldMessage,
@@ -7449,7 +7551,7 @@ License: MIT
             //--- Add field specific content here
 
             tmpHTML.push('\n            <div ctlcomp="dropdown" class="ui selection ' + tmpDDAttr + tmpMulti + ' dropdown">')
-            tmpHTML.push('\n                <div class="default text">Select one</div>')
+            tmpHTML.push('\n                <div class="default text">Select</div>')
             tmpHTML.push('\n                <i class="dropdown icon"></i>')
             tmpHTML.push('\n                <input controls field type="hidden" name="' + theObject.name + '" >')
             tmpHTML.push('\n                <div class="menu">')
@@ -8072,10 +8174,14 @@ License: MIT
                     }
                 }
 
+                var tmpIconHidden = '';
+                if( !(theIcon) ){
+                    tmpIconHidden = ' hidden ';
+                }
                 var tmpBodyCols = [
                     {
                         ctl: "td",
-                        classes: "tbl-icon",
+                        classes: "tbl-icon " + tmpIconHidden,
                         content: [
                             {
                                 ctl: "i",
@@ -8090,7 +8196,8 @@ License: MIT
                     }
 
                 ];
-                if (theMeta) {
+                
+                if ((theMeta) && !((theLevel > 1) && !(theItem))) {
 
                     tmpBodyCols.push({
                         ctl: "td",
@@ -8128,10 +8235,15 @@ License: MIT
                         tmpAttrAction = 'outlineDisplay';
                     }
                 }
+
+                var tmpTRClasses = '';
+                if( theLevel > 1 && !(theItem) ){
+                    tmpTRClasses = "ui message fluid blue";                    
+                }
                 var tmpFinalContent = [
                     {
                         ctl: "tr",
-                        classes: "",
+                        classes: tmpTRClasses,
                         attr: $.extend({
                             action: tmpAttrAction,
                             select: "false",
@@ -8148,9 +8260,13 @@ License: MIT
                     tmpFinalContent.push(tmpFinalNode)
                 }
 
+                var tmpSelectable = '';
+                if( theDetails.selectable === true){
+                    tmpSelectable = ' selectable '
+                }
                 var tmpHeaderAndContent = {
                     ctl: "table",
-                    classes: "ui very compact table selectable outline unstackable",
+                    classes: "ui very compact table "  + tmpSelectable + " outline unstackable",
                     content: [
                         {
                             ctl: "tbody",
