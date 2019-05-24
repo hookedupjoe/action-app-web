@@ -2185,9 +2185,6 @@ var ActionAppCore = {};
     me.siteLayout = null;
 
     me.refreshLayouts = function (theTargetEl) {
-        if (isFunc(ThisApp._onResizeLayouts)) {
-            ThisApp._onResizeLayouts(name, $pane, paneState)
-        } 
         me.siteLayout.resizeAll();
     }
     me.resizeLayouts = function (name, $pane, paneState) {
