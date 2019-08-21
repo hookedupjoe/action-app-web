@@ -4,11 +4,23 @@
     "default": {
       "title": "Default Loaded"
     },    
-    "controlsdemo": {
-      "title": "Nested Controls"
+    "searchbar": {
+      "title": "Search Bar"
     },
     "showfor": {
       "title": "Show For Demo"
+    },
+    "server-control": {
+      "title": "Server Side Control"
+    },
+    "computed-values": {
+      "title": "Computed Values"
+    },
+    "controlsdemo": {
+      "title": "Nested Controls"
+    },
+    "layout-with-control": {
+      "title": "Layout With Controls"
     },
     "tabsonly": {
       "title": "Just the Tabs"
