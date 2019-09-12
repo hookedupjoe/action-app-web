@@ -155,9 +155,15 @@
             {
                "name": "datatables",
                "title": "DataTables",
-               "text": "DataTables is the stanard library used for tables with sortable columns, search capabilities, etc.",
+               "text": "DataTables is a library to create tables with sortable columns, search capabilities, etc.",
                "video": "e36m5wd7rpu54tve8mg3bk53rnq04ah3",
                "link": "https://datatables.net/"
+            },
+            {
+               "name": "tabulator",
+               "title": "Tabulator",
+               "text": "Tabulator is a library to create tables with sortable columns, search capabilities, etc.",
+               "link": "http://tabulator.info/"
             },
             {
                "name": "handlebars",
@@ -172,20 +178,6 @@
                "text": "The UI Layout library is used to create a border layout.  Used on every page - packed with available features.",
                "video": "0v37154p622a7guwjw6kc712gm9n5giu",
                "link": "http://layout.jquery-dev.com/documentation.cfm"
-            },
-            {
-               "name": "contextmenu",
-               "title": "ContextMenu",
-               "text": "ContextMenu is used to create right click menus.  Not highly used at this time, not great for native mobile.",
-               "video": "1wyda5270mlg70pyw54aj7xf4r6i11jc",
-               "link": "http://swisnl.github.io/jQuery-contextMenu/"
-            },
-            {
-               "name": "ace",
-               "title": "Ace - JSON / Code Editor",
-               "text": "The Ace - JSON / Code Editor is a great tool for showing, editing JSON and code.",
-               "video": "lklwab5cd3yq49jhe0j0s4757vz8vllf",
-               "link": "https://ace.c9.io/"
             }
          ]
       }

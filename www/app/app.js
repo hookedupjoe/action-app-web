@@ -4,7 +4,6 @@
 
   var tmpPageNames = [
     'HomePage', 
-    'DocsPage', 
     'PromptsPage', 
     'JsonHelperPage', 
     'UsingControlsPage', 
