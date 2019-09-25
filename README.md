@@ -7,6 +7,6 @@
 * 2018 / 2019
 
 ## About Action App  
-The full repo and mobile app development version can be found at the action-app-cordova site.
+The full repo and mobile app development version can be found actionapp.hookedup.com
 
 
