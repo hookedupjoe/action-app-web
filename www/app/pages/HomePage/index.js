@@ -112,6 +112,17 @@ License: MIT
         ThisApp.showCommonDialog({ title: "Video", content: tmpHTML })
     }
 
+         //--- End Layout related lifecycle hooks
+         ThisPage.showYouTubeVideo = function (theVideoID, theTarget) {
+            var tmpVideoID = theVideoID;
+            if (theTarget) {
+                tmpVideoID = $(theTarget).attr('video');
+            }
+            //var tmpHTML = '<iframe frameborder="0" width="480" height="270" src="https://www.dailymotion.com/embed/video/' + tmpVideoID + '" allowfullscreen allow="autoplay"></iframe>';
+            var tmpHTML = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + tmpVideoID + '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            ThisApp.showCommonDialog({ title: "Video", content: tmpHTML })
+        }
+    
 
 
     ThisPage.gotoTab = function (theTabName) {
