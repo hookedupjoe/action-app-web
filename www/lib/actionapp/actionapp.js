@@ -5107,11 +5107,15 @@ License: MIT
                             if (isFunc(this._onParentResize)) {
                                 this._onParentResize.call(this)
                             }
-                            if( tmpEl ){
+                            
+                            //--ToDo: Check mobile class add / remove process
+                            var tmpDoMobileCheck = false;
+                            if( tmpDoMobileCheck && tmpEl ){
                                 var tmpWidth = tmpEl.width();
                                 if( this.mobileAt !== false){
                                     if (tmpWidth < (this.mobileAt || 450)) {
                                         tmpEl.addClass('mobile');
+                                       
                                     } else {
                                         tmpEl.removeClass('mobile');
                                     }
@@ -5785,7 +5789,7 @@ License: MIT
             if (tmpFirstInvalid && isStr(tmpFirstInvalid)) {
                 me.gotoField(tmpControl, tmpFirstInvalid)
             }
-            alert(tmpInvalidControlMessage || tmpOptions.requiredMessage || "More information needed");
+            alert(tmpInvalidControlMessage || tmpOptions.requiredMessage || "Please complete all required fields");
         }
 
         return { isValid: tmpIsValid, fields: tmpRetFields };
