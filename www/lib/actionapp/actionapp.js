@@ -1970,6 +1970,7 @@ var ActionAppCore = {};
         if (!ThisApp.commonDialogWindowsBind) {
             //--- Lazy init one resize handler / move to even more common? Do this everytime and remove?  Reasons?
             ThisApp.commonDialogWindowsBind = true;
+            window.addEventListener('resize', commonDialogOnWindowResize.bind(ThisApp));
             //window.onresize = commonDialogOnWindowResize.bind(ThisApp);
         }
         ThisApp.commonDialogIsOpen = true;
