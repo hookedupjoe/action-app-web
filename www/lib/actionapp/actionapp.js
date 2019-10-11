@@ -2126,7 +2126,7 @@ var ActionAppCore = {};
 
     function initAppActions() {
         $('body').on("click", itemClicked);
-        $('body').ontouchmove = itemClicked;
+        $('body').get(0).ontouchmove = itemClicked;
     }
 
     //---- Internal: Gets the action or action from the current element or the first parent element with such an entry,
@@ -6194,7 +6194,6 @@ License: MIT
         tmpThis.parentEl.html(tmpHTML);
         tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this));
         tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this));
-
         tmpThis.getConfig().options = tmpThis.getConfig().options || {};
 
 
