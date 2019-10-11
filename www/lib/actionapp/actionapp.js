@@ -1970,7 +1970,7 @@ var ActionAppCore = {};
         if (!ThisApp.commonDialogWindowsBind) {
             //--- Lazy init one resize handler / move to even more common? Do this everytime and remove?  Reasons?
             ThisApp.commonDialogWindowsBind = true;
-            window.onresize = commonDialogOnWindowResize.bind(ThisApp);
+            //window.onresize = commonDialogOnWindowResize.bind(ThisApp);
         }
         ThisApp.commonDialogIsOpen = true;
         scrollLock = true;
@@ -1990,6 +1990,22 @@ var ActionAppCore = {};
         commonDialogCallbackOnHidden = false;
         clearCommonDialog();
     }
+
+    
+    function debounce(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
 
     function onCommonDialogHide(theEl) {
         if (typeof (commonDialogCallbackOnHide) == 'function') {
@@ -2201,9 +2217,11 @@ var ActionAppCore = {};
 
     me.siteLayout = null;
 
-    me.refreshLayouts = function (theTargetEl) {
-        me.siteLayout.resizeAll();
-    }
+
+    me.refreshLayouts = debounce(function (theTargetEl) {
+        ThisApp.siteLayout.resizeAll();
+    }, 200);
+
     me.resizeLayouts = function (name, $pane, paneState) {
         try {
             if (isFunc(ThisApp._onResizeLayouts)) {
@@ -2345,6 +2363,11 @@ var ActionAppCore = {};
 
         ThisCoreApp = this;
         initAppMarkup();
+
+        
+        window.addEventListener('resize', ThisApp.refreshLayouts.bind(ThisApp));
+
+
         var tmpDefs = [];
         var tmpThis = this;
 
