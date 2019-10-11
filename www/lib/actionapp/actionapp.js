@@ -1119,7 +1119,7 @@ var ActionAppCore = {};
         }
 
         var tmpCardHTML = '<div appuse="cards" group="' + tmpGroup + '" item="' + tmpItem + '" class="hidden"></div>';
-        var tmpTabHTML = '<div action="selectdMe" class="item active" appuse="tablinks" group="' + tmpGroup + '" item="' + tmpItem + '" >' + theTabText + '</div>';
+        var tmpTabHTML = '<div action="selectMe" class="item active" appuse="tablinks" group="' + tmpGroup + '" item="' + tmpItem + '" >' + theTabText + '</div>';
 
         var tmpRet = {
             card: tmpCardHTML,
@@ -2066,11 +2066,11 @@ var ActionAppCore = {};
                 tmpLoadingEl = tmpOptions.loading;
         }
         var tmpLoaderOptions = { el: tmpLoadingEl };
-        tmpOptions.success = function (theResponse) {
+        tmpSuccess = function (theResponse) {
             ThisApp.hideLoading(tmpLoaderOptions);
             dfd.resolve(theResponse);
         }
-        tmpOptions.error = function (theError) {
+        tmpError = function (theError) {
             ThisApp.hideLoading(tmpLoaderOptions);
             dfd.reject(theError)
         }
@@ -2095,7 +2095,7 @@ var ActionAppCore = {};
             ThisApp.showLoading(tmpLoaderOptions);
         }
 
-        $.ajax(tmpOptions);
+        $.ajax(tmpOptions).then(tmpSuccess, tmpError);
         return dfd.promise();
     }
 
