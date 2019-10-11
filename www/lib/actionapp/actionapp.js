@@ -6193,7 +6193,7 @@ License: MIT
         tmpThis.parentEl.html(tmpHTML);
         tmpThis.parentEl.on('change', tmpThis.onFieldChange.bind(this));
         tmpThis.parentEl.on('click', tmpThis.onItemClick.bind(this));
-        tmpThis.parentEl.on('touchmove', tmpThis.onItemClick.bind(this));
+        tmpThis.parentEl.ontouchmove = tmpThis.onItemClick.bind(this);
         tmpThis.getConfig().options = tmpThis.getConfig().options || {};
 
 
