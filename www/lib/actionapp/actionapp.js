@@ -2185,7 +2185,7 @@ var ActionAppCore = {};
         var tmpBounds = tmpTarget.getBoundingClientRect();
         if( theEvent.changedTouches && theEvent.changedTouches.length > 0){
             var tmpTouchInfo = theEvent.changedTouches[0];
-            var tmpStart = tmpTarget._start;
+            var tmpStart = ThisApp.util._start;
             var tmpXDiff = Math.abs(tmpStart.x - tmpTouchInfo.screenX)
             var tmpYDiff = Math.abs(tmpStart.y - tmpTouchInfo.screenY)
             if( tmpXDiff > ThisApp.util.MIN_TOUCH_DISTANCE || tmpYDiff > ThisApp.util.MIN_TOUCH_DISTANCE){
@@ -3015,10 +3015,10 @@ var ActionAppCore = {};
     }
 
     function itemTouchStart(theEvent) {
-        var tmpTarget = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
+        //var tmpTarget = theEvent.target || theEvent.currentTarget || theEvent.delegetTarget || {};
         if( theEvent.targetTouches && theEvent.targetTouches.length > 0){
             var tmpTouchInfo = theEvent.targetTouches[0];
-            tmpTarget._start = {
+            ThisApp.util._start = {
                 x:tmpTouchInfo.screenX, 
                 y: tmpTouchInfo.screenY
             }
@@ -3845,7 +3845,7 @@ License: MIT
         var tmpBounds = tmpTarget.getBoundingClientRect();
         if( theEvent.changedTouches && theEvent.changedTouches.length > 0){
             var tmpTouchInfo = theEvent.changedTouches[0];
-            var tmpStart = tmpTarget._start;
+            var tmpStart = ThisApp.util._start;
             var tmpXDiff = Math.abs(tmpStart.x - tmpTouchInfo.screenX)
             var tmpYDiff = Math.abs(tmpStart.y - tmpTouchInfo.screenY)
             if( tmpXDiff > ThisApp.util.MIN_TOUCH_DISTANCE || tmpYDiff > ThisApp.util.MIN_TOUCH_DISTANCE){
@@ -6042,7 +6042,7 @@ License: MIT
         var tmpBounds = tmpTarget.getBoundingClientRect();
         if( theEvent.changedTouches && theEvent.changedTouches.length > 0){
             var tmpTouchInfo = theEvent.changedTouches[0];
-            var tmpStart = tmpTarget._start;
+            var tmpStart = ThisApp.util._start;
             var tmpXDiff = Math.abs(tmpStart.x - tmpTouchInfo.screenX)
             var tmpYDiff = Math.abs(tmpStart.y - tmpTouchInfo.screenY)
             if( tmpXDiff > ThisApp.util.MIN_TOUCH_DISTANCE || tmpYDiff > ThisApp.util.MIN_TOUCH_DISTANCE){
