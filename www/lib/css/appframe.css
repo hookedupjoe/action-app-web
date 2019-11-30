@@ -14,7 +14,6 @@ html, body {
   content:"\f14a" !important;  
 }
 
-
 iframe.full-frame {
   width: 100%;
   border: none;
@@ -439,13 +438,6 @@ cursor: not-allowed !important;
 }
 .endfloat {
   clear:both;
-}
-
-.ui.toggle.checkbox label {
-  padding-left: 55px !important;
-}
-.ui.slider.checkbox label {
-  padding-left: 55px !important;
 }
 
 .mobile .ui.form .fields {
@@ -1532,3 +1524,25 @@ table th[class*="col-"] {
   padding-left: 0;
 }
 
+[appuse="page-overlay"] .sticky {
+  position: fixed;
+  top: 0;
+  height:45px;
+  width:97%;
+}
+
+[appuse="page-overlay"] {
+  /* padding: 10px; */
+  padding-top:45px;
+  position: fixed; 
+  display: none;
+  width: 100%; 
+  overflow:auto;
+  height: 100%; 
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  z-index: 2; 
+}
