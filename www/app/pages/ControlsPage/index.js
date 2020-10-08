@@ -125,9 +125,9 @@ License: MIT
 
 
         if (thePane == 'center') {
-            var tmpH = ThisPage.layout.panes.center.height()
-
-            if (ThisPage.detailsEditorEl && ThisPage.detailsEditor) {
+        
+            if (ThisPage.layout.panes.center && ThisPage.detailsEditorEl && ThisPage.detailsEditor) {
+                var tmpH = ThisPage.layout.panes.center.height()
                 ThisPage.detailsEditorEl
                     .css('height', '' + tmpH + 'px')
                     .css('position', 'relative')

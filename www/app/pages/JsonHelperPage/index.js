@@ -110,7 +110,7 @@ var ThisPage = new SiteMod.SitePage(thisPageSpecs);
 var dsNameJsonClipboard ='json-helper-page-json-clipboard';
 
 function resizeEditor() {
-    if(ThisPage.aceEditorEl && ThisPage.aceEditor){
+    if(ThisPage.layout.panes.center && ThisPage.aceEditorEl && ThisPage.aceEditor){
         var tmpH = ThisPage.layout.panes.center.height()
         ThisPage.aceEditorEl
         .css('height','' + tmpH + 'px')

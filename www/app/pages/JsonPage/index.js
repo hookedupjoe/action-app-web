@@ -93,7 +93,7 @@ License: MIT
         
         try {
 
-            if(ThisPage.jsonEditorEl && ThisPage.jsonEditor){
+            if(ThisPage.layout.panes.center && ThisPage.jsonEditorEl && ThisPage.jsonEditor){
                 var tmpH = ThisPage.layout.panes.center.height()
                 ThisPage.jsonEditorEl
                 .css('height','' + tmpH + 'px')
