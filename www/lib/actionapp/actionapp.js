@@ -2477,7 +2477,6 @@ var ActionAppCore = {};
     me.outlineDisplay = outlineDisplay;
     function outlineDisplay(theParams, theTarget) {
         var tmpEl = $(theTarget);
-        //var tmpNext = tmpEl.parent().next(['group="' + tmpEl.attr('group') + '"']);
         var tmpSelect = tmpEl.attr('select') || '';
 
         if (tmpSelect) {
@@ -2567,7 +2566,9 @@ var ActionAppCore = {};
         }
         var tmpNext = tmpTR.next(['group="' + tmpEl.attr('group') + '"']);
         var tmpIcon = tmpTR.find('td:last > i');
-        var tmpIsVis = tmpNext.is(":visible");
+        //var tmpIsVis = tmpNext.is(":visible");
+        var tmpIsVis = (tmpNext.css('display') != 'none');
+        
         if (tmpIsVis) {
             tmpNext.hide();
             tmpIcon.removeClass('minus')
