@@ -1,5 +1,4 @@
-window.$ = window.$ || jQuery;
-(function () {
+(function ($) {
 
 
   var tmpBody = $('body');     
@@ -52,4 +51,4 @@ window.$ = window.$ || jQuery;
 
 
 
-})();
+})(jQuery);
