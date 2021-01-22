@@ -2928,6 +2928,15 @@ window.ActionAppCore = window.ActionAppCore || ActionAppCore;
         me.showSubPage = showSubPage;
         me.selectMe = showSubPage
 
+        //--- Allows a div to work like a link
+        me.openhref = function(theParams, theTarget){
+            var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['href']);
+            var tmpURL = tmpParams.href;
+            if( tmpURL ){
+                window.location = tmpURL;
+            }
+        }
+
         me.$appPageContainer = $(me.config.container || '[appuse="main-page-container"]');
         if( me.$appPageContainer.length == 0){
             me.$appPageContainer = false;
@@ -6429,11 +6438,21 @@ License: MIT
                         if (tmpOnClick.validate === true) {
                             var tmpValidation = this.validate();
                             tmpIsValid = tmpValidation.isValid;
+                            if (tmpIsValid) {
+                                this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
+                            }
                         }
-                        if (tmpIsValid) {
-                            this.publish(tmpEvent, [this, tmpPubParams, tmpTarget, theEvent])
-                        }
+                        
                     } else if (tmpToRun == 'action' || tmpToRun == 'pageaction') {
+                        if (tmpOnClick.validate === true) {
+                            var tmpValidation = this.validate();
+                            tmpIsValid = tmpValidation.isValid;
+                            if (!(tmpIsValid)) {
+                                return false;
+                            }
+                        }
+                        
+
                         var tmpAction = tmpOnClick.action || '';
                         var tmpPageAction = tmpOnClick.pageaction || '';
                         var tmpAppAction = tmpOnClick.appaction || '';
@@ -8483,8 +8502,24 @@ License: MIT
                 tmpDispOnly = true;
             }
 
+            var tmpInputClasses = tmpObject.inputClasses || '';
+            tmpInputClasses += getValueIfTrue(theObject, ['fit']);
+            if (tmpInputClasses) {
+                tmpInputClasses = ' class="' + tmpInputClasses + '" '
+            }
+            var tmpClasses = ''
+            tmpClasses += getValueIfTrue(theObject, ['compact', 'fluid']);
+            tmpClasses += getValueIfThere(theObject, ['color', 'size']);
 
-            tmpHTML.push('<div controls fieldwrap name="' + tmpObject.name + '" class="' + tmpReq + ' field" ' + tmpStyle + '>')
+            
+            var tmpSizeName = '';
+            if (tmpObject.size && tmpObject.size > 0 && tmpObject.size < 17) {
+                tmpSizeName = getNumName(tmpObject.size)
+                tmpSizeName = ' ' + tmpSizeName + ' wide ';
+            }
+            
+            
+            tmpHTML.push('<div controls fieldwrap name="' + tmpObject.name + '" class="' + tmpClasses + tmpSizeName + tmpReq + ' field" ' + tmpStyle + '>')
             if (tmpObject.label) {
                 tmpHTML.push('<label>')
                 tmpHTML.push(tmpObject.label || '')
@@ -8507,7 +8542,12 @@ License: MIT
                     tmpPH = ' placeholder="' + tmpPH + ' ';
                 }
 
-                tmpHTML.push('<textarea controls field name="' + tmpObject.name + '" ' + tmpPH + '" ></textarea>')
+    
+                var tmpRows = '';
+                if( tmpObject.rows ){
+                    tmpRows = 'rows=' + tmpObject.rows + ' ';
+                }
+                tmpHTML.push('<textarea ' + tmpRows + 'controls field name="' + tmpObject.name + '" ' + tmpPH + '" ></textarea>')
 
                 tmpHTML.push(getNoteMarkup(theObject));
 
@@ -9322,6 +9362,20 @@ License: MIT
         return true;
     }
     me.validations.add('minlen', minLen);
+
+    function exactLen(theFieldName, theFieldValue, theControlObj, theParams) {
+        var tmpValue = theFieldValue || '';
+        var tmpMinLen = theParams.len || 3;
+        if (isStr(tmpMinLen)) {
+            tmpMinLen = parseInt(tmpMinLen);
+        }
+        if (tmpValue.length != tmpMinLen) {
+            return 'Value must be exactly ' + tmpMinLen + " characters";
+        }
+        return true;
+    }
+    me.validations.add('exactlen', exactLen);
+
 
 
 
